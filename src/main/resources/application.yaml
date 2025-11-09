@@ -132,6 +132,8 @@ auth:
     client-secret: ENC(kJYGPqiZxiXg7Lg4SVpC+pShO32lxB542LbnvcgLmkD6ebdMotvFXiZoUQWvTJMi)
 
 ---
+server:
+  port: 8036
 
 spring:
   application:
