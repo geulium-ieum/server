@@ -293,7 +293,7 @@ public class AuthService {
 
         String code = UUID.randomUUID().toString();
         RedisUtil.setWithExpiryMin(PR_CODE_PREFIX + email, code, passwordResetTtlMinutes);
-        RedisUtil.setWithExpiryMin(PR_TRIES_PREFIX + email, 0, passwordResetTtlMinutes);
+        RedisUtil.setWithExpiryMin(PR_TRIES_PREFIX + email, "0", passwordResetTtlMinutes);
         RedisUtil.setWithExpirySec(cooldownKey, "1", passwordResetResendCooldownSeconds);
 
         mailClient.sendPasswordResetEmail(email, user.getName(), passwordResetUrl, code, passwordResetTtlMinutes);
@@ -314,7 +314,7 @@ public class AuthService {
             throw new ApiException(ErrorCode.PASSWORD_RESET_TOO_MANY_ATTEMPTS);
         }
         if (!stored.equals(request.getCode())) {
-            RedisUtil.setWithExpiryMin(triesKey, currentTries + 1, passwordResetTtlMinutes);
+            RedisUtil.setWithExpiryMin(triesKey, String.valueOf(currentTries + 1), passwordResetTtlMinutes);
             throw new ApiException(ErrorCode.PASSWORD_RESET_CODE_INVALID);
         }
 
