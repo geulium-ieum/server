@@ -1,0 +1,94 @@
+package seg.work.geuliumieum.server.common.exception.handler;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
+import seg.work.geuliumieum.server.common.exception.ApiException;
+import seg.work.geuliumieum.server.common.exception.ErrorCode;
+import seg.work.geuliumieum.server.common.exception.ErrorResponse;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ErrorResponse> handleApiException(ApiException ex) {
+        ErrorResponse body = ErrorResponse.of(
+            ex.getErrorCode(),
+            ex.getMessage(),
+            ex.getDetails()
+        );
+        return ResponseEntity.status(ex.getHttpStatus()).body(body);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
+        List<Map<String, Object>> details = ex.getBindingResult().getFieldErrors().stream()
+            .map(this::toFieldError)
+            .collect(Collectors.toList());
+        ErrorResponse body = ErrorResponse.of(
+            ErrorCode.VALIDATION_FAILED,
+            ErrorCode.VALIDATION_FAILED.getDefaultMessage(),
+            details
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    @ExceptionHandler({BadCredentialsException.class})
+    public ResponseEntity<ErrorResponse> handleBadCredentials() {
+        ErrorResponse body = ErrorResponse.of(
+            ErrorCode.AUTH_INVALID_CREDENTIALS,
+            ErrorCode.AUTH_INVALID_CREDENTIALS.getDefaultMessage(),
+            null
+        );
+        return ResponseEntity.status(ErrorCode.AUTH_INVALID_CREDENTIALS.getStatus()).body(body);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUsernameNotFound(UsernameNotFoundException ex) {
+        ErrorResponse body = ErrorResponse.of(
+            ErrorCode.USER_NOT_FOUND,
+            ex.getMessage(),
+            null
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ErrorResponse> handleResponseStatus(ResponseStatusException ex) {
+        HttpStatus status = ex.getStatusCode() instanceof HttpStatus ? (HttpStatus) ex.getStatusCode() : HttpStatus.BAD_REQUEST;
+        ErrorResponse body = ErrorResponse.of(
+            ErrorCode.BAD_REQUEST,
+            ex.getReason(),
+            null
+        );
+        return ResponseEntity.status(status).headers(new HttpHeaders()).body(body);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleAny() {
+        ErrorResponse body = ErrorResponse.of(
+            ErrorCode.INTERNAL_ERROR,
+            ErrorCode.INTERNAL_ERROR.getDefaultMessage()
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+    }
+
+    private Map<String, Object> toFieldError(FieldError fe) {
+        Map<String, Object> m = new HashMap<>();
+        m.put("field", fe.getField());
+        m.put("rejectedValue", fe.getRejectedValue());
+        m.put("message", fe.getDefaultMessage());
+        return m;
+    }
+}

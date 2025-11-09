@@ -1,0 +1,170 @@
+server:
+  port: 8035
+  error:
+    whitelabel:
+      enabled: false
+  compression:
+    enabled: true
+  http2:
+    enabled: true
+  servlet:
+    encoding:
+      force-response: true
+
+spring:
+  application:
+    name: geulium-ieum-dev
+  profiles:
+    default: local
+  main:
+    banner-mode: off
+  messages:
+    encoding: UTF-8
+
+  datasource:
+    url: ENC(nunXC7AQSPmARE7nbngwBlUhGCS6ZQjMsf4KRGZ5sZ4hRCSKoujapdEhKl4fZf396vrzGBY3QgEYAb9XFz3iQP0XK7AmLRekWk8YtZ2VG+08g22R7jnM6g26GT6H5oVgceNZ9xxBe5CZ/oZK6vOSP6HiK+cOxZRK1incQizH7CjFLZP+8e0OL7uJYCGiFemMX3SBAodD++CCnFVD6lSSmg==)
+    username: ENC(M55NFPZPW+S385RHG3Tbi/GsR30FJmYDuu0qk4lJtX9zpzOuNkoZmjLy+7p7CPXv)
+    password: ENC(7HAR76SpVQc2FwwNoNb+GbH1qrBy5Bw0ghNXnAF/l0ZdnCp5k/4MDdLiacVUH8iX)
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 10
+      pool-name: POOL-GEULIUM-IEUM-DEV
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    open-in-view: false
+    generate-ddl: false
+    properties:
+      hibernate:
+        naming:
+          implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        format_sql: true
+        jdbc:
+          batch_size: 500
+          order_inserts: true
+          order_updates: true
+          time_zone: Asia/Seoul
+
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+
+    redis:
+      username: ENC(CLP8bkfYfByA7UhbAFwtnk/3fh70PdvZ4YOnSD6Z5BlzH6FAhbwrU3QQW21YmNlH)
+      password: ENC(Z3CYZplld9sYE1SQqYPHXP99zvYkuaYSrNrW9pnY4qwUFYlBaxZofRH11VqtCgEr)
+      database: 0
+      lettuce:
+        pool:
+          min-idle: 3
+          max-idle: 10
+          max-active: 10
+      sentinel:
+        master: ENC(yYiAeqVbp52e5Ym4c+DJiS4jW0nXI8i18FBkeVJYsbt5F2B2jc7KUqwJe8zVPzQM)
+        nodes:
+          - ENC(dugMPR1KDOTx2iEKi1Y1fEKvfXCiM/EL3Z/VLAsp3/lQ+8AGY5SKyUtwfta4clvjvuEOkWfZWViG3aERhDGdkw==)
+          - ENC(eZNPhtURJ8OvjCEJr139hykB3TN176tW+UOWx4VUk7QR2Wz0AszZ7vzBTqc68Np4jDAqAMKnQCvHJqYbQqxEbA==)
+          - ENC(YXqVf5Rf4S6G6lckwqC4/0aehtHyWVV1vxaMN67/pQLsNXao/6oQE2On576tFMDpx7xyUyYfnw7n2bSWYCfghQ==)
+        username: ENC(eE8LziJsha4iyTDs1IS+w/wXzQxL3OtZsGpBbXhgp/vZt++lDRYjEYY8sVe4q+E7)
+        password: ENC(S5qdr04dO41RnaRo5j8rOwj4DN4gfS3gsn43n+AZyNj7y9G3nN/Z3fTrd6g9r5TK)
+
+  output:
+    ansi:
+      enabled: always
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+logging:
+  config: classpath:/logback/spring-logback.xml
+
+jasypt:
+  encryptor:
+    algorithm: PBEWITHHMACSHA512ANDAES_256
+    key-obtention-iterations: 10000
+    pool-size: 1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
+  endpoint:
+    shutdown:
+      access: none
+    health:
+      show-details: always
+  metrics:
+    enable:
+      all: true
+    tags:
+      application: ${spring.application.name}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+auth:
+  email:
+    verification:
+      url: http://localhost:3000/auth/verify-email
+      maxRetry: 5
+      ttl: 10
+      coolDown: 60
+  password:
+    reset:
+      url: http://localhost:3000/auth/password-reset
+      maxRetry: 5
+      ttl: 10
+      coolDown: 60
+  kakao:
+    client-id: ENC(CgCOD3NHlwofEuOzRfLUPeDsEK+i9a8Hc7P+ZHZcr9VgLjFzsRRS5MtTiauG+jYdl+ucLm/dbVTREdrHzzr7+g==)
+    client-secret: ENC(1l7/poOeDrsJzEsT25nKPkIjFYbvioavVFSaxkmLZ6ZcAttuUUgw/HbtfMjJEctM)
+  naver:
+    client-id: ENC(XmljqjehL2PyZIbyVZr/p3diF9oX54B6KF373nP4xleW9TAnIAUyL4duSZO1jL1KPXpU4ZDbePIFYykBF+y/Zw==)
+    client-secret: ENC(kJYGPqiZxiXg7Lg4SVpC+pShO32lxB542LbnvcgLmkD6ebdMotvFXiZoUQWvTJMi)
+
+---
+
+spring:
+  application:
+    name: geulium-ieum
+  config:
+    activate:
+      on-profile: main
+
+  datasource:
+    url: ENC(ICg8A9QodHvgPjYcMULb7pmPwu0x1HFWj1yexrvEUNQ0UvmBbRMAYbxXwQ0DxnpAjX3gh3+9SapIgPhMnu2cWec09qF6h0gff88vNPOoJZM2uHN0OoTTFVXZGFCDcwPyLM1uRaGvHd/KxCkjf9JOqj8s5F6vDg9SVEvyo8WjTjn8dZDIS/TBJWiRHsHkaCTJSyNrSi/5WF4hVaQuVo5Thg==)
+    username: ENC(65HCNuEF7r86U7w8o6Sp0xOng31s3ctA91PhBBD+9ps24Ruh/aMr7xzYOLC05eEu)
+    password: ENC(8roJFBQFrG3pt1BVE2Rjuv9+VVRaLI4QnIMxeF+R8F9NXSYbgLnvI5adVpKFqsJU)
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    hikari:
+      minimum-idle: 10
+      maximum-pool-size: 20
+      pool-name: POOL-GEULIUM-IEUM
+
+  data:
+    redis:
+      username: ENC(eeBRcrZeGug8g53mlboMlCwKYGoA41rlNjWgYi2/sjHfiSyBP87dkcWh+Ar4HhdK)
+      password: ENC(2oGE8zv6G1SHQYNfjEDRN31nmOtb9ycXGauQkonYyABMsAqjJ58xXLjP+Eg0/VEa)
+      database: 1
+      lettuce:
+        pool:
+          min-idle: 3
+          max-idle: 10
+          max-active: 10
+      sentinel:
+        master: ENC(PrvcT1Os0ppRgFNHIyUimXk5OyzLLGsrv5F/HOGJeJqyAtgXArEymz8FC1jddMXV)
+        nodes:
+          - ENC(AE6gYiBAzvAiKmbmQDXaIXlelOsAwYhzAqGBDP1Q69JUpKU5bCmYb0b4gdP9/GyWOCZvL5qWVAEZpudljqI6ew==)
+          - ENC(xjpNfWibRj5mhwiIF9XEcK46T2NYDVI6xWoXBDB3RZI56mTlPTT+wBg25DzKmLpsWQyB0Gs3proC+jWo5Bc0Hg==)
+          - ENC(T0Ta86hkXJK0zfiNVPHzW3hyoSkTdw4SV66qCCeMjwz2KnbJAu/l/rsT1sDVzeb+DIfuE3/jK088t63QLbwN+A==)
+        username: ENC(AEawl34ZPNGMrNF868HEznMLhzpO8UidBF+X1thblvVjxRnXSCzG6S+5uJmdWmfj)
+        password: ENC(pvmPtRKA2xu24/9ZUw4vqCQzDL7bYfj39HFjWlJ+YW/ikUOLk22KtDc10JAJe6j0)

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<included>
+    <logger name="jdbc" level="OFF"/>
+    <logger name="jdbc.sqlonly" level="OFF"/>
+    <logger name="jdbc.audit" level="OFF"/>
+    <logger name="jdbc.resultset" level="OFF"/>
+    <logger name="jdbc.connection" level="OFF"/>
+
+    <logger name="org.hibernate.loader" level="OFF" />
+    <logger name="org.hibernate.hql.internal" level="OFF" />
+    <logger name="org.hibernate.engine.internal" level="OFF" />
+    <logger name="org.hibernate.engine.loading.internal" level="OFF" />
+    <logger name="org.hibernate.internal.util.EntityPrinter" level="OFF" />
+    <logger name="org.hibernate.orm.connections.pooling" level="OFF"/>
+
+    <logger name="com.ulisesbocchio.jasyptspringboot" level="OFF"/>
+</included>

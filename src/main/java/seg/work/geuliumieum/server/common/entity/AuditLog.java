@@ -1,0 +1,57 @@
+package seg.work.geuliumieum.server.common.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import java.net.InetAddress;
+import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "audit_logs")
+@Comment("감사 로그 테이블 (관리자용)")
+public class AuditLog {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "action", nullable = false, length = 50)
+    private String action;
+
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "target_type", nullable = false, length = 50)
+    private String targetType;
+
+    @Column(name = "target_id")
+    private Long targetId;
+
+    @Column(name = "details")
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Map<String, Object> details;
+
+    @Column(name = "ip_address")
+    private InetAddress ipAddress;
+
+    @Column(name = "user_agent", length = Integer.MAX_VALUE)
+    private String userAgent;
+
+}
