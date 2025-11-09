@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +19,14 @@ import seg.work.geuliumieum.server.common.exception.ApiException;
 import seg.work.geuliumieum.server.common.exception.ErrorCode;
 import seg.work.geuliumieum.server.common.exception.ErrorResponse;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorResponse> handleApiException(ApiException ex) {
+        log.error("ApiException occurred: {}", ex.getMessage(), ex);
+
         ErrorResponse body = ErrorResponse.of(
             ex.getErrorCode(),
             ex.getMessage(),
@@ -33,6 +37,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
+        log.error("MethodArgumentNotValidException occurred: {}", ex.getMessage(), ex);
+
         List<Map<String, Object>> details = ex.getBindingResult().getFieldErrors().stream()
             .map(this::toFieldError)
             .collect(Collectors.toList());
@@ -45,7 +51,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({BadCredentialsException.class})
-    public ResponseEntity<ErrorResponse> handleBadCredentials() {
+    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
+        log.error("BadCredentialsException occurred: {}", ex.getMessage(), ex);
+
         ErrorResponse body = ErrorResponse.of(
             ErrorCode.AUTH_INVALID_CREDENTIALS,
             ErrorCode.AUTH_INVALID_CREDENTIALS.getDefaultMessage(),
@@ -56,6 +64,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUsernameNotFound(UsernameNotFoundException ex) {
+        log.error("UsernameNotFoundException occurred: {}", ex.getMessage(), ex);
+
         ErrorResponse body = ErrorResponse.of(
             ErrorCode.USER_NOT_FOUND,
             ex.getMessage(),
@@ -66,6 +76,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ErrorResponse> handleResponseStatus(ResponseStatusException ex) {
+        log.error("ResponseStatusException occurred: {}", ex.getMessage(), ex);
+
         HttpStatus status = ex.getStatusCode() instanceof HttpStatus ? (HttpStatus) ex.getStatusCode() : HttpStatus.BAD_REQUEST;
         ErrorResponse body = ErrorResponse.of(
             ErrorCode.BAD_REQUEST,
@@ -76,7 +88,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleAny() {
+    public ResponseEntity<ErrorResponse> handleAny(Exception ex) {
+        log.error("Exception occurred: {}", ex.getMessage(), ex);
+
         ErrorResponse body = ErrorResponse.of(
             ErrorCode.INTERNAL_ERROR,
             ErrorCode.INTERNAL_ERROR.getDefaultMessage()
