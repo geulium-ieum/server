@@ -18,7 +18,7 @@ public class MailClient {
     private final RestTemplate restTemplate = new RestTemplate();
 
     public void sendVerificationEmail(String to, String name, String verificationUrl, String code, int expiryMinutes) {
-        String url = "http://localhost:8020/mail/send/template";
+        String url = "http://hermes:8020/mail/send/template";
         Map<String, Object> body = new HashMap<>();
         body.put("to", to);
         body.put("templateName", "verification");
@@ -40,7 +40,7 @@ public class MailClient {
     }
 
     public void sendPasswordResetEmail(String to, String name, String resetUrl, String code, int expiryMinutes) {
-        String url = "http://localhost:8020/mail/send/template";
+        String url = "http://hermes:8020/mail/send/template";
         Map<String, Object> body = new HashMap<>();
         body.put("to", to);
         body.put("templateName", "password_reset");
