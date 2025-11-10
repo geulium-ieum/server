@@ -131,7 +131,11 @@ auth:
     client-id: ENC(XmljqjehL2PyZIbyVZr/p3diF9oX54B6KF373nP4xleW9TAnIAUyL4duSZO1jL1KPXpU4ZDbePIFYykBF+y/Zw==)
     client-secret: ENC(kJYGPqiZxiXg7Lg4SVpC+pShO32lxB542LbnvcgLmkD6ebdMotvFXiZoUQWvTJMi)
 
+hermes:
+  groupKey: b8dd65c8-71ec-467d-b662-b52b9323cda9
+
 ---
+
 server:
   port: 8036
 

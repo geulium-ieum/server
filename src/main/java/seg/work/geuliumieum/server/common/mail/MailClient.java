@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,9 +18,13 @@ public class MailClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
+    @Value("${hermes.groupKey}")
+    private String groupKey;
+
     public void sendVerificationEmail(String to, String name, String verificationUrl, String code, int expiryMinutes) {
         String url = "http://hermes:8020/mail/send/template";
         Map<String, Object> body = new HashMap<>();
+        body.put("groupKey", groupKey);
         body.put("to", to);
         body.put("templateName", "verification");
         Map<String, Object> vars = new HashMap<>();
@@ -42,12 +47,13 @@ public class MailClient {
     public void sendPasswordResetEmail(String to, String name, String resetUrl, String code, int expiryMinutes) {
         String url = "http://hermes:8020/mail/send/template";
         Map<String, Object> body = new HashMap<>();
+        body.put("groupKey", groupKey);
         body.put("to", to);
         body.put("templateName", "password_reset");
         Map<String, Object> vars = new HashMap<>();
         vars.put("name", name);
         vars.put("company", "그리움 이음");
-        vars.put("reset_url", resetUrl);
+            vars.put("reset_url", resetUrl);
         vars.put("reset_code", code);
         vars.put("expiry_minutes", expiryMinutes);
         body.put("variables", vars);
