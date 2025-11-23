@@ -18,6 +18,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.stream.StreamMessageListenerContainer;
 import org.springframework.data.redis.stream.StreamMessageListenerContainer.StreamMessageListenerContainerOptions;
 import org.springframework.data.redis.stream.Subscription;
+import org.springframework.util.ErrorHandler;
 import seg.work.geuliumieum.server.common.audit.queue.AuditQueueMessage;
 import seg.work.geuliumieum.server.common.entity.AuditLog;
 import seg.work.geuliumieum.server.common.repository.AuditLogRepository;
@@ -34,9 +35,10 @@ public class AuditQueueConfig {
     private final ObjectMapper objectMapper;
 
     @Bean
-    public Subscription auditStreamSubscription(AsyncTaskExecutor auditAsyncExecutor, AuditQueueProperties props) {
-        ensureGroup(props);
-
+    public StreamMessageListenerContainer<String, MapRecord<String, String, String>> auditStreamContainer(
+        AsyncTaskExecutor auditAsyncExecutor,
+        AuditQueueProperties props
+    ) {
         @SuppressWarnings({"rawtypes", "unchecked"})
         StreamMessageListenerContainerOptions<String, MapRecord<String, String, String>> options =
             (StreamMessageListenerContainerOptions) StreamMessageListenerContainerOptions.builder()
@@ -44,19 +46,23 @@ public class AuditQueueConfig {
                 .executor(auditAsyncExecutor)
                 .pollTimeout(Duration.ofMillis(props.getPollTimeoutMs()))
                 .targetType(MapRecord.class)
+                .errorHandler(shutdownTolerantErrorHandler())
                 .build();
 
-        StreamMessageListenerContainer<String, MapRecord<String, String, String>> container =
-            StreamMessageListenerContainer.create(stringRedisTemplate.getConnectionFactory(), options);
+        return StreamMessageListenerContainer.create(stringRedisTemplate.getConnectionFactory(), options);
+    }
 
-        Subscription subscription = container.receiveAutoAck(
+    @Bean
+    public Subscription auditStreamSubscription(
+        StreamMessageListenerContainer<String, MapRecord<String, String, String>> auditStreamContainer,
+        AuditQueueProperties props
+    ) {
+        ensureGroup(props);
+        return auditStreamContainer.receiveAutoAck(
             Consumer.from(props.getGroup(), consumerName(props)),
             StreamOffset.create(props.getStreamKey(), ReadOffset.lastConsumed()),
             this::handleMessage
         );
-
-        container.start();
-        return subscription;
     }
 
     private void ensureGroup(AuditQueueProperties props) {
@@ -107,5 +113,75 @@ public class AuditQueueConfig {
         } catch (Exception e) {
             log.warn("Failed to consume audit message: {}", e.getMessage());
         }
+    }
+
+    private ErrorHandler shutdownTolerantErrorHandler() {
+        return ex -> {
+            if (isBenignShutdownException(ex)) {
+                // 셧다운 과정이나 이미 닫힌 커넥션으로 인한 예외는 디버그로만 남기고 무시
+                log.debug("Audit stream container terminated while shutting down: {}", summarize(ex));
+                return;
+            }
+            log.warn("Audit stream container error: {}", summarize(ex));
+        };
+    }
+
+    private boolean isBenignShutdownException(Throwable ex) {
+        // 애플리케이션 셧다운 신호가 왔다면 대부분의 Redis 폴링 오류는 무시 대상
+        if (ShutdownManager.isShuttingDown()) {
+            return true;
+        }
+
+        // 원인 체인을 따라가며 메시지/타입으로 판별
+        Throwable t = ex;
+        while (t != null) {
+            String name = t.getClass().getName();
+            String msg = String.valueOf(t.getMessage()).toLowerCase();
+
+            // 공통 메시지 패턴
+            if (msg.contains("connection is already closed") ||
+                msg.contains("connection closed") ||
+                msg.contains("connection reset") ||
+                msg.contains("cancelled") ||
+                msg.contains("canceled") ||
+                msg.contains("handler removed") ||
+                msg.contains("reactor.core.scheduler") ||
+                msg.contains("rejectedexecutionexception") ||
+                msg.contains("executor has been shutdown") ||
+                msg.contains("pool is shut down")) {
+                return true;
+            }
+
+            // 타입 기반 판별(의존성 추가 없이 FQCN 문자열 비교)
+            if (name.startsWith("io.lettuce.core.")) {
+                return true;
+            }
+            switch (name) {
+                case "org.springframework.data.redis.RedisSystemException",
+                     "org.springframework.data.redis.RedisConnectionFailureException",
+                     "java.util.concurrent.RejectedExecutionException" -> {
+                    return true;
+                }
+            }
+
+            t = t.getCause();
+        }
+        return false;
+    }
+
+    private String summarize(Throwable ex) {
+        // toString + root cause 메시지를 합쳐 간략히 표기
+        StringBuilder sb = new StringBuilder(ex.toString());
+        Throwable root = ex;
+        while (root.getCause() != null) {
+            root = root.getCause();
+        }
+        if (root != ex) {
+            sb.append("; root=").append(root.getClass().getName());
+            if (root.getMessage() != null) {
+                sb.append(": ").append(root.getMessage());
+            }
+        }
+        return sb.toString();
     }
 }
