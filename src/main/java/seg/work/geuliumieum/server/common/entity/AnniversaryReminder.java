@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,10 @@ import org.hibernate.annotations.Comment;
 @Entity
 @Table(name = "anniversary_reminders")
 @Comment("기일 알림 테이블")
-public class AnniversaryReminder {
+public class AnniversaryReminder extends BaseEntity {
+
+    @Serial
+    private static final long serialVersionUID = -3745157951240266760L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

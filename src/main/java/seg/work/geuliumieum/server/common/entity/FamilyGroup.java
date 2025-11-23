@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
@@ -17,7 +18,10 @@ import org.hibernate.annotations.Comment;
 @Entity
 @Table(name = "family_groups")
 @Comment("가족 그룹 테이블")
-public class FamilyGroup {
+public class FamilyGroup extends BaseEntity {
+
+    @Serial
+    private static final long serialVersionUID = 7093320308942375923L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

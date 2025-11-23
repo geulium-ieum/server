@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +23,10 @@ import seg.work.geuliumieum.server.config.security.UserRole;
 @Entity
 @Table(name = "users")
 @Comment("사용자 정보 테이블")
-public class User {
+public class User extends BaseEntity {
+
+    @Serial
+    private static final long serialVersionUID = -1790820457097853939L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

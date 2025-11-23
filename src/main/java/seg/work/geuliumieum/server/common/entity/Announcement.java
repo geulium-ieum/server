@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,10 @@ import org.hibernate.annotations.Comment;
 @Entity
 @Table(name = "announcements")
 @Comment("공지사항 테이블")
-public class Announcement {
+public class Announcement extends BaseEntity {
+
+    @Serial
+    private static final long serialVersionUID = -6540564516941024612L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

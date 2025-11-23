@@ -2,25 +2,38 @@ package seg.work.geuliumieum.server.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
+import seg.work.geuliumieum.server.memorial.constant.STATUS;
+import seg.work.geuliumieum.server.memorial.constant.VISIBILITY;
 
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "memorials")
 @Comment("추모관 정보 테이블")
-public class Memorial {
+public class Memorial extends BaseEntity {
+
+    @Serial
+    private static final long serialVersionUID = -638794833896277818L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,14 +64,14 @@ public class Memorial {
     private String photoUrl;
 
     @Size(max = 20)
-    @ColumnDefault("'public'")
+    @Enumerated(EnumType.STRING)
     @Column(name = "visibility", length = 20)
-    private String visibility;
+    private VISIBILITY visibility;
 
     @Size(max = 20)
-    @ColumnDefault("'pending'")
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 20)
-    private String status;
+    private STATUS status;
 
     @Column(name = "rejection_reason", length = Integer.MAX_VALUE)
     private String rejectionReason;
@@ -73,4 +86,7 @@ public class Memorial {
     @Column(name = "approved_at")
     private OffsetDateTime approvedAt;
 
+    @NotNull
+    @Column(name = "updated_by", nullable = false)
+    private Long updatedBy;
 }

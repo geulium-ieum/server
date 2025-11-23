@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
@@ -17,7 +18,10 @@ import org.hibernate.annotations.Comment;
 @Entity
 @Table(name = "albums")
 @Comment("추모 앨범 테이블")
-public class Album {
+public class Album extends BaseEntity {
+
+    @Serial
+    private static final long serialVersionUID = 86642107085544585L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
