@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedBy;
 
 @Getter
 @Setter
@@ -26,6 +27,7 @@ public class Notification {
     private Long id;
 
     @NotNull
+    @CreatedBy
     @Column(name = "user_id", nullable = false)
     private Long userId;
 

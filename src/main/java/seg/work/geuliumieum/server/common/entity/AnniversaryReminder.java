@@ -8,22 +8,23 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.io.Serial;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "anniversary_reminders")
 @Comment("기일 알림 테이블")
-public class AnniversaryReminder extends BaseEntity {
-
-    @Serial
-    private static final long serialVersionUID = -3745157951240266760L;
+public class AnniversaryReminder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,4 +60,19 @@ public class AnniversaryReminder extends BaseEntity {
     @Column(name = "notify_days_before")
     private Integer notifyDaysBefore;
 
+    @CreatedBy
+    @Column(name = "created_by", updatable = false)
+    private Long createdBy;
+
+    @LastModifiedBy
+    @Column(name = "updated_by")
+    private Long updatedBy;
+
+    @CreatedDate
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

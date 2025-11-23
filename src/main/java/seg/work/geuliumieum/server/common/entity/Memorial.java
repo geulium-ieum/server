@@ -10,8 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.io.Serial;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +19,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import seg.work.geuliumieum.server.memorial.constant.STATUS;
 import seg.work.geuliumieum.server.memorial.constant.VISIBILITY;
 
@@ -30,10 +34,7 @@ import seg.work.geuliumieum.server.memorial.constant.VISIBILITY;
 @AllArgsConstructor
 @Table(name = "memorials")
 @Comment("추모관 정보 테이블")
-public class Memorial extends BaseEntity {
-
-    @Serial
-    private static final long serialVersionUID = -638794833896277818L;
+public class Memorial {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,17 +77,25 @@ public class Memorial extends BaseEntity {
     @Column(name = "rejection_reason", length = Integer.MAX_VALUE)
     private String rejectionReason;
 
-    @NotNull
-    @Column(name = "created_by", nullable = false)
-    private Long createdBy;
-
     @Column(name = "approved_by")
     private Long approvedBy;
 
     @Column(name = "approved_at")
     private OffsetDateTime approvedAt;
 
-    @NotNull
-    @Column(name = "updated_by", nullable = false)
+    @CreatedBy
+    @Column(name = "created_by", updatable = false)
+    private Long createdBy;
+
+    @LastModifiedBy
+    @Column(name = "updated_by")
     private Long updatedBy;
+
+    @CreatedDate
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

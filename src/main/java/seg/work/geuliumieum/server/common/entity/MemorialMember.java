@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedBy;
 
 @Getter
 @Setter
@@ -31,6 +32,7 @@ public class MemorialMember {
     private Long memorialId;
 
     @NotNull
+    @CreatedBy
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
@@ -43,7 +45,6 @@ public class MemorialMember {
     @Column(name = "role", length = 20)
     private String role;
 
-    @ColumnDefault("now()")
     @Column(name = "joined_at")
     private OffsetDateTime joinedAt;
 

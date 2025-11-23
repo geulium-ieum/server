@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
 
 @Getter
 @Setter
@@ -33,6 +34,7 @@ public class AlbumPhoto {
     private String caption;
 
     @NotNull
+    @CreatedBy
     @Column(name = "uploaded_by", nullable = false)
     private Long uploadedBy;
 

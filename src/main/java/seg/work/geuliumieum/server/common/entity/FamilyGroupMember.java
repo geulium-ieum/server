@@ -42,7 +42,6 @@ public class FamilyGroupMember {
     @Column(name = "status", length = 20)
     private String status;
 
-    @ColumnDefault("now()")
     @Column(name = "joined_at")
     private OffsetDateTime joinedAt;
 

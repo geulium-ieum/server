@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedBy;
 
 @Getter
 @Setter
@@ -29,6 +30,7 @@ public class Offering {
     private Long memorialId;
 
     @NotNull
+    @CreatedBy
     @Column(name = "user_id", nullable = false)
     private Long userId;
 

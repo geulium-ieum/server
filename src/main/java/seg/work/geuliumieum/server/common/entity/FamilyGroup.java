@@ -8,20 +8,21 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.io.Serial;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "family_groups")
 @Comment("가족 그룹 테이블")
-public class FamilyGroup extends BaseEntity {
-
-    @Serial
-    private static final long serialVersionUID = 7093320308942375923L;
+public class FamilyGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,8 +37,19 @@ public class FamilyGroup extends BaseEntity {
     @Column(name = "description", length = Integer.MAX_VALUE)
     private String description;
 
-    @NotNull
-    @Column(name = "created_by", nullable = false)
+    @CreatedBy
+    @Column(name = "created_by", updatable = false)
     private Long createdBy;
 
+    @LastModifiedBy
+    @Column(name = "updated_by")
+    private Long updatedBy;
+
+    @CreatedDate
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

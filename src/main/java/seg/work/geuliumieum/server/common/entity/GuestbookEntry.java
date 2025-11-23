@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedBy;
 
 @Getter
 @Setter
@@ -29,6 +30,7 @@ public class GuestbookEntry {
     @Column(name = "memorial_id", nullable = false)
     private Long memorialId;
 
+    @CreatedBy
     @Column(name = "user_id")
     private Long userId;
 

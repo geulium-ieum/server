@@ -10,12 +10,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.io.Serial;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import seg.work.geuliumieum.server.config.security.UserRole;
 
 @Getter
@@ -23,10 +25,7 @@ import seg.work.geuliumieum.server.config.security.UserRole;
 @Entity
 @Table(name = "users")
 @Comment("사용자 정보 테이블")
-public class User extends BaseEntity {
-
-    @Serial
-    private static final long serialVersionUID = -1790820457097853939L;
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,4 +73,11 @@ public class User extends BaseEntity {
     @Column(name = "last_login_at")
     private OffsetDateTime lastLoginAt;
 
+    @CreatedDate
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

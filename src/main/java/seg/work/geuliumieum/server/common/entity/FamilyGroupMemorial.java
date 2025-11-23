@@ -10,7 +10,6 @@ import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Setter
@@ -35,7 +34,6 @@ public class FamilyGroupMemorial {
     @Column(name = "added_by", nullable = false)
     private Long addedBy;
 
-    @ColumnDefault("now()")
     @Column(name = "added_at")
     private OffsetDateTime addedAt;
 
