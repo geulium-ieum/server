@@ -2,12 +2,10 @@ package seg.work.geuliumieum.server.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,12 +20,10 @@ import org.springframework.data.annotation.LastModifiedDate;
 @Entity
 @Table(name = "family_groups")
 @Comment("가족 그룹 테이블")
-public class FamilyGroup {
+public class FamilyGroup extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Serial
+    private static final long serialVersionUID = -4722470605566990886L;
 
     @Size(max = 100)
     @NotNull

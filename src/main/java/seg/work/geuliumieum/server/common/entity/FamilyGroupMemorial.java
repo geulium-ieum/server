@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import java.io.Serial;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,12 +16,10 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "family_group_memorials")
-public class FamilyGroupMemorial {
+public class FamilyGroupMemorial extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Serial
+    private static final long serialVersionUID = -4898587917095768204L;
 
     @NotNull
     @Column(name = "group_id", nullable = false)

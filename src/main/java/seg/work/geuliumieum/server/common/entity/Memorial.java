@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -34,12 +35,10 @@ import seg.work.geuliumieum.server.memorial.constant.VISIBILITY;
 @AllArgsConstructor
 @Table(name = "memorials")
 @Comment("추모관 정보 테이블")
-public class Memorial {
+public class Memorial extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Serial
+    private static final long serialVersionUID = 3788369613051113882L;
 
     @Size(max = 100)
     @NotNull

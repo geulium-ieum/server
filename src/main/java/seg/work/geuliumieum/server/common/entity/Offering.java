@@ -2,12 +2,10 @@ package seg.work.geuliumieum.server.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
@@ -18,12 +16,10 @@ import org.springframework.data.annotation.CreatedBy;
 @Entity
 @Table(name = "offerings")
 @Comment("헌화/분향/헌촛 테이블")
-public class Offering {
+public class Offering extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Serial
+    private static final long serialVersionUID = -8168487875840555185L;
 
     @NotNull
     @Column(name = "memorial_id", nullable = false)

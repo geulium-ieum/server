@@ -2,12 +2,10 @@ package seg.work.geuliumieum.server.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,12 +15,10 @@ import org.hibernate.annotations.ColumnDefault;
 @Setter
 @Entity
 @Table(name = "family_group_members")
-public class FamilyGroupMember {
+public class FamilyGroupMember extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Serial
+    private static final long serialVersionUID = -4372165572577786407L;
 
     @NotNull
     @Column(name = "group_id", nullable = false)

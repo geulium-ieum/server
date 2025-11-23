@@ -17,9 +17,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import seg.work.geuliumieum.server.config.security.UserRole;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
+import seg.work.geuliumieum.server.config.security.UserRole;
 import seg.work.geuliumieum.server.util.RedisUtil;
+import seg.work.geuliumieum.server.util.TsIdUtil;
 
 @Component
 @RequiredArgsConstructor
@@ -28,9 +29,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
-        throws ServletException, IOException {
-        MDC.put("traceId", String.valueOf(System.nanoTime()));
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+        TsIdUtil.mdcTraceId();
+
         try {
             String header = request.getHeader(HttpHeaders.AUTHORIZATION);
             if (header != null && header.startsWith("Bearer ")) {

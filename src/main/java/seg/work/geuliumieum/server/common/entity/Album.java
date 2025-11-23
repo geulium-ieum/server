@@ -2,12 +2,10 @@ package seg.work.geuliumieum.server.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,12 +20,10 @@ import org.springframework.data.annotation.LastModifiedDate;
 @Entity
 @Table(name = "albums")
 @Comment("추모 앨범 테이블")
-public class Album {
+public class Album extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Serial
+    private static final long serialVersionUID = -3923112011066808697L;
 
     @NotNull
     @Column(name = "memorial_id", nullable = false)

@@ -2,11 +2,9 @@ package seg.work.geuliumieum.server.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import java.io.Serial;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
@@ -15,12 +13,10 @@ import org.springframework.data.annotation.CreatedBy;
 @Setter
 @Entity
 @Table(name = "album_photos")
-public class AlbumPhoto {
+public class AlbumPhoto extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Serial
+    private static final long serialVersionUID = -2435138201009276929L;
 
     @NotNull
     @Column(name = "album_id", nullable = false)

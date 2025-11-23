@@ -52,7 +52,7 @@ public class AuditQueueConfig {
         Subscription subscription = container.receiveAutoAck(
             Consumer.from(props.getGroup(), consumerName(props)),
             StreamOffset.create(props.getStreamKey(), ReadOffset.lastConsumed()),
-            message -> handleMessage(message)
+            this::handleMessage
         );
 
         container.start();

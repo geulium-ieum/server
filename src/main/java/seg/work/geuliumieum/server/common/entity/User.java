@@ -4,12 +4,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import lombok.Getter;
@@ -25,12 +23,10 @@ import seg.work.geuliumieum.server.config.security.UserRole;
 @Entity
 @Table(name = "users")
 @Comment("사용자 정보 테이블")
-public class User {
+public class User extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Serial
+    private static final long serialVersionUID = -8738931564074914885L;
 
     @Size(max = 255)
     @NotNull

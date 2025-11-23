@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -19,12 +20,10 @@ import org.springframework.data.annotation.CreatedBy;
 @Entity
 @Table(name = "guestbook_entries")
 @Comment("방명록 테이블")
-public class GuestbookEntry {
+public class GuestbookEntry extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Serial
+    private static final long serialVersionUID = 1498107717775077481L;
 
     @NotNull
     @Column(name = "memorial_id", nullable = false)

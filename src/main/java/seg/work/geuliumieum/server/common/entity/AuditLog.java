@@ -3,12 +3,10 @@ package seg.work.geuliumieum.server.common.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.io.Serial;
 import java.net.InetAddress;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -26,12 +24,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "audit_logs")
 @Comment("감사 로그 테이블 (관리자용)")
 @EntityListeners(AuditingEntityListener.class)
-public class AuditLog {
+public class AuditLog extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Serial
+    private static final long serialVersionUID = 3915966844238907251L;
 
     @Column(name = "user_id")
     private Long userId;
