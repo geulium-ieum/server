@@ -12,7 +12,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import seg.work.geuliumieum.server.config.security.jwt.JwtTokenProvider;
-import seg.work.geuliumieum.server.user.dto.UserInfo;
+import seg.work.geuliumieum.server.common.dto.UserInfo;
 
 @Component
 public record CurrentUserArgumentResolver(JwtTokenProvider jwtTokenProvider) implements HandlerMethodArgumentResolver {

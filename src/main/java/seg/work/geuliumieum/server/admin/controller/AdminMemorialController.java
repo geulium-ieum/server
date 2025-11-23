@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import seg.work.geuliumieum.server.admin.dto.MemorialWithStatsResponse;
+import seg.work.geuliumieum.server.admin.dto.response.MemorialWithStatsResponse;
 import seg.work.geuliumieum.server.admin.service.AdminMemorialService;
 
 @RestController

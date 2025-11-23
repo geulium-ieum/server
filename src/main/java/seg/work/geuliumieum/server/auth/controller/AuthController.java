@@ -8,20 +8,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import seg.work.geuliumieum.server.auth.dto.FindIdRequest;
-import seg.work.geuliumieum.server.auth.dto.FindIdResponse;
-import seg.work.geuliumieum.server.auth.dto.LoginRequest;
-import seg.work.geuliumieum.server.auth.dto.LogoutRequest;
-import seg.work.geuliumieum.server.auth.dto.MessageResponse;
-import seg.work.geuliumieum.server.auth.dto.PasswordResetRequest;
-import seg.work.geuliumieum.server.auth.dto.PasswordResetVerifyRequest;
-import seg.work.geuliumieum.server.auth.dto.RefreshRequest;
-import seg.work.geuliumieum.server.auth.dto.RegisterRequest;
-import seg.work.geuliumieum.server.auth.dto.ResendVerificationRequest;
-import seg.work.geuliumieum.server.auth.dto.TokenResponse;
-import seg.work.geuliumieum.server.auth.dto.VerifyEmailRequest;
+import seg.work.geuliumieum.server.auth.dto.request.FindIdRequest;
+import seg.work.geuliumieum.server.auth.dto.response.FindIdResponse;
+import seg.work.geuliumieum.server.auth.dto.request.LoginRequest;
+import seg.work.geuliumieum.server.auth.dto.request.LogoutRequest;
+import seg.work.geuliumieum.server.auth.dto.response.MessageResponse;
+import seg.work.geuliumieum.server.auth.dto.request.PasswordResetRequest;
+import seg.work.geuliumieum.server.auth.dto.request.PasswordResetVerifyRequest;
+import seg.work.geuliumieum.server.auth.dto.request.RefreshRequest;
+import seg.work.geuliumieum.server.auth.dto.request.RegisterRequest;
+import seg.work.geuliumieum.server.auth.dto.request.ResendVerificationRequest;
+import seg.work.geuliumieum.server.auth.dto.response.TokenResponse;
+import seg.work.geuliumieum.server.auth.dto.request.VerifyEmailRequest;
 import seg.work.geuliumieum.server.auth.service.AuthService;
-import seg.work.geuliumieum.server.user.dto.UserInfo;
+import seg.work.geuliumieum.server.common.dto.UserInfo;
 
 @RestController
 @RequiredArgsConstructor

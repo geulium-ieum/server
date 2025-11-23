@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import seg.work.geuliumieum.server.user.dto.UserInfo;
-import seg.work.geuliumieum.server.user.dto.UserMeResponse;
+import seg.work.geuliumieum.server.common.dto.UserInfo;
+import seg.work.geuliumieum.server.user.dto.response.UserMeResponse;
 import seg.work.geuliumieum.server.user.service.UserService;
 
 @RestController

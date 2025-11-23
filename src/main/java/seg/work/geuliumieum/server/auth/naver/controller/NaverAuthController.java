@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import seg.work.geuliumieum.server.auth.dto.TokenResponse;
+import seg.work.geuliumieum.server.auth.dto.response.TokenResponse;
 import seg.work.geuliumieum.server.auth.naver.dto.NaverLoginRequest;
 import seg.work.geuliumieum.server.auth.naver.service.NaverAuthService;
 

@@ -18,7 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import seg.work.geuliumieum.server.config.security.UserRole;
-import seg.work.geuliumieum.server.user.dto.UserInfo;
+import seg.work.geuliumieum.server.common.dto.UserInfo;
 import seg.work.geuliumieum.server.util.RedisUtil;
 
 @Component

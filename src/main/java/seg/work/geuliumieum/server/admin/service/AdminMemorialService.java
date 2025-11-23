@@ -3,7 +3,7 @@ package seg.work.geuliumieum.server.admin.service;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import seg.work.geuliumieum.server.admin.dto.MemorialWithStatsResponse;
+import seg.work.geuliumieum.server.admin.dto.response.MemorialWithStatsResponse;
 import seg.work.geuliumieum.server.admin.entity.MemorialWithStatsView;
 import seg.work.geuliumieum.server.admin.repository.MemorialWithStatsViewRepository;
 import seg.work.geuliumieum.server.common.exception.ApiException;

@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import seg.work.geuliumieum.server.auth.dto.TokenResponse;
+import seg.work.geuliumieum.server.auth.dto.response.TokenResponse;
 import seg.work.geuliumieum.server.auth.naver.dto.NaverLoginRequest;
 import seg.work.geuliumieum.server.auth.naver.dto.NaverUserInfo;
 import seg.work.geuliumieum.server.common.entity.User;

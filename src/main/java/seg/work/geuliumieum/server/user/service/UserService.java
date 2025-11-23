@@ -7,7 +7,7 @@ import seg.work.geuliumieum.server.common.entity.User;
 import seg.work.geuliumieum.server.common.exception.ApiException;
 import seg.work.geuliumieum.server.common.exception.ErrorCode;
 import seg.work.geuliumieum.server.common.repository.UserRepository;
-import seg.work.geuliumieum.server.user.dto.UserMeResponse;
+import seg.work.geuliumieum.server.user.dto.response.UserMeResponse;
 
 @Service
 @RequiredArgsConstructor

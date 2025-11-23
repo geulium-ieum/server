@@ -1,4 +1,4 @@
-package seg.work.geuliumieum.server.admin.dto;
+package seg.work.geuliumieum.server.admin.dto.response;
 
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;

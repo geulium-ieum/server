@@ -1,4 +1,4 @@
-package seg.work.geuliumieum.server.auth.dto;
+package seg.work.geuliumieum.server.auth.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

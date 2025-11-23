@@ -1,4 +1,4 @@
-package seg.work.geuliumieum.server.user.dto;
+package seg.work.geuliumieum.server.user.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.OffsetDateTime;

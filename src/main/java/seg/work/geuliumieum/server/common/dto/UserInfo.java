@@ -1,4 +1,4 @@
-package seg.work.geuliumieum.server.user.dto;
+package seg.work.geuliumieum.server.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
