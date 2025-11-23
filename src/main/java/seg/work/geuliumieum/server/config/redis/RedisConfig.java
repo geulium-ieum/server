@@ -10,6 +10,7 @@ import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import seg.work.geuliumieum.server.config.property.RedisConfigProperty;
 import seg.work.geuliumieum.server.util.RedisUtil;
@@ -59,5 +60,13 @@ public class RedisConfig {
         RedisUtil.setRedisTemplate(redisTemplate);
 
         return redisTemplate;
+    }
+
+    @Bean
+    public StringRedisTemplate stringRedisTemplate(@Qualifier("lettuceConnectionFactory") LettuceConnectionFactory lettuceConnectionFactory) {
+        StringRedisTemplate template = new StringRedisTemplate();
+        template.setConnectionFactory(lettuceConnectionFactory);
+        template.afterPropertiesSet();
+        return template;
     }
 }

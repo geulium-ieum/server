@@ -2,6 +2,7 @@ package seg.work.geuliumieum.server.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -9,18 +10,22 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.net.InetAddress;
+import java.time.LocalDateTime;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "audit_logs")
 @Comment("감사 로그 테이블 (관리자용)")
+@EntityListeners(AuditingEntityListener.class)
 public class AuditLog {
 
     @Id
@@ -53,5 +58,9 @@ public class AuditLog {
 
     @Column(name = "user_agent", length = Integer.MAX_VALUE)
     private String userAgent;
+
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
 }
