@@ -13,6 +13,10 @@ import seg.work.geuliumieum.server.admin.dto.response.AdminAuditLogResponse;
 import seg.work.geuliumieum.server.admin.service.AdminAuditLogService;
 import seg.work.geuliumieum.server.common.audit.AuditAction;
 
+/**
+ * 관리자용 감사 로그 조회 API.
+ * - action/targetType/userId/기간으로 필터링하고 페이지네이션하여 조회합니다.
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/audit-logs")
@@ -20,6 +24,16 @@ public class AdminAuditLogController {
 
     private final AdminAuditLogService adminAuditLogService;
 
+    /**
+     * 감사 로그 목록을 조회합니다.
+     *
+     * @param action 감사 액션 필터 (CREATE/UPDATE/DELETE/LOGIN/LOGOUT)
+     * @param targetType 대상 엔티티 타입(단순 클래스명) 필터
+     * @param userId 수행자 사용자 ID 필터
+     * @param from 시작 시각(포함)
+     * @param to 종료 시각(포함)
+     * @param pageable 페이지/정렬 정보
+     */
     @GetMapping
     public Page<AdminAuditLogResponse> list(
         @RequestParam(required = false) AuditAction action,
