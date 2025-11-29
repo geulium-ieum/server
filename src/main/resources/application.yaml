@@ -34,7 +34,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: true
+    show-sql: false
     open-in-view: false
     generate-ddl: false
     properties:
@@ -42,7 +42,7 @@ spring:
         naming:
           implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
           physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-        format_sql: true
+        format_sql: false
         jdbc:
           batch_size: 500
           order_inserts: true
