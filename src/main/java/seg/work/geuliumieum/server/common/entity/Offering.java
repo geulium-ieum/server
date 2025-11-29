@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +29,6 @@ public class Offering extends BaseEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Size(max = 20)
     @NotNull
     @Column(name = "offering_type", nullable = false, length = 20)
     private String offeringType;

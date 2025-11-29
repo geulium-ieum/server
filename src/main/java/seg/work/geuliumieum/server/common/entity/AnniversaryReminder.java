@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,12 +38,10 @@ public class AnniversaryReminder extends BaseEntity {
     @Column(name = "reminder_date", nullable = false)
     private LocalDate reminderDate;
 
-    @Size(max = 20)
     @NotNull
     @Column(name = "reminder_type", nullable = false, length = 20)
     private String reminderType;
 
-    @Size(max = 100)
     @Column(name = "custom_title", length = 100)
     private String customTitle;
 

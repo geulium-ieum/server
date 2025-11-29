@@ -6,7 +6,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -28,22 +27,18 @@ public class User extends BaseEntity {
     @Serial
     private static final long serialVersionUID = -8738931564074914885L;
 
-    @Size(max = 255)
     @NotNull
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Size(max = 255)
     @NotNull
     @Column(name = "pwd", nullable = false)
     private String pwd;
 
-    @Size(max = 100)
     @NotNull
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Size(max = 20)
     @Column(name = "phone", length = 20)
     private String phone;
 
@@ -54,12 +49,10 @@ public class User extends BaseEntity {
     @Column(name = "profile_photo_url", length = Integer.MAX_VALUE)
     private String profilePhotoUrl;
 
-    @Size(max = 20)
-    @Column(name = "provider")
+    @Column(name = "provider", length = 20)
     private String provider;
 
-    @Size(max = 50)
-    @Column(name = "provider_id")
+    @Column(name = "provider_id", length = 50)
     private String providerId;
 
     @ColumnDefault("true")

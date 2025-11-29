@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,12 +26,10 @@ public class Notification extends BaseEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Size(max = 30)
     @NotNull
     @Column(name = "type", nullable = false, length = 30)
     private String type;
 
-    @Size(max = 200)
     @NotNull
     @Column(name = "title", nullable = false, length = 200)
     private String title;
@@ -44,7 +41,6 @@ public class Notification extends BaseEntity {
     @Column(name = "related_id")
     private Long relatedId;
 
-    @Size(max = 50)
     @Column(name = "related_type", length = 50)
     private String relatedType;
 

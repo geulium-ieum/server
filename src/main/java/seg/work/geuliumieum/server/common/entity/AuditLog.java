@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.net.InetAddress;
 import java.time.LocalDateTime;
@@ -32,12 +31,10 @@ public class AuditLog extends BaseEntity {
     @Column(name = "user_id")
     private Long userId;
 
-    @Size(max = 50)
     @NotNull
     @Column(name = "action", nullable = false, length = 50)
     private String action;
 
-    @Size(max = 50)
     @NotNull
     @Column(name = "target_type", nullable = false, length = 50)
     private String targetType;

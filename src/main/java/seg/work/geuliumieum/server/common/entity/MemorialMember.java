@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.time.OffsetDateTime;
 import lombok.Getter;
@@ -32,11 +31,9 @@ public class MemorialMember extends BaseEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Size(max = 50)
     @Column(name = "relationship", length = 50)
     private String relationship;
 
-    @Size(max = 20)
     @ColumnDefault("'member'")
     @Column(name = "role", length = 20)
     private String role;

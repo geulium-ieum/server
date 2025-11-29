@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -27,7 +26,6 @@ public class Announcement extends BaseEntity {
     @Serial
     private static final long serialVersionUID = -2836064090891494476L;
 
-    @Size(max = 200)
     @NotNull
     @Column(name = "title", nullable = false, length = 200)
     private String title;

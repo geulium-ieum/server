@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -25,7 +24,6 @@ public class FamilyGroup extends BaseEntity {
     @Serial
     private static final long serialVersionUID = -4722470605566990886L;
 
-    @Size(max = 100)
     @NotNull
     @Column(name = "name", nullable = false, length = 100)
     private String name;

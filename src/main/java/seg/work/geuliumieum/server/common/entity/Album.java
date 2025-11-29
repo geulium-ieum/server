@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -29,7 +28,6 @@ public class Album extends BaseEntity {
     @Column(name = "memorial_id", nullable = false)
     private Long memorialId;
 
-    @Size(max = 200)
     @NotNull
     @Column(name = "title", nullable = false, length = 200)
     private String title;

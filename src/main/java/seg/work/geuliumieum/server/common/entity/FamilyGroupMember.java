@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.time.OffsetDateTime;
 import lombok.Getter;
@@ -28,12 +27,10 @@ public class FamilyGroupMember extends BaseEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Size(max = 20)
     @ColumnDefault("'member'")
     @Column(name = "role", length = 20)
     private String role;
 
-    @Size(max = 20)
     @ColumnDefault("'active'")
     @Column(name = "status", length = 20)
     private String status;

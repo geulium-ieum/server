@@ -4,12 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.Serial;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,7 +36,6 @@ public class Memorial extends BaseEntity {
     @Serial
     private static final long serialVersionUID = 3788369613051113882L;
 
-    @Size(max = 100)
     @NotNull
     @Column(name = "deceased_name", nullable = false, length = 100)
     private String deceasedName;
@@ -53,7 +48,6 @@ public class Memorial extends BaseEntity {
     @Column(name = "death_date", nullable = false)
     private LocalDate deathDate;
 
-    @Size(max = 255)
     @Column(name = "location")
     private String location;
 
@@ -63,12 +57,10 @@ public class Memorial extends BaseEntity {
     @Column(name = "photo_url", length = Integer.MAX_VALUE)
     private String photoUrl;
 
-    @Size(max = 20)
     @Enumerated(EnumType.STRING)
     @Column(name = "visibility", length = 20)
     private VISIBILITY visibility;
 
-    @Size(max = 20)
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 20)
     private STATUS status;
