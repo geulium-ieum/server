@@ -114,13 +114,13 @@ management:
 auth:
   email:
     verification:
-      url: http://localhost:3000/auth/verify-email
+      url: http://localhost:5173/auth/verify-email
       maxRetry: 5
       ttl: 10
       coolDown: 60
   password:
     reset:
-      url: http://localhost:3000/auth/password-reset
+      url: http://localhost:5173/auth/password-reset
       maxRetry: 5
       ttl: 10
       coolDown: 60
