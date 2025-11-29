@@ -1,6 +1,8 @@
 package seg.work.geuliumieum.server.admin.service;
 
 import io.micrometer.core.instrument.MeterRegistry;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Range;
@@ -10,9 +12,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import seg.work.geuliumieum.server.admin.dto.response.DlqReprocessResponse;
 import seg.work.geuliumieum.server.config.property.AuditQueueProperties;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Service

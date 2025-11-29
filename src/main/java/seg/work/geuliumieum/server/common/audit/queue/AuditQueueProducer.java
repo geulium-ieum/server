@@ -3,7 +3,6 @@ package seg.work.geuliumieum.server.common.audit.queue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import java.net.InetAddress;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,17 +12,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.RecordId;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import seg.work.geuliumieum.server.common.audit.AuditAction;
 import seg.work.geuliumieum.server.common.audit.AuditEvent;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
 import seg.work.geuliumieum.server.config.property.AuditQueueProperties;
 import seg.work.geuliumieum.server.config.security.CustomUserDetails;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @Slf4j
 @Component

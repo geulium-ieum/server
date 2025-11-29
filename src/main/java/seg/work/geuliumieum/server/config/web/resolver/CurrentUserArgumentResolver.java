@@ -11,8 +11,8 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import seg.work.geuliumieum.server.config.security.jwt.JwtTokenProvider;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
+import seg.work.geuliumieum.server.config.security.jwt.JwtTokenProvider;
 
 @Component
 public record CurrentUserArgumentResolver(JwtTokenProvider jwtTokenProvider) implements HandlerMethodArgumentResolver {
