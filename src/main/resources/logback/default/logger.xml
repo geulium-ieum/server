@@ -1,18 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <included>
-    <logger name="jdbc" level="OFF"/>
-    <logger name="jdbc.sqlonly" level="OFF"/>
-    <logger name="jdbc.audit" level="OFF"/>
-    <logger name="jdbc.resultset" level="OFF"/>
-    <logger name="jdbc.connection" level="OFF"/>
+  <!-- Common -->
+  <logger name="org.springframework.web" level="INFO"/>
+  <logger name="com.ulisesbocchio.jasyptspringboot" level="OFF"/>
 
-    <logger name="org.hibernate.loader" level="OFF" />
-    <logger name="org.hibernate.hql.internal" level="OFF" />
-    <logger name="org.hibernate.engine.internal" level="OFF" />
-    <logger name="org.hibernate.engine.loading.internal" level="OFF" />
-    <logger name="org.hibernate.internal.util.EntityPrinter" level="OFF" />
-    <logger name="org.hibernate.orm.connections.pooling" level="OFF"/>
+  <!-- hibernate -->
+  <logger name="org.hibernate.SQL" level="OFF"/>
+  <logger name="org.hibernate.type" level="INFO"/>
+  <logger name="org.hibernate.loader" level="OFF"/>
+  <logger name="org.hibernate.hql.internal" level="OFF"/>
+  <logger name="org.hibernate.engine.internal" level="OFF"/>
+  <logger name="org.hibernate.engine.loading.internal" level="OFF"/>
+  <logger name="org.hibernate.internal.util.EntityPrinter" level="OFF"/>
+  <logger name="org.hibernate.orm.connections.pooling" level="OFF"/>
 
-    <logger name="com.ulisesbocchio.jasyptspringboot" level="OFF"/>
+  <!-- redis -->
+  <logger name="io.lettuce.core.RedisChannelHandler" level="ERROR"/>
+  <logger name="org.springframework.data.redis.listener.RedisMessageListenerContainer" level="ERROR"/>
+
+  <!-- jdbc -->
+  <logger name="jdbc" level="OFF"/>
+  <logger name="jdbc.audit" level="OFF"/>
+  <logger name="jdbc.sqlonly" level="OFF"/>
+  <logger name="jdbc.sqltiming" level="OFF"/>
+  <logger name="jdbc.resultset" level="OFF"/>
+  <logger name="jdbc.connection" level="OFF"/>
+  <logger name="jdbc.resultsettable" level="OFF"/>
 </included>
