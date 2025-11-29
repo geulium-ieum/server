@@ -7,6 +7,8 @@ import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Counter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.AsyncTaskExecutor;
@@ -33,6 +35,11 @@ public class AuditQueueConfig {
     private final StringRedisTemplate stringRedisTemplate;
     private final AuditLogRepository auditLogRepository;
     private final ObjectMapper objectMapper;
+    private final MeterRegistry meterRegistry;
+
+    private Counter ctrConsumed() { return meterRegistry.counter("audit.stream.consumed"); }
+    private Counter ctrSaved() { return meterRegistry.counter("audit.stream.saved"); }
+    private Counter ctrFailed() { return meterRegistry.counter("audit.stream.failed"); }
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public StreamMessageListenerContainer<String, MapRecord<String, String, String>> auditStreamContainer(
@@ -102,6 +109,8 @@ public class AuditQueueConfig {
     }
 
     private void handleMessageWithAck(AuditQueueProperties props, MapRecord<String, String, String> message) {
+        // 수신 카운트(원시 수신 기준)
+        ctrConsumed().increment();
         String json = message.getValue().get("json");
         if (json == null || json.isBlank()) {
             // 더미 메시지 등 비정상 레코드. 운영 소음 방지를 위해 DEBUG로만 기록.
@@ -109,6 +118,12 @@ public class AuditQueueConfig {
             // json이 없으면 재시도 가치가 낮으므로 ACK 처리하여 누적 방지
             try {
                 stringRedisTemplate.opsForStream().acknowledge(props.getStreamKey(), props.getGroup(), message.getId());
+                // 비정상 레코드는 즉시 삭제하여 누적 방지
+                try {
+                    stringRedisTemplate.opsForStream().delete(props.getStreamKey(), message.getId());
+                } catch (Exception delEx) {
+                    log.debug("XDEL failed for malformed message id={}: {}", message.getId(), delEx.getMessage());
+                }
             } catch (Exception ex) {
                 log.debug("ACK failed for malformed message id={}: {}", message.getId(), ex.getMessage());
             }
@@ -150,12 +165,20 @@ public class AuditQueueConfig {
             // 저장 성공 시에만 ACK
             try {
                 stringRedisTemplate.opsForStream().acknowledge(props.getStreamKey(), props.getGroup(), message.getId());
+                // 저장 성공한 레코드는 즉시 삭제하여 Stream 누적 방지
+                try {
+                    stringRedisTemplate.opsForStream().delete(props.getStreamKey(), message.getId());
+                } catch (Exception delEx) {
+                    log.debug("XDEL failed for message id={}: {}", message.getId(), delEx.getMessage());
+                }
+                ctrSaved().increment();
             } catch (Exception ex) {
                 log.debug("ACK failed for message id={}: {}", message.getId(), ex.getMessage());
             }
         } catch (Exception e) {
             // 저장 실패 등 예외는 ACK하지 않아 재처리 대상(pending)으로 남긴다
             log.warn("Failed to consume audit message id={}: {}", message.getId(), e.getMessage());
+            ctrFailed().increment();
         }
     }
 
