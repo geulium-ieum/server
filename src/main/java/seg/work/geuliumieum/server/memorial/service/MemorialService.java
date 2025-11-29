@@ -1,9 +1,11 @@
 package seg.work.geuliumieum.server.memorial.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
 import seg.work.geuliumieum.server.common.entity.Memorial;
 import seg.work.geuliumieum.server.common.exception.ApiException;
@@ -12,6 +14,7 @@ import seg.work.geuliumieum.server.common.repository.MemorialRepository;
 import seg.work.geuliumieum.server.memorial.dto.request.RegisterRequest;
 import seg.work.geuliumieum.server.memorial.dto.response.MemorialResponse;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemorialService {
@@ -28,6 +31,7 @@ public class MemorialService {
         return memorialRepository.findAllBy(pageable).map(MemorialResponse::from);
     }
 
+    @Transactional
     public void createMemorial(UserInfo userInfo, RegisterRequest request) {
         Memorial memorial = request.toEntity();
         memorialRepository.save(memorial);
