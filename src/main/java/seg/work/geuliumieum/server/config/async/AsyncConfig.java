@@ -40,7 +40,9 @@ class LoggingTaskDecorator implements TaskDecorator {
         Map<String, String> callerThreadContext = MDC.getCopyOfContextMap();
 
         return () -> {
-            callerThreadContext.forEach(MDC::put);
+            if (callerThreadContext != null) {
+                callerThreadContext.forEach(MDC::put);
+            }
             runnable.run();
         };
     }
