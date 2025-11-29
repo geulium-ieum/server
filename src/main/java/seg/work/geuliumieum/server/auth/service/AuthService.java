@@ -97,7 +97,8 @@ public class AuthService {
         RedisUtil.setWithExpiryMin(EV_CODE_PREFIX + email, code, verificationTtlMinutes);
         RedisUtil.delete(EV_TRIES_PREFIX + email);
 
-        mailClient.sendVerificationEmail(email, user.getName(), emailVerificationUrl, code, verificationTtlMinutes);
+        String verificationUrl = emailVerificationUrl + "?code=" + code;
+        mailClient.sendVerificationEmail(email, user.getName(), verificationUrl, code, verificationTtlMinutes);
 
         return new MessageResponse("인증 이메일이 발송되었습니다. 계정을 활성화하려면 이메일 인증을 완료해 주세요.");
     }
@@ -157,7 +158,8 @@ public class AuthService {
         RedisUtil.delete(EV_TRIES_PREFIX + email);
         RedisUtil.setWithExpirySec(cooldownKey, "1", verificationResendCooldownSeconds);
 
-        mailClient.sendVerificationEmail(email, user.getName(), emailVerificationUrl, code, verificationTtlMinutes);
+        String verificationUrl = emailVerificationUrl + "?code=" + code;
+        mailClient.sendVerificationEmail(email, user.getName(), verificationUrl, code, verificationTtlMinutes);
     }
 
     public TokenResponse login(LoginRequest request) {
