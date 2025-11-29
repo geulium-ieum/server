@@ -1,10 +1,14 @@
 package seg.work.geuliumieum.server.config.async;
 
+import java.util.Map;
+import lombok.NonNull;
+import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.AsyncTaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.core.task.TaskDecorator;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
 @EnableAsync
@@ -22,7 +26,22 @@ public class AsyncConfig {
         executor.setAllowCoreThreadTimeOut(true);
         executor.setWaitForTasksToCompleteOnShutdown(true);
         executor.setAwaitTerminationSeconds(10);
+        executor.setTaskDecorator(new LoggingTaskDecorator());
         executor.initialize();
         return new DelegatingSecurityContextAsyncTaskExecutor(executor);
+    }
+}
+
+class LoggingTaskDecorator implements TaskDecorator {
+
+    @Override
+    @NonNull
+    public Runnable decorate(@NonNull Runnable runnable) {
+        Map<String, String> callerThreadContext = MDC.getCopyOfContextMap();
+
+        return () -> {
+            callerThreadContext.forEach(MDC::put);
+            runnable.run();
+        };
     }
 }

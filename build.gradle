@@ -65,6 +65,12 @@ dependencies {
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     implementation("com.github.loki4j:loki-logback-appender:1.6.0")
 
+    // documentation (Swagger/OpenAPI)
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14")
+
+    // aws s3 (v2)
+    implementation("software.amazon.awssdk:s3:2.25.64")
+
     // jwt
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
@@ -83,3 +89,4 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
