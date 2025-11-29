@@ -85,14 +85,20 @@ public class AuditQueueProducer {
 
     private String extractClientIp() {
         HttpServletRequest request = currentRequest();
-        if (request == null) return null;
+        if (request == null) {
+            return null;
+        }
         String ip = firstNonEmpty(
             request.getHeader("X-Forwarded-For"),
             request.getHeader("X-Real-IP"),
             request.getRemoteAddr()
         );
-        if (ip == null) return null;
-        if (ip.contains(",")) ip = ip.split(",")[0].trim();
+        if (ip == null) {
+            return null;
+        }
+        if (ip.contains(",")) {
+            ip = ip.split(",")[0].trim();
+        }
         return ip;
     }
 
@@ -105,7 +111,9 @@ public class AuditQueueProducer {
     }
 
     private String firstNonEmpty(String... values) {
-        if (values == null) return null;
+        if (values == null) {
+            return null;
+        }
         for (String v : values) {
             if (v != null && !v.isBlank() && !"unknown".equalsIgnoreCase(v)) {
                 return v;

@@ -13,8 +13,7 @@ import seg.work.geuliumieum.server.admin.dto.response.DlqReprocessResponse;
 import seg.work.geuliumieum.server.admin.service.AdminAuditDlqService;
 
 /**
- * 감사 DLQ(Dead Letter Queue) 운영 API.
- * - DLQ 길이 확인, 재처리(메인 스트림 재투입), 퍼지(삭제) 기능을 제공합니다. SUPER_ADMIN 전용입니다.
+ * 감사 DLQ(Dead Letter Queue) 운영 API. - DLQ 길이 확인, 재처리(메인 스트림 재투입), 퍼지(삭제) 기능을 제공합니다. SUPER_ADMIN 전용입니다.
  */
 @RestController
 @RequiredArgsConstructor
@@ -23,14 +22,18 @@ public class AdminAuditDlqController {
 
     private final AdminAuditDlqService dlqService;
 
-    /** DLQ 현재 길이(적재된 레코드 수)를 조회합니다. */
+    /**
+     * DLQ 현재 길이(적재된 레코드 수)를 조회합니다.
+     */
     @GetMapping("/size")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<Long> size() {
         return ResponseEntity.ok(dlqService.size());
     }
 
-    /** DLQ 상위 N건을 메인 스트림으로 재투입하고, 성공한 건은 DLQ에서 삭제합니다. */
+    /**
+     * DLQ 상위 N건을 메인 스트림으로 재투입하고, 성공한 건은 DLQ에서 삭제합니다.
+     */
     @PostMapping("/reprocess")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<DlqReprocessResponse> reprocess(@RequestParam(name = "max", defaultValue = "100") int max) {
@@ -38,7 +41,9 @@ public class AdminAuditDlqController {
         return ResponseEntity.ok(res);
     }
 
-    /** DLQ를 전체 또는 부분 삭제합니다. max 미지정 시 전체 삭제합니다. */
+    /**
+     * DLQ를 전체 또는 부분 삭제합니다. max 미지정 시 전체 삭제합니다.
+     */
     @DeleteMapping("/purge")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<Long> purge(@RequestParam(name = "max", required = false) Integer max) {

@@ -53,7 +53,7 @@ public class MailClient {
         Map<String, Object> vars = new HashMap<>();
         vars.put("name", name);
         vars.put("company", "그리움 이음");
-            vars.put("reset_url", resetUrl);
+        vars.put("reset_url", resetUrl);
         vars.put("reset_code", code);
         vars.put("expiry_minutes", expiryMinutes);
         body.put("variables", vars);

@@ -39,10 +39,21 @@ public class AuditQueueConfig {
     private final ObjectMapper objectMapper;
     private final MeterRegistry meterRegistry;
 
-    private Counter ctrConsumed() { return meterRegistry.counter("audit.stream.consumed"); }
-    private Counter ctrSaved() { return meterRegistry.counter("audit.stream.saved"); }
-    private Counter ctrFailed() { return meterRegistry.counter("audit.stream.failed"); }
-    private Timer timerHandle() { return meterRegistry.timer("audit.stream.handle"); }
+    private Counter ctrConsumed() {
+        return meterRegistry.counter("audit.stream.consumed");
+    }
+
+    private Counter ctrSaved() {
+        return meterRegistry.counter("audit.stream.saved");
+    }
+
+    private Counter ctrFailed() {
+        return meterRegistry.counter("audit.stream.failed");
+    }
+
+    private Timer timerHandle() {
+        return meterRegistry.timer("audit.stream.handle");
+    }
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public StreamMessageListenerContainer<String, MapRecord<String, String, String>> auditStreamContainer(
@@ -141,7 +152,8 @@ public class AuditQueueConfig {
                     long lagMs = java.time.Duration.between(m.getCreatedAt(), Instant.now()).toMillis();
                     meterRegistry.summary("audit.stream.lag.ms").record(lagMs);
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             AuditLog entity = new AuditLog();
             entity.setAction(m.getAction().name());
             entity.setTargetType(m.getTargetType());
@@ -195,7 +207,8 @@ public class AuditQueueConfig {
             long elapsed = System.nanoTime() - startNs;
             try {
                 timerHandle().record(Duration.ofNanos(elapsed));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
     }
 

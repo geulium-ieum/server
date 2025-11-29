@@ -13,6 +13,7 @@ import seg.work.geuliumieum.server.common.audit.AuditAction;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuditQueueMessage {
+
     private AuditAction action;
     private String targetType; // 엔티티 단순 클래스명
     private Long targetId;

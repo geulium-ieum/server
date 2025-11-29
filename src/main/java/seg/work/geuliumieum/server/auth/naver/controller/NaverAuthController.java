@@ -14,8 +14,7 @@ import seg.work.geuliumieum.server.auth.naver.dto.NaverLoginRequest;
 import seg.work.geuliumieum.server.auth.naver.service.NaverAuthService;
 
 /**
- * 네이버 소셜 로그인 API.
- * - 네이버 인가코드/토큰 정보를 받아 로그인 처리 후 애플리케이션 토큰을 발급합니다.
+ * 네이버 소셜 로그인 API. - 네이버 인가코드/토큰 정보를 받아 로그인 처리 후 애플리케이션 토큰을 발급합니다.
  */
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +24,9 @@ public class NaverAuthController {
 
     private final NaverAuthService naverAuthService;
 
-    /** 네이버 계정으로 로그인하고 Access/Refresh 토큰을 발급합니다. */
+    /**
+     * 네이버 계정으로 로그인하고 Access/Refresh 토큰을 발급합니다.
+     */
     @Operation(summary = "네이버 로그인", description = "네이버 인가코드/토큰 정보를 제출하여 로그인하고 JWT를 발급합니다.")
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@Valid @RequestBody NaverLoginRequest request) {

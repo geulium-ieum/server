@@ -114,7 +114,9 @@ public class AuditRepositoryAspect {
     }
 
     private String resolveType(Object entity) {
-        if (entity == null) return "Unknown";
+        if (entity == null) {
+            return "Unknown";
+        }
         Class<?> clazz = entity.getClass();
         String simple = clazz.getSimpleName();
         if (simple.contains("$$")) {

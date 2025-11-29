@@ -9,6 +9,7 @@ import seg.work.geuliumieum.server.common.entity.AuditLog;
 @Getter
 @Builder
 public class AdminAuditLogResponse {
+
     private Long id;
     private LocalDateTime createdAt;
     private String action;

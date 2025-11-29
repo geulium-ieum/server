@@ -12,6 +12,7 @@ public class NaverUserInfo {
 
     @Data
     public static class Response {
+
         private String id;
         private String email;
         private String name;

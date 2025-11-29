@@ -13,6 +13,7 @@ import seg.work.geuliumieum.server.memorial.constant.VISIBILITY;
 @Builder
 @Schema(name = "MemorialResponse", description = "추모관 조회 응답")
 public class MemorialResponse {
+
     @Schema(description = "추모관 ID", example = "1001")
     private Long id;
     @Schema(description = "고인명", example = "홍길동")

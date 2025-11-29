@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class AuditEvent {
+
     private final AuditAction action;
     private final String targetType;
     private final Long targetId;

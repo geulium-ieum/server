@@ -88,7 +88,9 @@ public class AdminAuditDlqService {
                     RecordId[] idArray = idsToDelete.toArray(RecordId[]::new);
                     Long delCount = stringRedisTemplate.opsForStream()
                         .delete(props.getDlqStreamKey(), idArray);
-                    if (delCount != null) deleted = delCount.intValue();
+                    if (delCount != null) {
+                        deleted = delCount.intValue();
+                    }
                 } catch (Exception ex) {
                     log.warn("DLQ delete failed: {}", ex.getMessage());
                 }
@@ -129,7 +131,9 @@ public class AdminAuditDlqService {
             // 부분 퍼지: 앞쪽부터 최대 max개 아이디 조회 후 XDEL
             List<MapRecord<String, Object, Object>> records = stringRedisTemplate.opsForStream()
                 .range(props.getDlqStreamKey(), Range.unbounded());
-            if (records == null || records.isEmpty()) return 0L;
+            if (records == null || records.isEmpty()) {
+                return 0L;
+            }
 
             if (records.size() > max) {
                 records = records.subList(0, max);

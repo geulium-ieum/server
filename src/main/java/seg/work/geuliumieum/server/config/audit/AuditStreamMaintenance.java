@@ -28,8 +28,13 @@ public class AuditStreamMaintenance {
     private final AtomicLong gaugePendingCount = new AtomicLong(0);
     private final AtomicLong gaugePendingMaxIdleMs = new AtomicLong(0);
 
-    private Counter ctrAutoClaimed() { return meterRegistry.counter("audit.stream.autoclaimed"); }
-    private Counter ctrDlqMoved() { return meterRegistry.counter("audit.stream.dlq.moved"); }
+    private Counter ctrAutoClaimed() {
+        return meterRegistry.counter("audit.stream.autoclaimed");
+    }
+
+    private Counter ctrDlqMoved() {
+        return meterRegistry.counter("audit.stream.dlq.moved");
+    }
 
     // 게이지 등록 (lazy-init로 중복 등록 방지)
     private volatile boolean gaugesRegistered = false;
@@ -53,13 +58,17 @@ public class AuditStreamMaintenance {
         ensureGauges();
         try {
             Long len = stringRedisTemplate.opsForStream().size(props.getStreamKey());
-            if (len != null) gaugeStreamLen.set(len);
+            if (len != null) {
+                gaugeStreamLen.set(len);
+            }
         } catch (Exception e) {
             log.debug("Failed to get stream length: {}", e.getMessage());
         }
         try {
             Long len = stringRedisTemplate.opsForStream().size(props.getDlqStreamKey());
-            if (len != null) gaugeDlqLen.set(len);
+            if (len != null) {
+                gaugeDlqLen.set(len);
+            }
         } catch (Exception e) {
             log.debug("Failed to get dlq length: {}", e.getMessage());
         }
@@ -81,7 +90,9 @@ public class AuditStreamMaintenance {
 
     @Scheduled(fixedDelayString = "${audit.queue.trim-interval-ms:300000}")
     public void trimStreams() {
-        if (!props.isMaintenanceEnabled()) return;
+        if (!props.isMaintenanceEnabled()) {
+            return;
+        }
         try {
             stringRedisTemplate.opsForStream().trim(props.getStreamKey(), props.getTrimMaxLen(), props.isTrimApproximate());
         } catch (Exception e) {
@@ -95,13 +106,14 @@ public class AuditStreamMaintenance {
     }
 
     /**
-     * XAUTOCLAIM 대안: XPENDING(IDLE) + XCLAIM 저수준 명령으로 장기 pending 메시지 회수 처리.
-     * - idle > autoClaimIdleMs 인 항목을 조회하고, maintenance 컨슈머로 XCLAIM 하여 소유권을 이전.
-     * - dlqEnabled=true 이면 DLQ 스트림으로 사본을 남긴 뒤, 원본을 XACK + XDEL 처리.
+     * XAUTOCLAIM 대안: XPENDING(IDLE) + XCLAIM 저수준 명령으로 장기 pending 메시지 회수 처리. - idle > autoClaimIdleMs 인 항목을 조회하고, maintenance 컨슈머로 XCLAIM 하여 소유권을 이전. - dlqEnabled=true 이면 DLQ 스트림으로
+     * 사본을 남긴 뒤, 원본을 XACK + XDEL 처리.
      */
     @Scheduled(fixedDelayString = "${audit.queue.auto-claim-interval-ms:60000}")
     public void reclaimPendingWithXclaim() {
-        if (!props.isMaintenanceEnabled()) return;
+        if (!props.isMaintenanceEnabled()) {
+            return;
+        }
 
         try {
             stringRedisTemplate.execute((RedisCallback<Void>) connection -> {
@@ -147,7 +159,9 @@ public class AuditStreamMaintenance {
                 }
             }
         }
-        if (ids.isEmpty()) return;
+        if (ids.isEmpty()) {
+            return;
+        }
 
         // XCLAIM key group consumer min-idle-time id [id ...]
         java.util.List<byte[]> args = new java.util.ArrayList<>();
@@ -155,7 +169,9 @@ public class AuditStreamMaintenance {
         args.add(group);
         args.add(b("maintenance"));
         args.add(b(Long.toString(idleMs)));
-        for (String id : ids) args.add(b(id));
+        for (String id : ids) {
+            args.add(b(id));
+        }
 
         Object claimResult = connection.execute("XCLAIM", args.toArray(new byte[0][]));
         if (!(claimResult instanceof Iterable<?> claimed)) {
@@ -177,16 +193,22 @@ public class AuditStreamMaintenance {
                         java.util.Iterator<?> fvIt = fvPairs.iterator();
                         while (fvIt.hasNext()) {
                             Object f = fvIt.next();
-                            if (!fvIt.hasNext()) break;
+                            if (!fvIt.hasNext()) {
+                                break;
+                            }
                             Object v = fvIt.next();
                             String fs = s(f);
                             String vs = s(v);
-                            if (fs != null) fields.put(fs, vs);
+                            if (fs != null) {
+                                fields.put(fs, vs);
+                            }
                         }
                     }
                 }
             }
-            if (id == null) continue;
+            if (id == null) {
+                continue;
+            }
 
             try {
                 if (props.isDlqEnabled()) {
@@ -212,10 +234,17 @@ public class AuditStreamMaintenance {
         }
     }
 
-    private static byte[] b(String s) { return s.getBytes(StandardCharsets.UTF_8); }
+    private static byte[] b(String s) {
+        return s.getBytes(StandardCharsets.UTF_8);
+    }
+
     private static String s(Object o) {
-        if (o == null) return null;
-        if (o instanceof byte[] ba) return new String(ba, StandardCharsets.UTF_8);
+        if (o == null) {
+            return null;
+        }
+        if (o instanceof byte[] ba) {
+            return new String(ba, StandardCharsets.UTF_8);
+        }
         return o.toString();
     }
 }
