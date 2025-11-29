@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import seg.work.geuliumieum.server.auth.dto.response.TokenResponse;
 import seg.work.geuliumieum.server.auth.naver.dto.NaverLoginRequest;
 import seg.work.geuliumieum.server.auth.naver.service.NaverAuthService;
@@ -18,11 +20,13 @@ import seg.work.geuliumieum.server.auth.naver.service.NaverAuthService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth/naver")
+@Tag(name = "Naver Auth", description = "네이버 계정으로 로그인하여 애플리케이션 토큰을 발급")
 public class NaverAuthController {
 
     private final NaverAuthService naverAuthService;
 
     /** 네이버 계정으로 로그인하고 Access/Refresh 토큰을 발급합니다. */
+    @Operation(summary = "네이버 로그인", description = "네이버 인가코드/토큰 정보를 제출하여 로그인하고 JWT를 발급합니다.")
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@Valid @RequestBody NaverLoginRequest request) {
         TokenResponse tokens = naverAuthService.login(request);

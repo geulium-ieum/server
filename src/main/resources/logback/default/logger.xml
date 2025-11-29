@@ -15,6 +15,9 @@
   <logger name="org.hibernate.internal.util.EntityPrinter" level="OFF"/>
   <logger name="org.hibernate.orm.connections.pooling" level="OFF"/>
 
+  <!-- swagger -->
+  <logger name="org.springdoc.core.events.SpringDocAppInitializer" level="ERROR"/>
+
   <!-- redis -->
   <logger name="io.lettuce.core.RedisChannelHandler" level="ERROR"/>
   <logger name="org.springframework.data.redis.listener.RedisMessageListenerContainer" level="ERROR"/>
