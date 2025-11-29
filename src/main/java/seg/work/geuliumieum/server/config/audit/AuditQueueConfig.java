@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Duration;
+import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Timer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.AsyncTaskExecutor;
@@ -40,6 +42,7 @@ public class AuditQueueConfig {
     private Counter ctrConsumed() { return meterRegistry.counter("audit.stream.consumed"); }
     private Counter ctrSaved() { return meterRegistry.counter("audit.stream.saved"); }
     private Counter ctrFailed() { return meterRegistry.counter("audit.stream.failed"); }
+    private Timer timerHandle() { return meterRegistry.timer("audit.stream.handle"); }
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public StreamMessageListenerContainer<String, MapRecord<String, String, String>> auditStreamContainer(
@@ -111,6 +114,7 @@ public class AuditQueueConfig {
     private void handleMessageWithAck(AuditQueueProperties props, MapRecord<String, String, String> message) {
         // 수신 카운트(원시 수신 기준)
         ctrConsumed().increment();
+        long startNs = System.nanoTime();
         String json = message.getValue().get("json");
         if (json == null || json.isBlank()) {
             // 더미 메시지 등 비정상 레코드. 운영 소음 방지를 위해 DEBUG로만 기록.
@@ -131,6 +135,13 @@ public class AuditQueueConfig {
         }
         try {
             AuditQueueMessage m = objectMapper.readValue(json, AuditQueueMessage.class);
+            // lag(ms) 측정: 메시지 생성 시각 → 현재까지
+            try {
+                if (m.getCreatedAt() != null) {
+                    long lagMs = java.time.Duration.between(m.getCreatedAt(), Instant.now()).toMillis();
+                    meterRegistry.summary("audit.stream.lag.ms").record(lagMs);
+                }
+            } catch (Exception ignored) {}
             AuditLog entity = new AuditLog();
             entity.setAction(m.getAction().name());
             entity.setTargetType(m.getTargetType());
@@ -179,6 +190,12 @@ public class AuditQueueConfig {
             // 저장 실패 등 예외는 ACK하지 않아 재처리 대상(pending)으로 남긴다
             log.warn("Failed to consume audit message id={}: {}", message.getId(), e.getMessage());
             ctrFailed().increment();
+        } finally {
+            // 처리 시간 측정
+            long elapsed = System.nanoTime() - startNs;
+            try {
+                timerHandle().record(Duration.ofNanos(elapsed));
+            } catch (Exception ignored) {}
         }
     }
 
