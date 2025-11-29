@@ -20,7 +20,7 @@ public class AuditRepositoryAspect {
     private final ApplicationEventPublisher eventPublisher;
 
     // save(S entity)
-    @AfterReturning(pointcut = "execution(* seg.work.geuliumieum.server.common.repository.*.save(..))", returning = "ret")
+    @AfterReturning(pointcut = "this(seg.work.geuliumieum.server.common.repository.BaseRepository+) && execution(* save(..))", returning = "ret")
     public void afterSaveOne(JoinPoint jp, Object ret) {
         if (ret == null) {
             return;
@@ -29,7 +29,7 @@ public class AuditRepositoryAspect {
     }
 
     // saveAll(Iterable<S> entities)
-    @AfterReturning(pointcut = "execution(* seg.work.geuliumieum.server.common.repository.*.saveAll(..))", returning = "ret")
+    @AfterReturning(pointcut = "this(seg.work.geuliumieum.server.common.repository.BaseRepository+) && execution(* saveAll(..))", returning = "ret")
     public void afterSaveAll(JoinPoint jp, Object ret) {
         Object arg = jp.getArgs()[0];
         if (!(arg instanceof Iterable<?> iterable)) {
@@ -45,9 +45,7 @@ public class AuditRepositoryAspect {
     }
 
     // delete, deleteById
-    @AfterReturning("execution(* seg.work.geuliumieum.server.common.repository.*.delete(..)) || " +
-        "execution(* seg.work.geuliumieum.server.common.repository.*.deleteById(..)) || " +
-        "execution(* seg.work.geuliumieum.server.common.repository.*.deleteAll(..))")
+    @AfterReturning("this(seg.work.geuliumieum.server.common.repository.BaseRepository+) && (execution(* delete(..)) || execution(* deleteById(..)) || execution(* deleteAll(..)) )")
     public void afterDelete(JoinPoint jp) {
         Object[] args = jp.getArgs();
         if (args == null || args.length == 0) {
@@ -56,19 +54,26 @@ public class AuditRepositoryAspect {
         Object first = args[0];
         if (first instanceof Iterable<?> it) {
             for (Object e : it) {
-                publishForEntity(e, false, AuditAction.DELETE);
+                publishForEntity(e, AuditAction.DELETE);
             }
         } else {
-            publishForEntity(first, false, AuditAction.DELETE);
+            publishForEntity(first, AuditAction.DELETE);
         }
     }
 
     private void publishForEntity(Object entity, boolean create) {
-        publishForEntity(entity, create, create ? AuditAction.CREATE : AuditAction.UPDATE);
+        publishForEntity(entity, create ? AuditAction.CREATE : AuditAction.UPDATE);
     }
 
-    private void publishForEntity(Object entity, boolean create, AuditAction action) {
+    private void publishForEntity(Object entity, AuditAction action) {
         String type = resolveType(entity);
+        // Avoid auditing the audit log itself to prevent infinite loops
+        if ("AuditLog".equals(type)) {
+            if (log.isDebugEnabled()) {
+                log.debug("[AUDIT] skip publishing for type=AuditLog to avoid recursion");
+            }
+            return;
+        }
         Long id = extractId(entity);
         AuditEvent evt = AuditEvent.builder()
             .action(action)
@@ -77,6 +82,9 @@ public class AuditRepositoryAspect {
             .build();
         try {
             eventPublisher.publishEvent(evt);
+            if (log.isDebugEnabled()) {
+                log.debug("[AUDIT] published event action={} type={} id={}", action, type, id);
+            }
         } catch (Exception e) {
             log.warn("Failed to publish audit event: {} {} id={} cause={}", action, type, id, e.getMessage());
         }

@@ -34,21 +34,20 @@ public class AuditQueueConfig {
     private final AuditLogRepository auditLogRepository;
     private final ObjectMapper objectMapper;
 
-    @Bean
+    @Bean(initMethod = "start", destroyMethod = "stop")
     public StreamMessageListenerContainer<String, MapRecord<String, String, String>> auditStreamContainer(
         AsyncTaskExecutor auditAsyncExecutor,
         AuditQueueProperties props
     ) {
-        @SuppressWarnings({"rawtypes", "unchecked"})
         StreamMessageListenerContainerOptions<String, MapRecord<String, String, String>> options =
-            (StreamMessageListenerContainerOptions) StreamMessageListenerContainerOptions.builder()
+            StreamMessageListenerContainerOptions.builder()
                 .batchSize(props.getBatchSize())
                 .executor(auditAsyncExecutor)
                 .pollTimeout(Duration.ofMillis(props.getPollTimeoutMs()))
-                .targetType(MapRecord.class)
                 .errorHandler(shutdownTolerantErrorHandler())
                 .build();
 
+        assert stringRedisTemplate.getConnectionFactory() != null;
         return StreamMessageListenerContainer.create(stringRedisTemplate.getConnectionFactory(), options);
     }
 
@@ -58,17 +57,32 @@ public class AuditQueueConfig {
         AuditQueueProperties props
     ) {
         ensureGroup(props);
-        return auditStreamContainer.receiveAutoAck(
+        // 수동 ACK 모드로 변경하여, DB 저장이 성공한 경우에만 ACK 하도록 함.
+        return auditStreamContainer.receive(
             Consumer.from(props.getGroup(), consumerName(props)),
             StreamOffset.create(props.getStreamKey(), ReadOffset.lastConsumed()),
-            this::handleMessage
+            message -> handleMessageWithAck(props, message)
         );
     }
 
     private void ensureGroup(AuditQueueProperties props) {
+        // 스트림 미존재 환경에서 XGROUP CREATE가 실패할 수 있으므로 대비한다.
+        // 1) 스트림이 없으면 더미 레코드로 생성한 뒤, 그룹 오프셋을 최신($)으로 생성하여 더미가 소비되지 않도록 한다.
+        // 2) 스트림이 이미 있으면 0-0부터 소비할 수 있도록 그룹을 생성한다.
         try {
-            // 그룹이 없으면 생성, 이미 있으면 예외 무시
-            stringRedisTemplate.opsForStream().createGroup(props.getStreamKey(), ReadOffset.from("0-0"), props.getGroup());
+            String key = props.getStreamKey();
+            Boolean exists = stringRedisTemplate.hasKey(key);
+            if (!exists) {
+                // 스트림 생성용 더미 레코드 추가
+                stringRedisTemplate.opsForStream().add(
+                    MapRecord.create(key, java.util.Map.of("init", "1"))
+                );
+                // 더미가 소비되지 않도록 최신 위치($)로 그룹 생성
+                stringRedisTemplate.opsForStream().createGroup(key, ReadOffset.latest(), props.getGroup());
+            } else {
+                // 기존 스트림이면 처음부터(0-0) 소비하도록 그룹 생성
+                stringRedisTemplate.opsForStream().createGroup(key, ReadOffset.from("0-0"), props.getGroup());
+            }
         } catch (Exception e) {
             // BUSYGROUP 등은 무시
             log.debug("audit stream group create ignored: {}", e.getMessage());
@@ -87,10 +101,17 @@ public class AuditQueueConfig {
         return host + "-" + System.currentTimeMillis();
     }
 
-    private void handleMessage(MapRecord<String, String, String> message) {
+    private void handleMessageWithAck(AuditQueueProperties props, MapRecord<String, String, String> message) {
         String json = message.getValue().get("json");
         if (json == null || json.isBlank()) {
-            log.warn("Audit message without json field: id={}", message.getId());
+            // 더미 메시지 등 비정상 레코드. 운영 소음 방지를 위해 DEBUG로만 기록.
+            log.debug("Audit message without json field: id={}", message.getId());
+            // json이 없으면 재시도 가치가 낮으므로 ACK 처리하여 누적 방지
+            try {
+                stringRedisTemplate.opsForStream().acknowledge(props.getStreamKey(), props.getGroup(), message.getId());
+            } catch (Exception ex) {
+                log.debug("ACK failed for malformed message id={}: {}", message.getId(), ex.getMessage());
+            }
             return;
         }
         try {
@@ -105,13 +126,36 @@ public class AuditQueueConfig {
                 try {
                     entity.setIpAddress(InetAddress.getByName(m.getIpAddress()));
                 } catch (UnknownHostException ignored) {
-                    // 저장 생략
+                    // IP 파싱 실패는 저장을 막지 않음
                 }
             }
             entity.setDetails(m.getDetails());
-            auditLogRepository.save(entity);
+            AuditLog saved;
+            try {
+                saved = auditLogRepository.save(entity);
+            } catch (Exception saveEx) {
+                // 데이터베이스에서 ipAddress 타입(예: PostgreSQL inet) 매핑 문제 가능성에 대비하여
+                // ipAddress를 null로 재시도한다.
+                if (entity.getIpAddress() != null) {
+                    entity.setIpAddress(null);
+                    saved = auditLogRepository.save(entity);
+                } else {
+                    throw saveEx;
+                }
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("[AUDIT_CONSUME] saved id={} action={} type={} targetId={} userId={} recordId={}",
+                    saved.getId(), saved.getAction(), saved.getTargetType(), saved.getTargetId(), saved.getUserId(), message.getId());
+            }
+            // 저장 성공 시에만 ACK
+            try {
+                stringRedisTemplate.opsForStream().acknowledge(props.getStreamKey(), props.getGroup(), message.getId());
+            } catch (Exception ex) {
+                log.debug("ACK failed for message id={}: {}", message.getId(), ex.getMessage());
+            }
         } catch (Exception e) {
-            log.warn("Failed to consume audit message: {}", e.getMessage());
+            // 저장 실패 등 예외는 ACK하지 않아 재처리 대상(pending)으로 남긴다
+            log.warn("Failed to consume audit message id={}: {}", message.getId(), e.getMessage());
         }
     }
 
