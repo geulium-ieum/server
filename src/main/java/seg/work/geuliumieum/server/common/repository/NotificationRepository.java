@@ -15,7 +15,7 @@ public interface NotificationRepository extends BaseRepository<Notification> {
 
     @Modifying
     @Query("update Notification n set n.isRead = true where n.userId = :userId and (n.isRead = false or n.isRead is null)")
-    int markAllRead(@Param("userId") Long userId);
+    void markAllRead(@Param("userId") Long userId);
 
     void deleteByUserId(Long userId);
 

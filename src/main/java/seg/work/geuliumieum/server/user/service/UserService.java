@@ -1,6 +1,7 @@
 package seg.work.geuliumieum.server.user.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -114,7 +115,7 @@ public class UserService {
             .toList();
         List<MemorialResponse> content = memorialIds.stream()
             .map(memorialId -> memorialRepository.findById(memorialId).orElse(null))
-            .filter(m -> m != null)
+            .filter(Objects::nonNull)
             .map(MemorialResponse::from)
             .collect(Collectors.toList());
         return new SliceImpl<>(content, pageable, page.hasNext());

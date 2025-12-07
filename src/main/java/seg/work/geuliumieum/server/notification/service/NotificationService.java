@@ -82,7 +82,7 @@ public class NotificationService {
 
     // For internal publish from other modules
     @Transactional
-    public NotificationResponse publish(Long userId, String type, String title, String message,
+    public void publish(Long userId, String type, String title, String message,
         String relatedType, Long relatedId) {
         Notification n = new Notification();
         n.setUserId(userId);
@@ -96,6 +96,5 @@ public class NotificationService {
         notificationRepository.save(n);
         NotificationResponse resp = NotificationResponse.from(n);
         sseService.sendNew(userId, resp);
-        return resp;
     }
 }

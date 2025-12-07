@@ -9,8 +9,6 @@ public interface ReminderRepository extends BaseRepository<Reminder> {
 
     Slice<Reminder> findByUserId(Long userId, Pageable pageable);
 
-    Slice<Reminder> findByMemorialId(Long memorialId, Pageable pageable);
-
     Slice<Reminder> findByUserIdAndMemorialId(Long userId, Long memorialId, Pageable pageable);
 
     List<Reminder> findByUserIdAndIsActiveTrue(Long userId);

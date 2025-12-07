@@ -30,9 +30,6 @@ public class UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("${cloud.aws.region}")
-    private String region;
-
     @Value("${cloud.aws.s3.endpoint}")
     private String endpoint;
 

@@ -10,8 +10,6 @@ public interface GuestbookEntryRepository extends BaseRepository<GuestbookEntry>
 
     long countByMemorialId(Long memorialId);
 
-    Slice<GuestbookEntry> findByMemorialId(Long memorialId, Pageable pageable);
-
     Slice<GuestbookEntry> findByUserId(Long userId, Pageable pageable);
 
     Slice<GuestbookEntry> findByMemorialIdAndIsApprovedTrue(Long memorialId, Pageable pageable);
