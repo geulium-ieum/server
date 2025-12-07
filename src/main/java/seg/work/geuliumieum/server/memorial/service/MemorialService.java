@@ -73,16 +73,7 @@ public class MemorialService {
         memorialRepository.delete(memorial);
     }
 
-    public Slice<MemorialResponse> searchByDeceasedName(String name, Pageable pageable) {
-        var slice = memorialRepository.findByDeceasedNameContainingIgnoreCase(
-            name == null ? "" : name, pageable);
-        return slice.map(MemorialResponse::from);
-    }
-
-    public Slice<MemorialResponse> filter(String birthFrom, String birthTo,
-        String deathFrom, String deathTo,
-        String location,
-        Pageable pageable) {
+    public Slice<MemorialResponse> filter(String name, String birthFrom, String birthTo, String deathFrom, String deathTo, Pageable pageable) {
         Specification<Memorial> spec = (root, q, cb) -> cb.conjunction();
 
         LocalDate bf = parseDate(birthFrom);
@@ -90,6 +81,9 @@ public class MemorialService {
         LocalDate df = parseDate(deathFrom);
         LocalDate dt = parseDate(deathTo);
 
+        if (name != null) {
+            spec = spec.and((root, q, cb) -> cb.like(root.get("deceasedName"), "%" + name + "%"));
+        }
         if (bf != null) {
             spec = spec.and((root, q, cb) -> cb.greaterThanOrEqualTo(root.get("birthDate"), bf));
         }
@@ -101,10 +95,6 @@ public class MemorialService {
         }
         if (dt != null) {
             spec = spec.and((root, q, cb) -> cb.lessThanOrEqualTo(root.get("deathDate"), dt));
-        }
-        if (location != null && !location.isBlank()) {
-            String like = "%" + location.toLowerCase() + "%";
-            spec = spec.and((root, q, cb) -> cb.like(cb.lower(root.get("location")), like));
         }
 
         Page<Memorial> page = memorialRepository.findAll(spec, pageable);

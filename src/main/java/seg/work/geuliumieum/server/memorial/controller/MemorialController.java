@@ -74,29 +74,18 @@ public class MemorialController {
     }
 
     /**
-     * 고인 이름으로 추모관을 검색합니다.
+     * 날짜로 필터링합니다.
      */
-    @Operation(summary = "추모관 검색", description = "고인 이름으로 검색합니다.")
-    @GetMapping("/search")
-    public Slice<MemorialResponse> searchMemorials(
-        @Parameter(description = "고인 이름(부분 일치)") String name,
-        @ParameterObject Pageable pageable) {
-        return memorialService.searchByDeceasedName(name, pageable);
-    }
-
-    /**
-     * 날짜/위치 등으로 필터링합니다.
-     */
-    @Operation(summary = "추모관 필터", description = "생/사망일, 위치 등으로 필터링합니다.")
+    @Operation(summary = "추모관 필터", description = "생/사망일로 필터링합니다.")
     @GetMapping("/filter")
     public Slice<MemorialResponse> filterMemorials(
+        @Parameter(description = "고인 이름(부분 일치)") String name,
         @Parameter(description = "출생일 시작") String birthFrom,
         @Parameter(description = "출생일 종료") String birthTo,
         @Parameter(description = "사망일 시작") String deathFrom,
         @Parameter(description = "사망일 종료") String deathTo,
-        @Parameter(description = "위치") String location,
         @ParameterObject Pageable pageable) {
-        return memorialService.filter(birthFrom, birthTo, deathFrom, deathTo, location, pageable);
+        return memorialService.filter(name, birthFrom, birthTo, deathFrom, deathTo, pageable);
     }
 
     /**
