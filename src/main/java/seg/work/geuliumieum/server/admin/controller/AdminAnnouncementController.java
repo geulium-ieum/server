@@ -1,4 +1,4 @@
-package seg.work.geuliumieum.server.announcement.controller;
+package seg.work.geuliumieum.server.admin.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,23 +13,23 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import seg.work.geuliumieum.server.admin.dto.AdminAnnouncementResponse;
+import seg.work.geuliumieum.server.admin.service.AdminAnnouncementService;
 import seg.work.geuliumieum.server.announcement.dto.AnnouncementCreateRequest;
-import seg.work.geuliumieum.server.announcement.dto.AnnouncementResponse;
 import seg.work.geuliumieum.server.announcement.dto.AnnouncementUpdateRequest;
-import seg.work.geuliumieum.server.announcement.service.AdminAnnouncementService;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/announcement")
-@Tag(name = "Admin: Announcement", description = "공지사항 관리 API (ADMIN|SUPER_ADMIN)")
+@Tag(name = "Admin Announcement", description = "공지사항 관리 API (ADMIN|SUPER_ADMIN)")
 public class AdminAnnouncementController {
 
     private final AdminAnnouncementService adminAnnouncementService;
 
     @Operation(summary = "공지사항 작성", description = "관리자가 공지사항을 작성합니다.")
     @PostMapping
-    public ResponseEntity<AnnouncementResponse> create(UserInfo user,
+    public ResponseEntity<AdminAnnouncementResponse> create(UserInfo user,
         @Valid @RequestBody AnnouncementCreateRequest request) {
         return ResponseEntity.ok(adminAnnouncementService.create(user, request));
     }

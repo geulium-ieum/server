@@ -1,11 +1,11 @@
-package seg.work.geuliumieum.server.announcement.service;
+package seg.work.geuliumieum.server.admin.service;
 
 import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import seg.work.geuliumieum.server.admin.dto.AdminAnnouncementResponse;
 import seg.work.geuliumieum.server.announcement.dto.AnnouncementCreateRequest;
-import seg.work.geuliumieum.server.announcement.dto.AnnouncementResponse;
 import seg.work.geuliumieum.server.announcement.dto.AnnouncementUpdateRequest;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
 import seg.work.geuliumieum.server.common.entity.Announcement;
@@ -30,7 +30,7 @@ public class AdminAnnouncementService {
     }
 
     @Transactional
-    public AnnouncementResponse create(UserInfo user, AnnouncementCreateRequest request) {
+    public AdminAnnouncementResponse create(UserInfo user, AnnouncementCreateRequest request) {
         ensureAdmin(user);
         Announcement a = new Announcement();
         a.setTitle(request.getTitle());
@@ -40,7 +40,7 @@ public class AdminAnnouncementService {
         a.setIsPublished(false);
         a.setPublishedAt(null);
         announcementRepository.save(a);
-        return AnnouncementResponse.from(a);
+        return AdminAnnouncementResponse.from(a);
     }
 
     @Transactional
