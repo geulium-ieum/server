@@ -1,5 +1,6 @@
 package seg.work.geuliumieum.server.admin.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +19,7 @@ import seg.work.geuliumieum.server.admin.service.AdminAuditDlqService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/audit-logs/dlq")
+@Tag(name = "Admin Audit Logs Dead Letter Queue", description = "감사 로그 Dead Letter Queue API")
 public class AdminAuditDlqController {
 
     private final AdminAuditDlqService dlqService;

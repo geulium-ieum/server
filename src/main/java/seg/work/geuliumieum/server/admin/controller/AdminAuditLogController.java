@@ -1,5 +1,6 @@
 package seg.work.geuliumieum.server.admin.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -20,6 +21,7 @@ import seg.work.geuliumieum.server.common.audit.AuditAction;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/audit-logs")
+@Tag(name = "Admin Audit Logs", description = "감사 로그 API")
 public class AdminAuditLogController {
 
     private final AdminAuditLogService adminAuditLogService;
