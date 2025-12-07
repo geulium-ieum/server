@@ -1,5 +1,6 @@
 package seg.work.geuliumieum.server.config.security;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
 import lombok.Getter;
@@ -10,6 +11,9 @@ import seg.work.geuliumieum.server.common.entity.User;
 
 @Getter
 public class CustomUserDetails implements UserDetails {
+
+    @Serial
+    private static final long serialVersionUID = 3061709774601068428L;
 
     private final Long id;
     private final String email;

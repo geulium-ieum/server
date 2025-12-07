@@ -1,10 +1,14 @@
 package seg.work.geuliumieum.server.common.exception;
 
+import java.io.Serial;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
 public class ApiException extends RuntimeException {
+
+    @Serial
+    private static final long serialVersionUID = -9024068678909842527L;
 
     private final ErrorCode errorCode;
     private final HttpStatus httpStatus;
