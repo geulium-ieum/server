@@ -8,14 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
 import seg.work.geuliumieum.server.common.entity.GuestbookEntry;
-import seg.work.geuliumieum.server.common.entity.Memorial;
 import seg.work.geuliumieum.server.common.exception.ApiException;
 import seg.work.geuliumieum.server.common.exception.ErrorCode;
 import seg.work.geuliumieum.server.common.repository.GuestbookEntryRepository;
 import seg.work.geuliumieum.server.common.repository.MemorialRepository;
+import seg.work.geuliumieum.server.config.security.UserRole;
 import seg.work.geuliumieum.server.guestbook.dto.request.GuestbookRequest;
 import seg.work.geuliumieum.server.guestbook.dto.response.GuestbookResponse;
-import seg.work.geuliumieum.server.config.security.UserRole;
 
 @Service
 @RequiredArgsConstructor

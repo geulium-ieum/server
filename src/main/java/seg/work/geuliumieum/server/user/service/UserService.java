@@ -1,5 +1,7 @@
 package seg.work.geuliumieum.server.user.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.cache.annotation.Cacheable;
@@ -8,7 +10,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import seg.work.geuliumieum.server.common.entity.Memorial;
 import seg.work.geuliumieum.server.common.entity.MemorialMember;
 import seg.work.geuliumieum.server.common.entity.User;
 import seg.work.geuliumieum.server.common.exception.ApiException;
@@ -24,8 +25,6 @@ import seg.work.geuliumieum.server.user.dto.request.ProfilePhotoUpdateRequest;
 import seg.work.geuliumieum.server.user.dto.request.UserUpdateRequest;
 import seg.work.geuliumieum.server.user.dto.response.UserActivityResponse;
 import seg.work.geuliumieum.server.user.dto.response.UserMeResponse;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

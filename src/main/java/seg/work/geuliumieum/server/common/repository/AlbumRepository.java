@@ -1,10 +1,10 @@
 package seg.work.geuliumieum.server.common.repository;
 
-import seg.work.geuliumieum.server.common.entity.Album;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import seg.work.geuliumieum.server.common.entity.Album;
 
 public interface AlbumRepository extends BaseRepository<Album> {
 

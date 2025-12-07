@@ -2,6 +2,7 @@ package seg.work.geuliumieum.server.admin.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
@@ -16,8 +17,6 @@ import seg.work.geuliumieum.server.admin.dto.response.AdminUserListItemResponse;
 import seg.work.geuliumieum.server.admin.dto.response.SystemStatsResponse;
 import seg.work.geuliumieum.server.admin.service.AdminDashboardService;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

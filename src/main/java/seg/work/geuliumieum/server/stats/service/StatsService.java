@@ -1,5 +1,6 @@
 package seg.work.geuliumieum.server.stats.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import seg.work.geuliumieum.server.common.exception.ApiException;
@@ -13,8 +14,6 @@ import seg.work.geuliumieum.server.common.repository.TributeRepository;
 import seg.work.geuliumieum.server.common.repository.UserRepository;
 import seg.work.geuliumieum.server.stats.dto.MemorialStatsResponse;
 import seg.work.geuliumieum.server.stats.dto.StatsOverviewResponse;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

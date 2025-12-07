@@ -1,10 +1,10 @@
 package seg.work.geuliumieum.server.common.repository;
 
-import seg.work.geuliumieum.server.common.entity.Tribute;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import seg.work.geuliumieum.server.common.entity.Tribute;
 
 public interface TributeRepository extends BaseRepository<Tribute> {
 

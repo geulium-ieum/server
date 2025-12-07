@@ -1,11 +1,11 @@
 package seg.work.geuliumieum.server.common.repository;
 
-import seg.work.geuliumieum.server.common.entity.Offering;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import seg.work.geuliumieum.server.common.entity.Offering;
 
 public interface OfferingRepository extends BaseRepository<Offering> {
 

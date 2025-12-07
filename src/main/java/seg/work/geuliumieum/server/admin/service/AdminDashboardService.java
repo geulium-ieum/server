@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import seg.work.geuliumieum.server.admin.dto.response.ActiveItemResponse;
+import seg.work.geuliumieum.server.admin.dto.response.AdminUserListItemResponse;
 import seg.work.geuliumieum.server.admin.dto.response.SystemStatsResponse;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
 import seg.work.geuliumieum.server.common.exception.ApiException;
@@ -19,7 +20,6 @@ import seg.work.geuliumieum.server.common.repository.OfferingRepository;
 import seg.work.geuliumieum.server.common.repository.TributeRepository;
 import seg.work.geuliumieum.server.common.repository.UserRepository;
 import seg.work.geuliumieum.server.config.security.UserRole;
-import seg.work.geuliumieum.server.admin.dto.response.AdminUserListItemResponse;
 
 @Service
 @RequiredArgsConstructor

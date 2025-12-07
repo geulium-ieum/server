@@ -3,6 +3,7 @@ package seg.work.geuliumieum.server.reminder.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
@@ -21,8 +22,6 @@ import seg.work.geuliumieum.server.reminder.dto.request.ReminderRequest;
 import seg.work.geuliumieum.server.reminder.dto.request.ReminderUpdateRequest;
 import seg.work.geuliumieum.server.reminder.dto.response.ReminderResponse;
 import seg.work.geuliumieum.server.reminder.service.ReminderService;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

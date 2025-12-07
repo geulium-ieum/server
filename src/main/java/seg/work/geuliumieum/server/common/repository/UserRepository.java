@@ -1,9 +1,9 @@
 package seg.work.geuliumieum.server.common.repository;
 
 import java.util.Optional;
-import seg.work.geuliumieum.server.common.entity.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import seg.work.geuliumieum.server.common.entity.User;
 
 public interface UserRepository extends BaseRepository<User> {
 
