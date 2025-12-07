@@ -7,4 +7,6 @@ import org.springframework.data.domain.Slice;
 public interface AlbumPhotoRepository extends BaseRepository<AlbumPhoto> {
 
     Slice<AlbumPhoto> findByAlbumId(Long albumId, Pageable pageable);
+
+    long countByAlbumIdIn(java.util.List<Long> albumIds);
 }

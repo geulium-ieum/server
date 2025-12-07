@@ -11,6 +11,8 @@ public interface OfferingRepository extends BaseRepository<Offering> {
 
     long countByUserId(Long userId);
 
+    long countByMemorialId(Long memorialId);
+
     Slice<Offering> findByMemorialId(Long memorialId, Pageable pageable);
 
     Slice<Offering> findByUserId(Long userId, Pageable pageable);

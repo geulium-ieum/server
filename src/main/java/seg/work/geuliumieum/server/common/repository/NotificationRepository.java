@@ -20,4 +20,8 @@ public interface NotificationRepository extends BaseRepository<Notification> {
     void deleteByUserId(Long userId);
 
     void deleteByUserIdAndId(Long userId, Long id);
+
+    @Modifying
+    @Query("delete from Notification n where (n.isRead = true) and n.createdAt < :before")
+    int deleteOldRead(@Param("before") java.time.LocalDateTime before);
 }
