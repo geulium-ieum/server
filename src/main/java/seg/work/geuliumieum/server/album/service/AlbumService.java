@@ -52,7 +52,9 @@ public class AlbumService {
 
     @Transactional
     public AlbumResponse createAlbum(Long memorialId, UserInfo user, AlbumCreateRequest request) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         Album a = new Album();
         a.setMemorialId(memorialId);
@@ -65,19 +67,31 @@ public class AlbumService {
 
     @Transactional
     public void updateAlbum(Long albumId, UserInfo user, AlbumUpdateRequest request) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         Album a = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(a.getCreatedBy())) throw new ApiException(ErrorCode.FORBIDDEN);
-        if (request.getTitle() != null) a.setTitle(request.getTitle());
-        if (request.getDescription() != null) a.setDescription(request.getDescription());
+        if (!user.getId().equals(a.getCreatedBy())) {
+            throw new ApiException(ErrorCode.FORBIDDEN);
+        }
+        if (request.getTitle() != null) {
+            a.setTitle(request.getTitle());
+        }
+        if (request.getDescription() != null) {
+            a.setDescription(request.getDescription());
+        }
         albumRepository.save(a);
     }
 
     @Transactional
     public void deleteAlbum(Long albumId, UserInfo user) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         Album a = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(a.getCreatedBy())) throw new ApiException(ErrorCode.FORBIDDEN);
+        if (!user.getId().equals(a.getCreatedBy())) {
+            throw new ApiException(ErrorCode.FORBIDDEN);
+        }
         albumRepository.delete(a);
     }
 
@@ -93,10 +107,14 @@ public class AlbumService {
 
     @Transactional
     public PhotoResponse createPhoto(Long albumId, UserInfo user, PhotoCreateRequest request) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         Album a = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         // 작성 권한: 앨범 소유자만으로 제한
-        if (!user.getId().equals(a.getCreatedBy())) throw new ApiException(ErrorCode.FORBIDDEN);
+        if (!user.getId().equals(a.getCreatedBy())) {
+            throw new ApiException(ErrorCode.FORBIDDEN);
+        }
         AlbumPhoto p = new AlbumPhoto();
         p.setAlbumId(albumId);
         p.setPhotoUrl(request.getPhotoUrl());
@@ -108,20 +126,26 @@ public class AlbumService {
 
     @Transactional
     public void updatePhoto(Long photoId, UserInfo user, PhotoUpdateRequest request) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         AlbumPhoto p = albumPhotoRepository.findById(photoId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         Album a = albumRepository.findById(p.getAlbumId()).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         // 수정 권한: 업로더 또는 앨범 소유자
         if (!user.getId().equals(p.getUploadedBy()) && !user.getId().equals(a.getCreatedBy())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
-        if (request.getCaption() != null) p.setCaption(request.getCaption());
+        if (request.getCaption() != null) {
+            p.setCaption(request.getCaption());
+        }
         albumPhotoRepository.save(p);
     }
 
     @Transactional
     public void deletePhoto(Long photoId, UserInfo user) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         AlbumPhoto p = albumPhotoRepository.findById(photoId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         Album a = albumRepository.findById(p.getAlbumId()).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         if (!user.getId().equals(p.getUploadedBy()) && !user.getId().equals(a.getCreatedBy())) {

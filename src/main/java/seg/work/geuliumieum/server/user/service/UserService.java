@@ -54,26 +54,42 @@ public class UserService {
 
     @Transactional
     public void updateUser(Long id, Long actorId, UserUpdateRequest request) {
-        if (actorId == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
-        if (!actorId.equals(id)) throw new ApiException(ErrorCode.FORBIDDEN);
+        if (actorId == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
+        if (!actorId.equals(id)) {
+            throw new ApiException(ErrorCode.FORBIDDEN);
+        }
         User user = userRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
-        if (request.getName() != null) user.setName(request.getName());
-        if (request.getPhone() != null) user.setPhone(request.getPhone());
+        if (request.getName() != null) {
+            user.setName(request.getName());
+        }
+        if (request.getPhone() != null) {
+            user.setPhone(request.getPhone());
+        }
         userRepository.save(user);
     }
 
     @Transactional
     public void deleteUser(Long id, Long actorId) {
-        if (actorId == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
-        if (!actorId.equals(id)) throw new ApiException(ErrorCode.FORBIDDEN);
+        if (actorId == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
+        if (!actorId.equals(id)) {
+            throw new ApiException(ErrorCode.FORBIDDEN);
+        }
         User user = userRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
         userRepository.delete(user);
     }
 
     @Transactional
     public void updateProfilePhoto(Long id, Long actorId, ProfilePhotoUpdateRequest request) {
-        if (actorId == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
-        if (!actorId.equals(id)) throw new ApiException(ErrorCode.FORBIDDEN);
+        if (actorId == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
+        if (!actorId.equals(id)) {
+            throw new ApiException(ErrorCode.FORBIDDEN);
+        }
         User user = userRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
         user.setProfilePhotoUrl(request.getProfilePhotoUrl());
         userRepository.save(user);

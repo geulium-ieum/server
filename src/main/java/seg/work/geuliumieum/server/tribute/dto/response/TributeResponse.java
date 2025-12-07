@@ -10,6 +10,7 @@ import seg.work.geuliumieum.server.common.entity.Tribute;
 @Builder
 @Schema(name = "TributeResponse", description = "추모글 응답")
 public class TributeResponse {
+
     @Schema(description = "추모글 ID")
     private Long id;
     @Schema(description = "추모관 ID")

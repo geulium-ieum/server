@@ -10,6 +10,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Schema(name = "StatsOverviewResponse", description = "시스템 전체 공개 통계")
 public class StatsOverviewResponse {
+
     @Schema(description = "총 사용자 수")
     private long users;
 

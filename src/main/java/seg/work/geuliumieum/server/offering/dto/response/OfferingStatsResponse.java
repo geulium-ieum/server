@@ -10,6 +10,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Schema(name = "OfferingStatsResponse", description = "헌화/분향/헌촛 통계 응답")
 public class OfferingStatsResponse {
+
     @Schema(description = "총 개수")
     private long total;
     @Schema(description = "헌화 수")

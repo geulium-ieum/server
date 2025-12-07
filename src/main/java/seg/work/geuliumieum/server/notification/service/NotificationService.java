@@ -21,21 +21,29 @@ public class NotificationService {
     private final NotificationSseService sseService;
 
     public Slice<NotificationResponse> list(UserInfo user, @ParameterObject Pageable pageable) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         return notificationRepository.findByUserIdOrderByCreatedAtDesc(user.getId(), pageable)
             .map(NotificationResponse::from);
     }
 
     public long unreadCount(UserInfo user) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         return notificationRepository.countByUserIdAndIsReadFalse(user.getId());
     }
 
     @Transactional
     public void markRead(UserInfo user, Long id) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         Notification n = notificationRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(n.getUserId())) throw new ApiException(ErrorCode.FORBIDDEN);
+        if (!user.getId().equals(n.getUserId())) {
+            throw new ApiException(ErrorCode.FORBIDDEN);
+        }
         if (Boolean.FALSE.equals(n.getIsRead()) || n.getIsRead() == null) {
             n.setIsRead(true);
             notificationRepository.save(n);
@@ -45,29 +53,37 @@ public class NotificationService {
 
     @Transactional
     public void markAllRead(UserInfo user) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         notificationRepository.markAllRead(user.getId());
         // optional: we could emit a summary event; keep as individual events on client refresh
     }
 
     @Transactional
     public void deleteOne(UserInfo user, Long id) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         Notification n = notificationRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(n.getUserId())) throw new ApiException(ErrorCode.FORBIDDEN);
+        if (!user.getId().equals(n.getUserId())) {
+            throw new ApiException(ErrorCode.FORBIDDEN);
+        }
         notificationRepository.deleteByUserIdAndId(user.getId(), id);
     }
 
     @Transactional
     public void deleteAll(UserInfo user) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         notificationRepository.deleteByUserId(user.getId());
     }
 
     // For internal publish from other modules
     @Transactional
     public NotificationResponse publish(Long userId, String type, String title, String message,
-                                        String relatedType, Long relatedId) {
+        String relatedType, Long relatedId) {
         Notification n = new Notification();
         n.setUserId(userId);
         n.setType(type);

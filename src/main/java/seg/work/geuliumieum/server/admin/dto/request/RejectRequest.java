@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Schema(name = "RejectRequest", description = "추모관 반려 사유 요청")
 public class RejectRequest {
+
     @Schema(description = "반려 사유", example = "부적절한 내용 포함")
     private String reason;
 }

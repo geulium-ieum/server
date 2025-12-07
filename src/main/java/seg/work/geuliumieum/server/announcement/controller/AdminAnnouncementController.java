@@ -30,15 +30,15 @@ public class AdminAnnouncementController {
     @Operation(summary = "공지사항 작성", description = "관리자가 공지사항을 작성합니다.")
     @PostMapping
     public ResponseEntity<AnnouncementResponse> create(UserInfo user,
-                                                       @Valid @RequestBody AnnouncementCreateRequest request) {
+        @Valid @RequestBody AnnouncementCreateRequest request) {
         return ResponseEntity.ok(adminAnnouncementService.create(user, request));
     }
 
     @Operation(summary = "공지사항 수정", description = "관리자가 공지사항을 수정합니다.")
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(UserInfo user,
-                                       @PathVariable("id") Long id,
-                                       @Valid @RequestBody AnnouncementUpdateRequest request) {
+        @PathVariable("id") Long id,
+        @Valid @RequestBody AnnouncementUpdateRequest request) {
         adminAnnouncementService.update(user, id, request);
         return ResponseEntity.ok().build();
     }

@@ -73,10 +73,14 @@ public class ScheduledTasks {
     }
 
     private LocalDate nextOccurrenceDate(Reminder r, LocalDate today) {
-        if (r.getIsActive() != null && !r.getIsActive()) return null;
+        if (r.getIsActive() != null && !r.getIsActive()) {
+            return null;
+        }
         int daysBefore = r.getDaysBefore() == null ? 0 : r.getDaysBefore();
         LocalDate base = r.getReminderDate();
-        if (base == null) return null;
+        if (base == null) {
+            return null;
+        }
         RepeatRule rule = r.getRepeatRule() == null ? RepeatRule.YEARLY : r.getRepeatRule();
 
         LocalDate candidate;

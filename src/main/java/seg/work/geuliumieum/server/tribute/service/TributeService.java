@@ -36,7 +36,9 @@ public class TributeService {
 
     @Transactional
     public TributeResponse create(Long memorialId, UserInfo user, TributeRequest request) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         Tribute t = new Tribute();
         t.setMemorialId(memorialId);
@@ -49,21 +51,33 @@ public class TributeService {
 
     @Transactional
     public void update(Long tributeId, UserInfo user, TributeRequest request) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         Tribute t = tributeRepository.findById(tributeId)
             .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(t.getUserId())) throw new ApiException(ErrorCode.FORBIDDEN);
-        if (request.getContent() != null) t.setContent(request.getContent());
-        if (request.getIsPublic() != null) t.setIsPublic(request.getIsPublic());
+        if (!user.getId().equals(t.getUserId())) {
+            throw new ApiException(ErrorCode.FORBIDDEN);
+        }
+        if (request.getContent() != null) {
+            t.setContent(request.getContent());
+        }
+        if (request.getIsPublic() != null) {
+            t.setIsPublic(request.getIsPublic());
+        }
         tributeRepository.save(t);
     }
 
     @Transactional
     public void delete(Long tributeId, UserInfo user) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         Tribute t = tributeRepository.findById(tributeId)
             .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(t.getUserId())) throw new ApiException(ErrorCode.FORBIDDEN);
+        if (!user.getId().equals(t.getUserId())) {
+            throw new ApiException(ErrorCode.FORBIDDEN);
+        }
         tributeRepository.delete(t);
     }
 

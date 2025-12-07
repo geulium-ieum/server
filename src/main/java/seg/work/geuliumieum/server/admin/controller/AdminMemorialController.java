@@ -43,7 +43,7 @@ public class AdminMemorialController {
      */
     @GetMapping("/pending/list")
     public ResponseEntity<Slice<MemorialResponse>> pendingList(UserInfo user,
-                                                               @ParameterObject Pageable pageable) {
+        @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(adminMemorialService.getPendingList(user, pageable));
     }
 
@@ -52,7 +52,7 @@ public class AdminMemorialController {
      */
     @GetMapping("/all")
     public ResponseEntity<Slice<MemorialResponse>> all(UserInfo user,
-                                                       @ParameterObject Pageable pageable) {
+        @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(adminMemorialService.getAll(user, pageable));
     }
 
@@ -70,8 +70,8 @@ public class AdminMemorialController {
      */
     @PatchMapping("/{id}/reject")
     public ResponseEntity<Void> reject(UserInfo user,
-                                       @PathVariable("id") Long id,
-                                       @RequestBody(required = false) RejectRequest request) {
+        @PathVariable("id") Long id,
+        @RequestBody(required = false) RejectRequest request) {
         adminMemorialService.reject(user, id, request == null ? null : request.getReason());
         return ResponseEntity.ok().build();
     }

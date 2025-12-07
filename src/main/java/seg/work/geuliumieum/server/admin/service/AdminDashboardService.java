@@ -32,7 +32,9 @@ public class AdminDashboardService {
     private final GuestbookEntryRepository guestbookEntryRepository;
 
     private void ensureAdmin(UserInfo user) {
-        if (user == null || user.getRole() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getRole() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         if (!(user.getRole() == UserRole.ADMIN || user.getRole() == UserRole.SUPER_ADMIN)) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }

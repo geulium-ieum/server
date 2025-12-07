@@ -40,7 +40,9 @@ public class NotificationSseService {
 
     private void send(Long userId, String event, Object data) {
         List<SseEmitter> list = emitters.get(userId);
-        if (list == null) return;
+        if (list == null) {
+            return;
+        }
         List<SseEmitter> dead = new ArrayList<>();
         for (SseEmitter emitter : list) {
             try {
@@ -60,7 +62,9 @@ public class NotificationSseService {
         List<SseEmitter> list = emitters.get(userId);
         if (list != null) {
             list.remove(emitter);
-            if (list.isEmpty()) emitters.remove(userId);
+            if (list.isEmpty()) {
+                emitters.remove(userId);
+            }
         }
     }
 }

@@ -28,7 +28,7 @@ public class NotificationController {
     @Operation(summary = "내 알림 목록", description = "현재 사용자의 알림 목록을 조회합니다.")
     @GetMapping("/list")
     public ResponseEntity<Slice<NotificationResponse>> list(UserInfo user,
-                                                            @ParameterObject Pageable pageable) {
+        @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(notificationService.list(user, pageable));
     }
 

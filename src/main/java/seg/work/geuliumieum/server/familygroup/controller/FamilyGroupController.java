@@ -40,7 +40,7 @@ public class FamilyGroupController {
     @Operation(summary = "내 가족 그룹 목록", description = "현재 사용자가 소유/참여 중인 가족 그룹 목록")
     @GetMapping("/list")
     public ResponseEntity<Slice<FamilyGroupResponse>> myGroups(UserInfo user,
-                                                               @ParameterObject Pageable pageable) {
+        @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(familyGroupService.myGroups(user, pageable));
     }
 
@@ -53,7 +53,7 @@ public class FamilyGroupController {
     @Operation(summary = "가족 그룹 생성", description = "가족 그룹을 생성합니다")
     @PostMapping
     public ResponseEntity<Void> create(UserInfo user,
-                                       @Valid @RequestBody FamilyGroupCreateRequest request) {
+        @Valid @RequestBody FamilyGroupCreateRequest request) {
         familyGroupService.create(user, request);
         return ResponseEntity.ok().build();
     }
@@ -61,8 +61,8 @@ public class FamilyGroupController {
     @Operation(summary = "가족 그룹 수정", description = "가족 그룹을 수정합니다(소유자만)")
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(UserInfo user,
-                                       @PathVariable("id") Long id,
-                                       @Valid @RequestBody FamilyGroupUpdateRequest request) {
+        @PathVariable("id") Long id,
+        @Valid @RequestBody FamilyGroupUpdateRequest request) {
         familyGroupService.update(user, id, request);
         return ResponseEntity.ok().build();
     }
@@ -78,16 +78,16 @@ public class FamilyGroupController {
     @Operation(summary = "그룹 멤버 목록", description = "가족 그룹 멤버 목록을 조회합니다")
     @GetMapping("/{id}/member/list")
     public ResponseEntity<Slice<FamilyGroupMemberResponse>> members(UserInfo user,
-                                                                    @PathVariable("id") Long groupId,
-                                                                    @ParameterObject Pageable pageable) {
+        @PathVariable("id") Long groupId,
+        @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(familyGroupService.members(user, groupId, pageable));
     }
 
     @Operation(summary = "멤버 초대", description = "그룹에 멤버를 초대/추가합니다(소유자만)")
     @PostMapping("/{id}/invite")
     public ResponseEntity<Void> invite(UserInfo user,
-                                       @PathVariable("id") Long groupId,
-                                       @Valid @RequestBody InviteRequest request) {
+        @PathVariable("id") Long groupId,
+        @Valid @RequestBody InviteRequest request) {
         familyGroupService.invite(user, groupId, request);
         return ResponseEntity.ok().build();
     }
@@ -102,8 +102,8 @@ public class FamilyGroupController {
     @Operation(summary = "멤버 제거", description = "그룹에서 특정 멤버를 제거합니다(소유자만)")
     @DeleteMapping("/{id}/member/{userId}")
     public ResponseEntity<Void> remove(UserInfo user,
-                                       @PathVariable("id") Long groupId,
-                                       @PathVariable Long userId) {
+        @PathVariable("id") Long groupId,
+        @PathVariable Long userId) {
         familyGroupService.removeMember(user, groupId, userId);
         return ResponseEntity.ok().build();
     }
@@ -111,9 +111,9 @@ public class FamilyGroupController {
     @Operation(summary = "멤버 역할 변경", description = "그룹 멤버의 역할을 변경합니다(소유자만)")
     @PatchMapping("/{id}/member/{userId}/role")
     public ResponseEntity<Void> changeRole(UserInfo user,
-                                           @PathVariable("id") Long groupId,
-                                           @PathVariable Long userId,
-                                           @Valid @RequestBody MemberRoleUpdateRequest request) {
+        @PathVariable("id") Long groupId,
+        @PathVariable Long userId,
+        @Valid @RequestBody MemberRoleUpdateRequest request) {
         familyGroupService.changeRole(user, groupId, userId, request);
         return ResponseEntity.ok().build();
     }
@@ -122,16 +122,16 @@ public class FamilyGroupController {
     @Operation(summary = "그룹 추모관 목록", description = "가족 그룹에 연결된 추모관 목록")
     @GetMapping("/{id}/memorial/list")
     public ResponseEntity<Slice<MemorialResponse>> groupMemorials(UserInfo user,
-                                                                  @PathVariable("id") Long groupId,
-                                                                  @ParameterObject Pageable pageable) {
+        @PathVariable("id") Long groupId,
+        @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(familyGroupService.groupMemorials(user, groupId, pageable));
     }
 
     @Operation(summary = "그룹에 추모관 추가", description = "가족 그룹에 추모관을 연결합니다(소유자만)")
     @PostMapping("/{id}/memorial")
     public ResponseEntity<Void> addMemorial(UserInfo user,
-                                            @PathVariable("id") Long groupId,
-                                            @Valid @RequestBody AddMemorialRequest request) {
+        @PathVariable("id") Long groupId,
+        @Valid @RequestBody AddMemorialRequest request) {
         familyGroupService.addMemorial(user, groupId, request);
         return ResponseEntity.ok().build();
     }
@@ -139,8 +139,8 @@ public class FamilyGroupController {
     @Operation(summary = "그룹에서 추모관 제거", description = "가족 그룹에서 추모관 연결을 제거합니다(소유자만)")
     @DeleteMapping("/{id}/memorial/{memorialId}")
     public ResponseEntity<Void> removeMemorial(UserInfo user,
-                                               @PathVariable("id") Long groupId,
-                                               @PathVariable Long memorialId) {
+        @PathVariable("id") Long groupId,
+        @PathVariable Long memorialId) {
         familyGroupService.removeMemorial(user, groupId, memorialId);
         return ResponseEntity.ok().build();
     }

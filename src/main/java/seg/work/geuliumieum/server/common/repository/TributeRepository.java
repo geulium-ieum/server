@@ -17,7 +17,9 @@ public interface TributeRepository extends BaseRepository<Tribute> {
     org.springframework.data.domain.Slice<Tribute> findByUserId(Long userId, org.springframework.data.domain.Pageable pageable);
 
     interface ActivityCount {
+
         Long getId();
+
         long getCount();
     }
 

@@ -35,21 +35,21 @@ public class AdminDashboardController {
     @Operation(summary = "최근 가입 사용자", description = "최근 가입 사용자를 최신순으로 조회합니다(ADMIN|SUPER_ADMIN)")
     @GetMapping("/recent-user")
     public ResponseEntity<Slice<AdminUserListItemResponse>> recentUsers(UserInfo admin,
-                                                                        @ParameterObject Pageable pageable) {
+        @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(adminDashboardService.recentUsers(admin, pageable));
     }
 
     @Operation(summary = "활동 많은 추모관(30일)", description = "최근 n일 기준 활동(추모글 수)이 많은 추모관 목록을 조회합니다(ADMIN|SUPER_ADMIN)")
     @GetMapping("/active-memorial")
     public ResponseEntity<List<ActiveItemResponse>> activeMemorials(UserInfo admin,
-                                                                    @RequestParam(name = "days", required = false, defaultValue = "30") int days) {
+        @RequestParam(name = "days", required = false, defaultValue = "30") int days) {
         return ResponseEntity.ok(adminDashboardService.activeMemorials(admin, days));
     }
 
     @Operation(summary = "활동 많은 사용자(30일)", description = "최근 n일 기준 활동(추모글 수)이 많은 사용자 목록을 조회합니다(ADMIN|SUPER_ADMIN)")
     @GetMapping("/active-user")
     public ResponseEntity<List<ActiveItemResponse>> activeUsers(UserInfo admin,
-                                                                @RequestParam(name = "days", required = false, defaultValue = "30") int days) {
+        @RequestParam(name = "days", required = false, defaultValue = "30") int days) {
         return ResponseEntity.ok(adminDashboardService.activeUsers(admin, days));
     }
 }

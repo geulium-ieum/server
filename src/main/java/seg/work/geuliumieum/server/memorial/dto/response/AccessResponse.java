@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Schema(name = "MemorialAccessResponse", description = "추모관 접근 권한 응답")
 public class AccessResponse {
+
     @Schema(description = "접근 가능 여부")
     private boolean allowed;
 

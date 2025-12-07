@@ -10,6 +10,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Schema(name = "UploadResponse", description = "파일 업로드 응답")
 public class UploadResponse {
+
     @Schema(description = "파일 식별자(삭제 시 사용)")
     private String fileId;
 

@@ -18,7 +18,9 @@ public interface OfferingRepository extends BaseRepository<Offering> {
     Slice<Offering> findByUserId(Long userId, Pageable pageable);
 
     interface OfferingTypeCount {
+
         String getType();
+
         long getCount();
     }
 

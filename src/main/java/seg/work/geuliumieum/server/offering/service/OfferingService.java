@@ -37,7 +37,9 @@ public class OfferingService {
 
     @Transactional
     public OfferingResponse create(Long memorialId, UserInfo user, OfferingRequest request) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         Offering o = new Offering();
         o.setMemorialId(memorialId);
@@ -59,9 +61,13 @@ public class OfferingService {
             long c = r.getCount();
             total += c;
             String type = r.getType();
-            if ("FLOWER".equalsIgnoreCase(type)) flower += c;
-            else if ("INCENSE".equalsIgnoreCase(type)) incense += c;
-            else if ("CANDLE".equalsIgnoreCase(type)) candle += c;
+            if ("FLOWER".equalsIgnoreCase(type)) {
+                flower += c;
+            } else if ("INCENSE".equalsIgnoreCase(type)) {
+                incense += c;
+            } else if ("CANDLE".equalsIgnoreCase(type)) {
+                candle += c;
+            }
         }
         return OfferingStatsResponse.builder()
             .total(total)

@@ -10,6 +10,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Schema(name = "ActiveItemResponse", description = "활동 상위 항목 응답 (ID/건수)")
 public class ActiveItemResponse {
+
     @Schema(description = "리소스 ID")
     private Long id;
 

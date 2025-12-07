@@ -21,7 +21,9 @@ public class AdminAnnouncementService {
     private final AnnouncementRepository announcementRepository;
 
     private void ensureAdmin(UserInfo user) {
-        if (user == null || user.getRole() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getRole() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
         if (!(user.getRole() == UserRole.ADMIN || user.getRole() == UserRole.SUPER_ADMIN)) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
@@ -46,9 +48,15 @@ public class AdminAnnouncementService {
         ensureAdmin(user);
         Announcement a = announcementRepository.findById(id)
             .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (request.getTitle() != null) a.setTitle(request.getTitle());
-        if (request.getContent() != null) a.setContent(request.getContent());
-        if (request.getIsPinned() != null) a.setIsPinned(request.getIsPinned());
+        if (request.getTitle() != null) {
+            a.setTitle(request.getTitle());
+        }
+        if (request.getContent() != null) {
+            a.setContent(request.getContent());
+        }
+        if (request.getIsPinned() != null) {
+            a.setIsPinned(request.getIsPinned());
+        }
         announcementRepository.save(a);
     }
 

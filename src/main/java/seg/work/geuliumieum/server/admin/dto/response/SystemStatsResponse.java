@@ -10,6 +10,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Schema(name = "SystemStatsResponse", description = "관리자 대시보드: 전체 누적 통계")
 public class SystemStatsResponse {
+
     @Schema(description = "총 사용자 수")
     private long users;
 

@@ -42,12 +42,26 @@ public class UpdateRequest {
     private STATUS status;
 
     public void applyTo(Memorial memorial) {
-        if (this.deceasedName != null) memorial.setDeceasedName(this.deceasedName);
-        if (this.location != null) memorial.setLocation(this.location);
-        if (this.birthDate != null) memorial.setBirthDate(this.birthDate);
-        if (this.deathDate != null) memorial.setDeathDate(this.deathDate);
-        if (this.biography != null) memorial.setBiography(this.biography);
-        if (this.visibility != null) memorial.setVisibility(this.visibility);
-        if (this.status != null) memorial.setStatus(this.status);
+        if (this.deceasedName != null) {
+            memorial.setDeceasedName(this.deceasedName);
+        }
+        if (this.location != null) {
+            memorial.setLocation(this.location);
+        }
+        if (this.birthDate != null) {
+            memorial.setBirthDate(this.birthDate);
+        }
+        if (this.deathDate != null) {
+            memorial.setDeathDate(this.deathDate);
+        }
+        if (this.biography != null) {
+            memorial.setBiography(this.biography);
+        }
+        if (this.visibility != null) {
+            memorial.setVisibility(this.visibility);
+        }
+        if (this.status != null) {
+            memorial.setStatus(this.status);
+        }
     }
 }

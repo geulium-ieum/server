@@ -80,9 +80,9 @@ public class MemorialService {
     }
 
     public Slice<MemorialResponse> filter(String birthFrom, String birthTo,
-                                          String deathFrom, String deathTo,
-                                          String location,
-                                          Pageable pageable) {
+        String deathFrom, String deathTo,
+        String location,
+        Pageable pageable) {
         Specification<Memorial> spec = (root, q, cb) -> cb.conjunction();
 
         LocalDate bf = parseDate(birthFrom);

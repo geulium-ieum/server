@@ -8,6 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Schema(name = "UserActivityResponse", description = "사용자 활동 통계 응답")
 public class UserActivityResponse {
+
     @Schema(description = "추모글 수")
     private long tributeCount;
 

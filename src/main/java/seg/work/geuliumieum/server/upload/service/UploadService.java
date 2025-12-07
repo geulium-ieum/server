@@ -66,7 +66,9 @@ public class UploadService {
 
     public void delete(UserInfo user, String fileId) {
         ensureAuth(user);
-        if (fileId == null || fileId.isBlank()) throw new ApiException(ErrorCode.BAD_REQUEST);
+        if (fileId == null || fileId.isBlank()) {
+            throw new ApiException(ErrorCode.BAD_REQUEST);
+        }
         DeleteObjectRequest req = DeleteObjectRequest.builder()
             .bucket(bucket)
             .key(fileId)
@@ -75,12 +77,18 @@ public class UploadService {
     }
 
     private void ensureAuth(UserInfo user) {
-        if (user == null || user.getId() == null) throw new ApiException(ErrorCode.UNAUTHORIZED);
+        if (user == null || user.getId() == null) {
+            throw new ApiException(ErrorCode.UNAUTHORIZED);
+        }
     }
 
     private void validateImage(MultipartFile file) {
-        if (file == null || file.isEmpty()) throw new ApiException(ErrorCode.BAD_REQUEST);
-        if (file.getSize() > MAX_IMAGE_SIZE) throw new ApiException(ErrorCode.BAD_REQUEST);
+        if (file == null || file.isEmpty()) {
+            throw new ApiException(ErrorCode.BAD_REQUEST);
+        }
+        if (file.getSize() > MAX_IMAGE_SIZE) {
+            throw new ApiException(ErrorCode.BAD_REQUEST);
+        }
         String ct = contentType(file);
         if (ct == null || !ct.toLowerCase().startsWith("image/")) {
             throw new ApiException(ErrorCode.BAD_REQUEST);
@@ -93,7 +101,9 @@ public class UploadService {
 
     private String originalExt(MultipartFile file) {
         String name = file.getOriginalFilename();
-        if (name == null) return "";
+        if (name == null) {
+            return "";
+        }
         int idx = name.lastIndexOf('.');
         return idx > -1 ? name.substring(idx) : "";
     }
