@@ -11,12 +11,12 @@ import lombok.Setter;
 @Schema(name = "AnnouncementCreateRequest", description = "공지사항 생성 요청")
 public class AnnouncementCreateRequest {
 
-    @NotBlank
+    @NotBlank(message = "{validation.announcement.title.notBlank}")
     @Size(max = 200)
     @Schema(description = "제목", example = "서비스 공지")
     private String title;
 
-    @NotBlank
+    @NotBlank(message = "{validation.announcement.content.notBlank}")
     @Schema(description = "내용")
     private String content;
 

@@ -10,7 +10,7 @@ import lombok.Setter;
 @Schema(name = "FamilyGroupMemberRoleUpdateRequest", description = "가족 그룹 멤버 역할 변경 요청")
 public class MemberRoleUpdateRequest {
 
-    @NotBlank
+    @NotBlank(message = "{validation.memberRole.role.notBlank}")
     @Schema(description = "역할(member|admin)", example = "admin")
     private String role;
 }

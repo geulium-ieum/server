@@ -17,7 +17,7 @@ import seg.work.geuliumieum.server.memorial.constant.VISIBILITY;
 @Schema(name = "MemorialRegisterRequest", description = "추모관 생성 요청")
 public class RegisterRequest {
 
-    @NotBlank(message = "고인명은 필수값 입니다.")
+    @NotBlank(message = "{validation.memorial.deceasedName.notBlank}")
     @Size(max = 100)
     @Schema(description = "고인명", example = "홍길동")
     private String deceasedName;
@@ -26,12 +26,12 @@ public class RegisterRequest {
     @Schema(description = "장소")
     private String location;
 
-    @NotNull(message = "고인의 생년월일은 필수값 입니다.")
+    @NotNull(message = "{validation.memorial.birthDate.notNull}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Schema(description = "생년월일", example = "1950-01-01")
     private LocalDate birthDate;
 
-    @NotNull(message = "고인의 사망일은 필수값 입니다.")
+    @NotNull(message = "{validation.memorial.deathDate.notNull}")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Schema(description = "사망일", example = "2020-12-31")
     private LocalDate deathDate;

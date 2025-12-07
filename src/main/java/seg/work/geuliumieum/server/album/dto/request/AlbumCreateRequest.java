@@ -11,7 +11,7 @@ import lombok.Setter;
 @Schema(name = "AlbumCreateRequest", description = "앨범 생성 요청")
 public class AlbumCreateRequest {
 
-    @NotBlank
+    @NotBlank(message = "{validation.album.title.notBlank}")
     @Size(max = 200)
     @Schema(description = "앨범 제목", example = "가족 사진 모음")
     private String title;

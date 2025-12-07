@@ -15,6 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
+import seg.work.geuliumieum.server.config.i18n.MessageUtil;
 import seg.work.geuliumieum.server.common.exception.ApiException;
 import seg.work.geuliumieum.server.common.exception.ErrorCode;
 import seg.work.geuliumieum.server.common.exception.ErrorResponse;
@@ -23,15 +24,19 @@ import seg.work.geuliumieum.server.common.exception.ErrorResponse;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private final MessageUtil messageUtil;
+
+    public GlobalExceptionHandler(MessageUtil messageUtil) {
+        this.messageUtil = messageUtil;
+    }
+
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorResponse> handleApiException(ApiException ex) {
         log.error("ApiException occurred: {}", ex.getMessage(), ex);
 
-        ErrorResponse body = ErrorResponse.of(
-            ex.getErrorCode(),
-            ex.getMessage(),
-            ex.getDetails()
-        );
+        String localized = messageUtil.get("error." + ex.getErrorCode().name());
+        String message = (ex.getMessage() != null && !ex.getMessage().isBlank()) ? ex.getMessage() : localized;
+        ErrorResponse body = ErrorResponse.of(ex.getErrorCode(), message, ex.getDetails());
         return ResponseEntity.status(ex.getHttpStatus()).body(body);
     }
 
@@ -42,11 +47,8 @@ public class GlobalExceptionHandler {
         List<Map<String, Object>> details = ex.getBindingResult().getFieldErrors().stream()
             .map(this::toFieldError)
             .collect(Collectors.toList());
-        ErrorResponse body = ErrorResponse.of(
-            ErrorCode.VALIDATION_FAILED,
-            ErrorCode.VALIDATION_FAILED.getDefaultMessage(),
-            details
-        );
+        String message = messageUtil.get("error." + ErrorCode.VALIDATION_FAILED.name());
+        ErrorResponse body = ErrorResponse.of(ErrorCode.VALIDATION_FAILED, message, details);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
@@ -54,11 +56,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
         log.error("BadCredentialsException occurred: {}", ex.getMessage(), ex);
 
-        ErrorResponse body = ErrorResponse.of(
-            ErrorCode.AUTH_INVALID_CREDENTIALS,
-            ErrorCode.AUTH_INVALID_CREDENTIALS.getDefaultMessage(),
-            null
-        );
+        String message = messageUtil.get("error." + ErrorCode.AUTH_INVALID_CREDENTIALS.name());
+        ErrorResponse body = ErrorResponse.of(ErrorCode.AUTH_INVALID_CREDENTIALS, message, null);
         return ResponseEntity.status(ErrorCode.AUTH_INVALID_CREDENTIALS.getStatus()).body(body);
     }
 
@@ -66,11 +65,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleUsernameNotFound(UsernameNotFoundException ex) {
         log.error("UsernameNotFoundException occurred: {}", ex.getMessage(), ex);
 
-        ErrorResponse body = ErrorResponse.of(
-            ErrorCode.USER_NOT_FOUND,
-            ex.getMessage(),
-            null
-        );
+        String message = messageUtil.get("error." + ErrorCode.USER_NOT_FOUND.name());
+        ErrorResponse body = ErrorResponse.of(ErrorCode.USER_NOT_FOUND, message, null);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
@@ -79,11 +75,8 @@ public class GlobalExceptionHandler {
         log.error("ResponseStatusException occurred: {}", ex.getMessage(), ex);
 
         HttpStatus status = ex.getStatusCode() instanceof HttpStatus ? (HttpStatus) ex.getStatusCode() : HttpStatus.BAD_REQUEST;
-        ErrorResponse body = ErrorResponse.of(
-            ErrorCode.BAD_REQUEST,
-            ex.getReason(),
-            null
-        );
+        String message = ex.getReason() != null ? ex.getReason() : messageUtil.get("error." + ErrorCode.BAD_REQUEST.name());
+        ErrorResponse body = ErrorResponse.of(ErrorCode.BAD_REQUEST, message, null);
         return ResponseEntity.status(status).headers(new HttpHeaders()).body(body);
     }
 
@@ -91,10 +84,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAny(Exception ex) {
         log.error("Exception occurred: {}", ex.getMessage(), ex);
 
-        ErrorResponse body = ErrorResponse.of(
-            ErrorCode.INTERNAL_ERROR,
-            ErrorCode.INTERNAL_ERROR.getDefaultMessage()
-        );
+        String message = messageUtil.get("error." + ErrorCode.INTERNAL_ERROR.name());
+        ErrorResponse body = ErrorResponse.of(ErrorCode.INTERNAL_ERROR, message);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
