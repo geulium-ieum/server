@@ -9,4 +9,6 @@ public interface MemorialRepository extends BaseRepository<Memorial> {
     Slice<Memorial> findAllBy(Pageable pageable);
 
     Slice<Memorial> findByDeceasedNameContainingIgnoreCase(String deceasedName, Pageable pageable);
+
+    Slice<Memorial> findByCreatedBy(Long createdBy, Pageable pageable);
 }

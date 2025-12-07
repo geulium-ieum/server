@@ -4,4 +4,5 @@ import seg.work.geuliumieum.server.common.entity.Tribute;
 
 public interface TributeRepository extends BaseRepository<Tribute> {
 
+    long countByUserId(Long userId);
 }
