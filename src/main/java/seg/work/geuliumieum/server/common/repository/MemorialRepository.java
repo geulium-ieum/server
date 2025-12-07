@@ -3,6 +3,7 @@ package seg.work.geuliumieum.server.common.repository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import seg.work.geuliumieum.server.common.entity.Memorial;
+import seg.work.geuliumieum.server.memorial.constant.STATUS;
 
 public interface MemorialRepository extends BaseRepository<Memorial> {
 
@@ -11,4 +12,6 @@ public interface MemorialRepository extends BaseRepository<Memorial> {
     Slice<Memorial> findByDeceasedNameContainingIgnoreCase(String deceasedName, Pageable pageable);
 
     Slice<Memorial> findByCreatedBy(Long createdBy, Pageable pageable);
+
+    Slice<Memorial> findByStatus(STATUS status, Pageable pageable);
 }
