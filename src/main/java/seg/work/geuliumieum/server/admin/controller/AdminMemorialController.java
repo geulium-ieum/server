@@ -14,7 +14,7 @@ import seg.work.geuliumieum.server.admin.service.AdminMemorialService;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/memorials")
+@RequestMapping("/api/admin/memorial")
 public class AdminMemorialController {
 
     private final AdminMemorialService adminMemorialService;
