@@ -11,7 +11,6 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
-import seg.work.geuliumieum.server.common.entity.Memorial;
 import seg.work.geuliumieum.server.common.exception.ApiException;
 import seg.work.geuliumieum.server.common.exception.ErrorCode;
 import seg.work.geuliumieum.server.common.repository.MemorialRepository;
@@ -22,12 +21,12 @@ import seg.work.geuliumieum.server.familygroup.dto.request.InviteRequest;
 import seg.work.geuliumieum.server.familygroup.dto.request.MemberRoleUpdateRequest;
 import seg.work.geuliumieum.server.familygroup.dto.response.FamilyGroupMemberResponse;
 import seg.work.geuliumieum.server.familygroup.dto.response.FamilyGroupResponse;
-import seg.work.geuliumieum.server.familygroup.entity.FamilyGroup;
-import seg.work.geuliumieum.server.familygroup.entity.FamilyGroupMember;
-import seg.work.geuliumieum.server.familygroup.entity.FamilyGroupMemorial;
-import seg.work.geuliumieum.server.familygroup.repository.FamilyGroupMemberRepository;
-import seg.work.geuliumieum.server.familygroup.repository.FamilyGroupMemorialRepository;
-import seg.work.geuliumieum.server.familygroup.repository.FamilyGroupRepository;
+import seg.work.geuliumieum.server.common.entity.FamilyGroup;
+import seg.work.geuliumieum.server.common.entity.FamilyGroupMember;
+import seg.work.geuliumieum.server.common.entity.FamilyGroupMemorial;
+import seg.work.geuliumieum.server.common.repository.FamilyGroupMemberRepository;
+import seg.work.geuliumieum.server.common.repository.FamilyGroupMemorialRepository;
+import seg.work.geuliumieum.server.common.repository.FamilyGroupRepository;
 import seg.work.geuliumieum.server.memorial.dto.response.MemorialResponse;
 
 @Service

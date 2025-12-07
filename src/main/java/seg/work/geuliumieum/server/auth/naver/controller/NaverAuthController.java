@@ -13,9 +13,6 @@ import seg.work.geuliumieum.server.auth.dto.response.TokenResponse;
 import seg.work.geuliumieum.server.auth.naver.dto.NaverLoginRequest;
 import seg.work.geuliumieum.server.auth.naver.service.NaverAuthService;
 
-/**
- * 네이버 소셜 로그인 API. - 네이버 인가코드/토큰 정보를 받아 로그인 처리 후 애플리케이션 토큰을 발급합니다.
- */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth/naver")

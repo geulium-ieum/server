@@ -23,9 +23,6 @@ import seg.work.geuliumieum.server.user.dto.response.UserActivityResponse;
 import seg.work.geuliumieum.server.user.dto.response.UserMeResponse;
 import seg.work.geuliumieum.server.user.service.UserService;
 
-/**
- * 사용자(User) API. - 현재 로그인한 사용자의 기본 정보를 조회합니다.
- */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")

@@ -23,9 +23,6 @@ import seg.work.geuliumieum.server.memorial.dto.response.AccessResponse;
 import seg.work.geuliumieum.server.memorial.dto.response.MemorialResponse;
 import seg.work.geuliumieum.server.memorial.service.MemorialService;
 
-/**
- * 추모관(Memorial) 공개 API. - 단건 조회, 목록 조회(페이지네이션), 생성 기능을 제공합니다.
- */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/memorial")

@@ -25,9 +25,6 @@ import seg.work.geuliumieum.server.auth.dto.response.TokenResponse;
 import seg.work.geuliumieum.server.auth.service.AuthService;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
 
-/**
- * 인증/인가 관련 API를 제공하는 컨트롤러입니다. - 회원가입/이메일 인증/재발송/로그인/토큰 재발급/로그아웃/아이디 찾기/비밀번호 재설정 요청·검증을 처리합니다.
- */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")

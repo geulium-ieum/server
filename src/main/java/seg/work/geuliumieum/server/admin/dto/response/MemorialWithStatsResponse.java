@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import seg.work.geuliumieum.server.admin.entity.MemorialWithStatsView;
+import seg.work.geuliumieum.server.common.entity.MemorialWithStatsView;
 
 @Data
 @Builder

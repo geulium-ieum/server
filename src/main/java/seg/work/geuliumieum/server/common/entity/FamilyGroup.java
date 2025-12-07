@@ -11,7 +11,6 @@ import lombok.Setter;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
 @Getter
@@ -22,22 +21,18 @@ import org.springframework.data.annotation.LastModifiedDate;
 public class FamilyGroup extends BaseEntity {
 
     @Serial
-    private static final long serialVersionUID = -4722470605566990886L;
+    private static final long serialVersionUID = -8123456789055512345L;
 
     @NotNull
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "description", length = Integer.MAX_VALUE)
+    @Column(name = "description", length = 1000)
     private String description;
 
     @CreatedBy
-    @Column(name = "created_by", updatable = false)
-    private Long createdBy;
-
-    @LastModifiedBy
-    @Column(name = "updated_by")
-    private Long updatedBy;
+    @Column(name = "owner_id", updatable = false)
+    private Long ownerId;
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)

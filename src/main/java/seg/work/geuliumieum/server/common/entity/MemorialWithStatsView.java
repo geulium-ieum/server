@@ -1,4 +1,4 @@
-package seg.work.geuliumieum.server.admin.entity;
+package seg.work.geuliumieum.server.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

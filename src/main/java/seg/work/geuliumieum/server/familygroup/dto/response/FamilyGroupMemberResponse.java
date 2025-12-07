@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.OffsetDateTime;
 import lombok.Builder;
 import lombok.Getter;
-import seg.work.geuliumieum.server.familygroup.entity.FamilyGroupMember;
+import seg.work.geuliumieum.server.common.entity.FamilyGroupMember;
 
 @Getter
 @Builder
