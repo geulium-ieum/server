@@ -10,7 +10,7 @@ import lombok.Setter;
 @Schema(name = "TributeRequest", description = "추모글 작성/수정 요청")
 public class TributeRequest {
 
-    @NotBlank(message = "{validation.tribute.content.notBlank}")
+    @NotBlank
     @Schema(description = "내용", example = "그리운 어머니, 항상 사랑합니다.")
     private String content;
 

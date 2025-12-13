@@ -10,11 +10,11 @@ import lombok.Setter;
 @Schema(name = "GuestbookRequest", description = "방명록 작성/수정 요청")
 public class GuestbookRequest {
 
-    @NotBlank(message = "{validation.guestbook.authorName.notBlank}")
+    @NotBlank
     @Schema(description = "작성자 이름", example = "홍길동")
     private String authorName;
 
-    @NotBlank(message = "{validation.guestbook.content.notBlank}")
+    @NotBlank
     @Schema(description = "내용", example = "깊은 애도를 표합니다.")
     private String content;
 }

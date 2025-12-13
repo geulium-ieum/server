@@ -11,7 +11,7 @@ import lombok.Setter;
 @Schema(name = "FamilyGroupCreateRequest", description = "가족 그룹 생성 요청")
 public class FamilyGroupCreateRequest {
 
-    @NotBlank(message = "{validation.familyGroup.name.notBlank}")
+    @NotBlank
     @Size(max = 100)
     @Schema(description = "그룹명", example = "홍씨 일가")
     private String name;

@@ -10,7 +10,7 @@ import lombok.Setter;
 @Schema(name = "ProfilePhotoUpdateRequest", description = "프로필 사진 URL 업데이트 요청")
 public class ProfilePhotoUpdateRequest {
 
-    @NotBlank(message = "{validation.user.profilePhotoUrl.notBlank}")
+    @NotBlank
     @Schema(description = "프로필 사진 URL", example = "https://.../bucket/key.jpg")
     private String profilePhotoUrl;
 }

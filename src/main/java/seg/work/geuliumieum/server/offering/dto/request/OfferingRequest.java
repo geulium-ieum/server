@@ -10,7 +10,7 @@ import lombok.Setter;
 @Schema(name = "OfferingRequest", description = "헌화/분향/헌촛 생성 요청")
 public class OfferingRequest {
 
-    @NotBlank(message = "{validation.offering.type.notBlank}")
+    @NotBlank
     @Schema(description = "헌화/분향/헌촛 유형", example = "FLOWER")
     private String offeringType;
 

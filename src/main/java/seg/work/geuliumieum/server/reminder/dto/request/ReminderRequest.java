@@ -15,12 +15,12 @@ import seg.work.geuliumieum.server.reminder.constant.RepeatRule;
 @Schema(name = "ReminderRequest", description = "기일 알림 생성 요청")
 public class ReminderRequest {
 
-    @NotBlank(message = "{validation.reminder.title.notBlank}")
+    @NotBlank
     @Size(max = 200)
     @Schema(description = "제목", example = "아버지 기일")
     private String title;
 
-    @NotNull(message = "{validation.reminder.reminderDate.notNull}")
+    @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Schema(description = "기준일(예: 기일)", example = "2025-01-15")
     private LocalDate reminderDate;

@@ -10,7 +10,7 @@ import lombok.Setter;
 @Schema(name = "FamilyGroupInviteRequest", description = "가족 그룹 멤버 초대 요청")
 public class InviteRequest {
 
-    @NotNull(message = "{validation.invite.userId.notNull}")
+    @NotNull
     @Schema(description = "초대할 사용자 ID", example = "123")
     private Long userId;
 

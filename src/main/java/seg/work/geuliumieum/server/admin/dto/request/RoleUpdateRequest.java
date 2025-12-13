@@ -11,7 +11,7 @@ import seg.work.geuliumieum.server.config.security.UserRole;
 @Schema(name = "RoleUpdateRequest", description = "관리자: 사용자 역할 변경 요청")
 public class RoleUpdateRequest {
 
-    @NotNull(message = "{validation.admin.role.notNull}")
+    @NotNull
     @Schema(description = "변경할 역할", example = "ADMIN")
     private UserRole role;
 }
