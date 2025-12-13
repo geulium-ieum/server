@@ -22,14 +22,14 @@ import seg.work.geuliumieum.server.offering.service.OfferingService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/offering")
 @Tag(name = "Offering", description = "헌화/분향/헌촛 API")
 public class OfferingController {
 
     private final OfferingService offeringService;
 
     @Operation(summary = "헌화/분향/헌촛 목록", description = "추모관별 헌화/분향/헌촛 목록을 조회합니다.")
-    @GetMapping("/memorial/{id}/offering/list")
+    @GetMapping("/memorial/{id}/list")
     public ResponseEntity<Slice<OfferingResponse>> list(@PathVariable("id") Long memorialId,
         @ParameterObject Pageable pageable,
         UserInfo user) {
@@ -37,7 +37,7 @@ public class OfferingController {
     }
 
     @Operation(summary = "헌화/분향/헌촛 하기", description = "해당 추모관에 헌화/분향/헌촛을 등록합니다.")
-    @PostMapping("/memorial/{id}/offering")
+    @PostMapping("/memorial/{id}")
     public ResponseEntity<OfferingResponse> create(@PathVariable("id") Long memorialId,
         UserInfo user,
         @Valid @RequestBody OfferingRequest request) {
@@ -45,13 +45,13 @@ public class OfferingController {
     }
 
     @Operation(summary = "헌화/분향/헌촛 통계", description = "추모관별 헌화/분향/헌촛 통계를 조회합니다.")
-    @GetMapping("/memorial/{id}/offering/stats")
+    @GetMapping("/memorial/{id}/stats")
     public ResponseEntity<OfferingStatsResponse> stats(@PathVariable("id") Long memorialId) {
         return ResponseEntity.ok(offeringService.statsByMemorial(memorialId));
     }
 
     @Operation(summary = "사용자의 헌화/분향/헌촛 내역", description = "특정 사용자의 헌화/분향/헌촛 내역을 조회합니다.")
-    @GetMapping("/user/{userId}/offering")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<Slice<OfferingResponse>> listByUser(@PathVariable Long userId,
         @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(offeringService.listByUser(userId, pageable));

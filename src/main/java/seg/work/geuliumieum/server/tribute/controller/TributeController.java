@@ -23,14 +23,14 @@ import seg.work.geuliumieum.server.tribute.service.TributeService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/tribute")
 @Tag(name = "Tribute", description = "추모글 API")
 public class TributeController {
 
     private final TributeService tributeService;
 
     @Operation(summary = "추모글 목록", description = "추모관별 추모글 목록을 조회합니다.")
-    @GetMapping("/memorial/{id}/tribute/list")
+    @GetMapping("/memorial/{id}/list")
     public ResponseEntity<Slice<TributeResponse>> list(@PathVariable("id") Long memorialId,
         @ParameterObject Pageable pageable,
         UserInfo user) {
@@ -38,7 +38,7 @@ public class TributeController {
     }
 
     @Operation(summary = "추모글 작성", description = "해당 추모관에 추모글을 작성합니다.")
-    @PostMapping("/memorial/{id}/tribute")
+    @PostMapping("/memorial/{id}")
     public ResponseEntity<TributeResponse> create(@PathVariable("id") Long memorialId,
         UserInfo user,
         @Valid @RequestBody TributeRequest request) {
@@ -46,7 +46,7 @@ public class TributeController {
     }
 
     @Operation(summary = "추모글 수정", description = "추모글을 수정합니다(작성자만 가능).")
-    @PutMapping("/tribute/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Void> update(@PathVariable("id") Long tributeId,
         UserInfo user,
         @Valid @RequestBody TributeRequest request) {
@@ -55,7 +55,7 @@ public class TributeController {
     }
 
     @Operation(summary = "추모글 삭제", description = "추모글을 삭제합니다(작성자만 가능).")
-    @DeleteMapping("/tribute/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long tributeId,
         UserInfo user) {
         tributeService.delete(tributeId, user);
@@ -63,7 +63,7 @@ public class TributeController {
     }
 
     @Operation(summary = "사용자의 추모글 목록", description = "특정 사용자가 작성한 추모글 목록을 조회합니다.")
-    @GetMapping("/user/{userId}/tribute/list")
+    @GetMapping("/user/{userId}/list")
     public ResponseEntity<Slice<TributeResponse>> listByUser(@PathVariable Long userId,
         @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(tributeService.listByUser(userId, pageable));

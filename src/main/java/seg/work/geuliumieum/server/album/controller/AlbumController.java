@@ -27,7 +27,7 @@ import seg.work.geuliumieum.server.common.dto.UserInfo;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/album")
 @Tag(name = "Album", description = "앨범/사진 API")
 public class AlbumController {
 
@@ -35,7 +35,7 @@ public class AlbumController {
 
     // 5.1 앨범 관리
     @Operation(summary = "앨범 목록", description = "추모관별 앨범 목록을 조회합니다.")
-    @GetMapping("/memorial/{id}/album/list")
+    @GetMapping("/memorial/{id}/list")
     public ResponseEntity<Slice<AlbumResponse>> listAlbums(@PathVariable("id") Long memorialId,
         @ParameterObject Pageable pageable,
         UserInfo user) {
@@ -43,13 +43,13 @@ public class AlbumController {
     }
 
     @Operation(summary = "앨범 상세 조회", description = "앨범 상세 정보를 조회합니다.")
-    @GetMapping("/album/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<AlbumResponse> getAlbum(@PathVariable("id") Long albumId, UserInfo user) {
         return ResponseEntity.ok(albumService.getAlbum(albumId, user));
     }
 
     @Operation(summary = "앨범 생성", description = "해당 추모관에 앨범을 생성합니다.")
-    @PostMapping("/memorial/{id}/album")
+    @PostMapping("/memorial/{id}")
     public ResponseEntity<AlbumResponse> createAlbum(@PathVariable("id") Long memorialId,
         UserInfo user,
         @Valid @RequestBody AlbumCreateRequest request) {
@@ -57,7 +57,7 @@ public class AlbumController {
     }
 
     @Operation(summary = "앨범 수정", description = "앨범을 수정합니다(소유자만 가능).")
-    @PutMapping("/album/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Void> updateAlbum(@PathVariable("id") Long albumId,
         UserInfo user,
         @Valid @RequestBody AlbumUpdateRequest request) {
@@ -66,7 +66,7 @@ public class AlbumController {
     }
 
     @Operation(summary = "앨범 삭제", description = "앨범을 삭제합니다(소유자만 가능).")
-    @DeleteMapping("/album/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAlbum(@PathVariable("id") Long albumId,
         UserInfo user) {
         albumService.deleteAlbum(albumId, user);
@@ -75,7 +75,7 @@ public class AlbumController {
 
     // 5.2 앨범 사진 관리
     @Operation(summary = "앨범 사진 목록", description = "앨범에 포함된 사진 목록을 조회합니다.")
-    @GetMapping("/album/{id}/photo/list")
+    @GetMapping("/{id}/photo/list")
     public ResponseEntity<Slice<PhotoResponse>> listPhotos(@PathVariable("id") Long albumId,
         @ParameterObject Pageable pageable,
         UserInfo user) {
@@ -83,7 +83,7 @@ public class AlbumController {
     }
 
     @Operation(summary = "사진 업로드", description = "앨범에 사진을 업로드(또는 URL 등록)합니다.")
-    @PostMapping("/album/{id}/photo")
+    @PostMapping("/{id}/photo")
     public ResponseEntity<PhotoResponse> addPhoto(@PathVariable("id") Long albumId,
         UserInfo user,
         @Valid @RequestBody PhotoCreateRequest request) {
