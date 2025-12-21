@@ -42,6 +42,9 @@ public class UserMeResponse {
     @Schema(description = "마지막 로그인 시각")
     private OffsetDateTime lastLoginAt;
 
+    @Schema(description = "마케팅 정보 수신 동의 여부")
+    private Boolean marketingAgreed;
+
     public static UserMeResponse from(User user) {
         return UserMeResponse.builder()
             .id(user.getId())
@@ -52,6 +55,7 @@ public class UserMeResponse {
             .profilePhotoUrl(user.getProfilePhotoUrl())
             .isActive(user.getIsActive())
             .lastLoginAt(user.getLastLoginAt())
+            .marketingAgreed(user.getMarketingAgreed())
             .build();
     }
 }

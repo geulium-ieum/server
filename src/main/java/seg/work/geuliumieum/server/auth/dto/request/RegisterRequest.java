@@ -37,4 +37,7 @@ public class RegisterRequest {
 
     @Schema(description = "프로필 사진 URL", example = "https://cdn.example.com/profiles/abc.jpg")
     private String profilePhotoUrl;
+
+    @Schema(description = "마케팅 정보 수신 동의 여부", example = "true")
+    private Boolean marketingAgreed;
 }

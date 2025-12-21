@@ -17,4 +17,7 @@ public class UserUpdateRequest {
     @Size(max = 20)
     @Schema(description = "전화번호", example = "010-1234-5678")
     private String phone;
+
+    @Schema(description = "마케팅 정보 수신 동의 여부", example = "true")
+    private Boolean marketingAgreed;
 }

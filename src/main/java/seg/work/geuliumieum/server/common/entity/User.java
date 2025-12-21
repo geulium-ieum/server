@@ -59,6 +59,11 @@ public class User extends BaseEntity {
     @Column(name = "is_active")
     private Boolean isActive;
 
+    @ColumnDefault("false")
+    @Column(name = "marketing_agreed")
+    @Comment("마케팅 정보 수신 동의 여부")
+    private Boolean marketingAgreed = false;
+
     @Column(name = "last_login_at")
     private OffsetDateTime lastLoginAt;
 

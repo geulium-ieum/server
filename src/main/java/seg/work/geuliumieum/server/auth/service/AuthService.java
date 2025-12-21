@@ -88,6 +88,7 @@ public class AuthService {
         user.setName(request.getName());
         user.setPhone(request.getPhone());
         user.setProfilePhotoUrl(request.getProfilePhotoUrl());
+        user.setMarketingAgreed(request.getMarketingAgreed() != null && request.getMarketingAgreed());
         user.setRole(UserRole.USER);
         user.setIsActive(false);
 

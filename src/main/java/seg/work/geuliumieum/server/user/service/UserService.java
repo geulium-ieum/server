@@ -68,6 +68,9 @@ public class UserService {
         if (request.getPhone() != null) {
             user.setPhone(request.getPhone());
         }
+        if (request.getMarketingAgreed() != null) {
+            user.setMarketingAgreed(request.getMarketingAgreed());
+        }
         userRepository.save(user);
     }
 
