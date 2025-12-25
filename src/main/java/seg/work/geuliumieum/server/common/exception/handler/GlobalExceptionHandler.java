@@ -8,9 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -85,6 +87,30 @@ public class GlobalExceptionHandler {
             null
         );
         return ResponseEntity.status(status).headers(new HttpHeaders()).body(body);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex) {
+        log.error("AccessDeniedException occurred: {}", ex.getMessage(), ex);
+
+        ErrorResponse body = ErrorResponse.of(
+            ErrorCode.FORBIDDEN,
+            ErrorCode.FORBIDDEN.getDefaultMessage(),
+            null
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleMethodNotSupported(HttpRequestMethodNotSupportedException ex) {
+        log.error("HttpRequestMethodNotSupportedException occurred: {}", ex.getMessage(), ex);
+
+        ErrorResponse body = ErrorResponse.of(
+            ErrorCode.BAD_REQUEST,
+            "지원하지 않는 HTTP 메서드입니다: " + ex.getMethod(),
+            null
+        );
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(body);
     }
 
     @ExceptionHandler(Exception.class)

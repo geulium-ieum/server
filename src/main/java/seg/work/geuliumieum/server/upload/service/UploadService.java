@@ -1,5 +1,6 @@
 package seg.work.geuliumieum.server.upload.service;
 
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -66,11 +67,23 @@ public class UploadService {
         if (fileId == null || fileId.isBlank()) {
             throw new ApiException(ErrorCode.BAD_REQUEST);
         }
-        DeleteObjectRequest req = DeleteObjectRequest.builder()
-            .bucket(bucket)
-            .key(fileId)
-            .build();
-        s3.deleteObject(req);
+
+        // 권한 체크: 본인 폴더 내의 파일인지 확인 (profile/{userId}/... , memorial/{memorialId}/... 등)
+        // 여기서는 간단히 profile 이미지에 대해서만 소유권을 체크하는 예시를 보여줍니다.
+        // 실제로는 DB에 파일 정보를 기록하고 소유자를 확인하는 것이 가장 정확합니다.
+        if (fileId.startsWith("profile/") && !fileId.startsWith("profile/" + user.getId() + "/")) {
+            throw new ApiException(ErrorCode.FORBIDDEN);
+        }
+
+        try {
+            DeleteObjectRequest req = DeleteObjectRequest.builder()
+                .bucket(bucket)
+                .key(fileId)
+                .build();
+            s3.deleteObject(req);
+        } catch (Exception e) {
+            throw new ApiException(ErrorCode.FILE_DELETE_ERROR);
+        }
     }
 
     private void ensureAuth(UserInfo user) {
@@ -84,11 +97,11 @@ public class UploadService {
             throw new ApiException(ErrorCode.BAD_REQUEST);
         }
         if (file.getSize() > MAX_IMAGE_SIZE) {
-            throw new ApiException(ErrorCode.BAD_REQUEST);
+            throw new ApiException(ErrorCode.FILE_SIZE_EXCEEDED);
         }
         String ct = contentType(file);
         if (ct == null || !ct.toLowerCase().startsWith("image/")) {
-            throw new ApiException(ErrorCode.BAD_REQUEST);
+            throw new ApiException(ErrorCode.INVALID_FILE_TYPE);
         }
     }
 
@@ -113,15 +126,15 @@ public class UploadService {
     }
 
     private void putToS3(String key, MultipartFile file) {
-        try {
+        try (InputStream is = file.getInputStream()) {
             PutObjectRequest req = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)
                 .contentType(contentType(file))
                 .build();
-            s3.putObject(req, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+            s3.putObject(req, RequestBody.fromInputStream(is, file.getSize()));
         } catch (Exception e) {
-            throw new ApiException(ErrorCode.INTERNAL_ERROR);
+            throw new ApiException(ErrorCode.FILE_UPLOAD_ERROR);
         }
     }
 

@@ -1,6 +1,7 @@
 package seg.work.geuliumieum.server.user.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import seg.work.geuliumieum.server.common.entity.Memorial;
 import seg.work.geuliumieum.server.common.entity.MemorialMember;
 import seg.work.geuliumieum.server.common.entity.User;
 import seg.work.geuliumieum.server.common.exception.ApiException;
@@ -133,11 +135,24 @@ public class UserService {
         List<Long> memorialIds = page.getContent().stream()
             .map(MemorialMember::getMemorialId)
             .toList();
+
+        if (memorialIds.isEmpty()) {
+            return new SliceImpl<>(List.of(), pageable, false);
+        }
+
+        // In 쿼리로 한 번에 조회하여 N+1 방지
+        List<Memorial> memorials = memorialRepository.findAllByIdIn(memorialIds);
+
+        // 순서 보장을 위해 Map 활용 (필요시)
+        Map<Long, Memorial> memorialMap = memorials.stream()
+            .collect(Collectors.toMap(Memorial::getId, m -> m));
+
         List<MemorialResponse> content = memorialIds.stream()
-            .map(memorialId -> memorialRepository.findById(memorialId).orElse(null))
+            .map(memorialMap::get)
             .filter(Objects::nonNull)
             .map(MemorialResponse::from)
             .collect(Collectors.toList());
+
         return new SliceImpl<>(content, pageable, page.hasNext());
     }
 }

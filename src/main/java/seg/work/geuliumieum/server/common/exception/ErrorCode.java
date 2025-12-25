@@ -48,7 +48,13 @@ public enum ErrorCode {
     MEMORIAL_NOT_FOUND(HttpStatus.NOT_FOUND, "추모관을 찾을 수 없습니다"),
 
     // Redis/Cache
-    REDIS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "캐시 처리 중 오류가 발생했습니다");
+    REDIS_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "캐시 처리 중 오류가 발생했습니다"),
+
+    // File Upload
+    FILE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드 중 오류가 발생했습니다"),
+    FILE_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "파일 용량이 초과되었습니다"),
+    INVALID_FILE_TYPE(HttpStatus.BAD_REQUEST, "지원하지 않는 파일 형식입니다"),
+    FILE_DELETE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파일 삭제 중 오류가 발생했습니다");
 
     private final HttpStatus status;
     private final String defaultMessage;

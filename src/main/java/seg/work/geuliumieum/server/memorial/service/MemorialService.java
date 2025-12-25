@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
+import seg.work.geuliumieum.server.common.entity.FamilyGroupMemorial;
 import seg.work.geuliumieum.server.common.entity.Memorial;
 import seg.work.geuliumieum.server.common.exception.ApiException;
 import seg.work.geuliumieum.server.common.exception.ErrorCode;
@@ -176,7 +177,7 @@ public class MemorialService {
             // 이 추모관이 연결된 모든 가족 그룹 ID 조회
             List<Long> groupIds = familyGroupMemorialRepository.findAllByMemorialId(id)
                 .stream()
-                .map(seg.work.geuliumieum.server.common.entity.FamilyGroupMemorial::getGroupId)
+                .map(FamilyGroupMemorial::getGroupId)
                 .toList();
 
             if (!groupIds.isEmpty()) {
