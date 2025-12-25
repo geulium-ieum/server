@@ -27,8 +27,7 @@ public class NotificationController {
 
     @Operation(summary = "내 알림 목록", description = "현재 사용자의 알림 목록을 조회합니다.")
     @GetMapping("/list")
-    public ResponseEntity<Slice<NotificationResponse>> list(UserInfo user,
-        @ParameterObject Pageable pageable) {
+    public ResponseEntity<Slice<NotificationResponse>> list(UserInfo user, @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(notificationService.list(user, pageable));
     }
 
@@ -40,7 +39,7 @@ public class NotificationController {
 
     @Operation(summary = "알림 읽음 처리", description = "특정 알림을 읽음 처리합니다.")
     @PatchMapping("/{id}/read")
-    public ResponseEntity<Void> markRead(@PathVariable("id") Long id, UserInfo user) {
+    public ResponseEntity<Void> markRead(UserInfo user, @PathVariable Long id) {
         notificationService.markRead(user, id);
         return ResponseEntity.ok().build();
     }
@@ -54,7 +53,7 @@ public class NotificationController {
 
     @Operation(summary = "알림 삭제", description = "특정 알림을 삭제합니다.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOne(@PathVariable("id") Long id, UserInfo user) {
+    public ResponseEntity<Void> deleteOne(UserInfo user, @PathVariable Long id) {
         notificationService.deleteOne(user, id);
         return ResponseEntity.ok().build();
     }

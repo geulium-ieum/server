@@ -13,6 +13,7 @@ import seg.work.geuliumieum.server.common.exception.ApiException;
 import seg.work.geuliumieum.server.common.exception.ErrorCode;
 import seg.work.geuliumieum.server.common.repository.MemorialRepository;
 import seg.work.geuliumieum.server.common.repository.OfferingRepository;
+import seg.work.geuliumieum.server.common.repository.OfferingRepository.OfferingTypeCount;
 import seg.work.geuliumieum.server.memorial.service.MemorialService;
 import seg.work.geuliumieum.server.offering.dto.request.OfferingRequest;
 import seg.work.geuliumieum.server.offering.dto.response.OfferingResponse;
@@ -37,13 +38,13 @@ public class OfferingService {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
-        Offering o = new Offering();
-        o.setMemorialId(memorialId);
-        o.setUserId(user.getId());
-        o.setOfferingType(request.getOfferingType());
-        o.setMessage(request.getMessage());
-        offeringRepository.save(o);
-        return OfferingResponse.from(o);
+        Offering offering = new Offering();
+        offering.setMemorialId(memorialId);
+        offering.setUserId(user.getId());
+        offering.setOfferingType(request.getOfferingType());
+        offering.setMessage(request.getMessage());
+        offeringRepository.save(offering);
+        return OfferingResponse.from(offering);
     }
 
     public OfferingStatsResponse statsByMemorial(Long memorialId) {
@@ -53,10 +54,10 @@ public class OfferingService {
         long flower = 0;
         long incense = 0;
         long candle = 0;
-        for (var r : rows) {
-            long c = r.getCount();
+        for (OfferingTypeCount offeringTypeCount : rows) {
+            long c = offeringTypeCount.getCount();
             total += c;
-            String type = r.getType();
+            String type = offeringTypeCount.getType();
             if ("FLOWER".equalsIgnoreCase(type)) {
                 flower += c;
             } else if ("INCENSE".equalsIgnoreCase(type)) {

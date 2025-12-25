@@ -78,9 +78,7 @@ public class AuthController {
      */
     @Operation(summary = "토큰 재발급", description = "만료 임박/만료된 Access 토큰을 Refresh 토큰으로 재발급합니다.")
     @PostMapping("/refresh")
-    public ResponseEntity<TokenResponse> refresh(
-        UserInfo userInfo,
-        @RequestBody(required = false) RefreshRequest request) {
+    public ResponseEntity<TokenResponse> refresh(UserInfo userInfo, @RequestBody(required = false) RefreshRequest request) {
         TokenResponse tokens = authService.refresh(userInfo, request);
         return ResponseEntity.ok(tokens);
     }
@@ -90,9 +88,7 @@ public class AuthController {
      */
     @Operation(summary = "로그아웃", description = "현재 세션/토큰을 로그아웃 처리하고 액세스 토큰을 블랙리스트에 등록합니다.")
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(
-        UserInfo userInfo,
-        @RequestBody(required = false) LogoutRequest request) {
+    public ResponseEntity<Void> logout(UserInfo userInfo, @RequestBody(required = false) LogoutRequest request) {
         authService.logout(userInfo, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -122,9 +118,7 @@ public class AuthController {
      */
     @Operation(summary = "비밀번호 재설정 검증", description = "전달된 검증 코드 및 새 비밀번호로 재설정을 완료합니다.")
     @PostMapping("/password-reset/verify")
-    public ResponseEntity<MessageResponse> verifyPasswordReset(
-        UserInfo userInfo,
-        @Valid @RequestBody PasswordResetVerifyRequest request) {
+    public ResponseEntity<MessageResponse> verifyPasswordReset(UserInfo userInfo, @Valid @RequestBody PasswordResetVerifyRequest request) {
         authService.verifyPasswordReset(userInfo, request);
         return ResponseEntity.ok(new MessageResponse("비밀번호가 변경되었습니다"));
     }

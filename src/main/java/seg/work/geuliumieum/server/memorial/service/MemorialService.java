@@ -57,8 +57,7 @@ public class MemorialService {
 
     public MemorialResponse getMemorial(Long id, UserInfo userInfo) {
         checkAccess(userInfo, id);
-        Memorial memorial = memorialRepository.findById(id)
-            .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
+        Memorial memorial = memorialRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         return MemorialResponse.from(memorial);
     }
 
@@ -78,8 +77,7 @@ public class MemorialService {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        Memorial memorial = memorialRepository.findById(id)
-            .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
+        Memorial memorial = memorialRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         if (!Objects.equals(memorial.getCreatedBy(), userInfo.getId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
@@ -93,8 +91,7 @@ public class MemorialService {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        Memorial memorial = memorialRepository.findById(id)
-            .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
+        Memorial memorial = memorialRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         if (!Objects.equals(memorial.getCreatedBy(), userInfo.getId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
@@ -141,8 +138,7 @@ public class MemorialService {
 
     @Cacheable(cacheNames = "memorial:access", key = "#id + ':' + (#userInfo != null ? #userInfo.id : 'guest')")
     public AccessResponse getAccess(UserInfo userInfo, Long id) {
-        Memorial memorial = memorialRepository.findById(id)
-            .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
+        Memorial memorial = memorialRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
 
         // 1. 전체 공개
         if (memorial.getVisibility() == VISIBILITY.PUBLIC) {

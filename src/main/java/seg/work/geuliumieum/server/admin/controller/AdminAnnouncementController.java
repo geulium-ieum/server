@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import seg.work.geuliumieum.server.admin.dto.AdminAnnouncementResponse;
+import seg.work.geuliumieum.server.admin.dto.response.AdminAnnouncementResponse;
 import seg.work.geuliumieum.server.admin.service.AdminAnnouncementService;
 import seg.work.geuliumieum.server.announcement.dto.AnnouncementCreateRequest;
 import seg.work.geuliumieum.server.announcement.dto.AnnouncementUpdateRequest;
@@ -29,30 +29,27 @@ public class AdminAnnouncementController {
 
     @Operation(summary = "공지사항 작성", description = "관리자가 공지사항을 작성합니다.")
     @PostMapping
-    public ResponseEntity<AdminAnnouncementResponse> create(UserInfo user,
-        @Valid @RequestBody AnnouncementCreateRequest request) {
+    public ResponseEntity<AdminAnnouncementResponse> create(UserInfo user, @Valid @RequestBody AnnouncementCreateRequest request) {
         return ResponseEntity.ok(adminAnnouncementService.create(user, request));
     }
 
     @Operation(summary = "공지사항 수정", description = "관리자가 공지사항을 수정합니다.")
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(UserInfo user,
-        @PathVariable("id") Long id,
-        @Valid @RequestBody AnnouncementUpdateRequest request) {
+    public ResponseEntity<Void> update(UserInfo user, @PathVariable Long id, @Valid @RequestBody AnnouncementUpdateRequest request) {
         adminAnnouncementService.update(user, id, request);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "공지사항 삭제", description = "관리자가 공지사항을 삭제합니다.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(UserInfo user, @PathVariable("id") Long id) {
+    public ResponseEntity<Void> delete(UserInfo user, @PathVariable Long id) {
         adminAnnouncementService.delete(user, id);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "공지사항 발행", description = "관리자가 공지사항을 발행합니다.")
     @PatchMapping("/{id}/publish")
-    public ResponseEntity<Void> publish(UserInfo user, @PathVariable("id") Long id) {
+    public ResponseEntity<Void> publish(UserInfo user, @PathVariable Long id) {
         adminAnnouncementService.publish(user, id);
         return ResponseEntity.ok().build();
     }

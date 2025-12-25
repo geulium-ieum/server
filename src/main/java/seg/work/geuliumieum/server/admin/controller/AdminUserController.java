@@ -31,23 +31,19 @@ public class AdminUserController {
 
     @Operation(summary = "사용자 목록", description = "모든 사용자 목록을 조회합니다(ADMIN|SUPER_ADMIN)")
     @GetMapping("/list")
-    public ResponseEntity<Slice<AdminUserListItemResponse>> list(UserInfo admin,
-        @ParameterObject Pageable pageable) {
+    public ResponseEntity<Slice<AdminUserListItemResponse>> list(UserInfo admin, @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(adminUserService.list(admin, pageable));
     }
 
     @Operation(summary = "사용자 상세", description = "특정 사용자의 상세(활동 포함)를 조회합니다(ADMIN|SUPER_ADMIN)")
     @GetMapping("/{id}")
-    public ResponseEntity<AdminUserDetailResponse> get(UserInfo admin,
-        @PathVariable("id") Long userId) {
+    public ResponseEntity<AdminUserDetailResponse> get(UserInfo admin, @PathVariable("id") Long userId) {
         return ResponseEntity.ok(adminUserService.get(admin, userId));
     }
 
     @Operation(summary = "사용자 역할 변경", description = "SUPER_ADMIN만 사용자 역할을 변경할 수 있습니다")
     @PatchMapping("/{id}/role")
-    public ResponseEntity<Void> changeRole(UserInfo superAdmin,
-        @PathVariable("id") Long userId,
-        @Valid @RequestBody RoleUpdateRequest request) {
+    public ResponseEntity<Void> changeRole(UserInfo superAdmin, @PathVariable("id") Long userId, @Valid @RequestBody RoleUpdateRequest request) {
         adminUserService.changeRole(superAdmin, userId, request);
         return ResponseEntity.ok().build();
     }

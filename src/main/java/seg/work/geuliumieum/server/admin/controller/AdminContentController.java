@@ -28,38 +28,33 @@ public class AdminContentController {
 
     @Operation(summary = "모든 추모글 조회", description = "시스템 내 모든 추모글을 조회합니다(ADMIN|SUPER_ADMIN)")
     @GetMapping("/tribute")
-    public ResponseEntity<Slice<TributeResponse>> listTributes(UserInfo admin,
-        @ParameterObject Pageable pageable) {
+    public ResponseEntity<Slice<TributeResponse>> listTributes(UserInfo admin, @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(adminContentService.listAllTributes(admin, pageable));
     }
 
     @Operation(summary = "부적절 추모글 삭제", description = "특정 추모글을 삭제합니다(ADMIN|SUPER_ADMIN)")
     @DeleteMapping("/tribute/{id}")
-    public ResponseEntity<Void> deleteTribute(UserInfo admin,
-        @PathVariable("id") Long tributeId) {
+    public ResponseEntity<Void> deleteTribute(UserInfo admin, @PathVariable("id") Long tributeId) {
         adminContentService.deleteTribute(admin, tributeId);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "모든 방명록 조회", description = "시스템 내 모든 방명록을 조회합니다(ADMIN|SUPER_ADMIN)")
     @GetMapping("/guestbook")
-    public ResponseEntity<Slice<GuestbookResponse>> listGuestbooks(UserInfo admin,
-        @ParameterObject Pageable pageable) {
+    public ResponseEntity<Slice<GuestbookResponse>> listGuestbooks(UserInfo admin, @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(adminContentService.listAllGuestbooks(admin, pageable));
     }
 
     @Operation(summary = "방명록 승인", description = "특정 방명록을 승인합니다(ADMIN|SUPER_ADMIN)")
     @PatchMapping("/guestbook/{id}/approve")
-    public ResponseEntity<Void> approveGuestbook(UserInfo admin,
-        @PathVariable("id") Long entryId) {
+    public ResponseEntity<Void> approveGuestbook(UserInfo admin, @PathVariable("id") Long entryId) {
         adminContentService.approveGuestbook(admin, entryId);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "부적절 방명록 삭제", description = "특정 방명록을 삭제합니다(ADMIN|SUPER_ADMIN)")
     @DeleteMapping("/guestbook/{id}")
-    public ResponseEntity<Void> deleteGuestbook(UserInfo admin,
-        @PathVariable("id") Long entryId) {
+    public ResponseEntity<Void> deleteGuestbook(UserInfo admin, @PathVariable("id") Long entryId) {
         adminContentService.deleteGuestbook(admin, entryId);
         return ResponseEntity.ok().build();
     }

@@ -72,16 +72,16 @@ public class ScheduledTasks {
         log.info("[Scheduler] generateDailyReport: snapshot logged");
     }
 
-    private LocalDate nextOccurrenceDate(Reminder r, LocalDate today) {
-        if (r.getIsActive() != null && !r.getIsActive()) {
+    private LocalDate nextOccurrenceDate(Reminder reminder, LocalDate today) {
+        if (reminder.getIsActive() != null && !reminder.getIsActive()) {
             return null;
         }
-        int daysBefore = r.getDaysBefore() == null ? 0 : r.getDaysBefore();
-        LocalDate base = r.getReminderDate();
+        int daysBefore = reminder.getDaysBefore() == null ? 0 : reminder.getDaysBefore();
+        LocalDate base = reminder.getReminderDate();
         if (base == null) {
             return null;
         }
-        RepeatRule rule = r.getRepeatRule() == null ? RepeatRule.YEARLY : r.getRepeatRule();
+        RepeatRule rule = reminder.getRepeatRule() == null ? RepeatRule.YEARLY : reminder.getRepeatRule();
 
         LocalDate candidate;
         switch (rule) {

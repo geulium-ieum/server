@@ -150,6 +150,8 @@ auth:
 
 hermes:
   groupKey: b8dd65c8-71ec-467d-b662-b52b9323cda9
+  baseUrl: http://hermes:8020
+  sendTemplateUrl: ${hermes.baseUrl}/mail/send/template
 
 ---
 

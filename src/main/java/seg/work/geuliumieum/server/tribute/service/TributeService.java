@@ -39,12 +39,12 @@ public class TributeService {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
-        Tribute t = new Tribute();
-        t.setMemorialId(memorialId);
-        t.setUserId(user.getId());
-        t.setContent(request.getContent());
-        t.setIsPublic(Boolean.TRUE.equals(request.getIsPublic()));
-        tributeRepository.save(t);
+        Tribute tribute = new Tribute();
+        tribute.setMemorialId(memorialId);
+        tribute.setUserId(user.getId());
+        tribute.setContent(request.getContent());
+        tribute.setIsPublic(Boolean.TRUE.equals(request.getIsPublic()));
+        tributeRepository.save(tribute);
 
         // 추모관 생성자에게 알림 발송
         if (memorial.getCreatedBy() != null && !memorial.getCreatedBy().equals(user.getId())) {
@@ -58,7 +58,7 @@ public class TributeService {
                 .build());
         }
 
-        return TributeResponse.from(t);
+        return TributeResponse.from(tribute);
     }
 
     @Transactional
@@ -66,18 +66,17 @@ public class TributeService {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        Tribute t = tributeRepository.findById(tributeId)
-            .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(t.getUserId())) {
+        Tribute tribute = tributeRepository.findById(tributeId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        if (!user.getId().equals(tribute.getUserId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         if (request.getContent() != null) {
-            t.setContent(request.getContent());
+            tribute.setContent(request.getContent());
         }
         if (request.getIsPublic() != null) {
-            t.setIsPublic(request.getIsPublic());
+            tribute.setIsPublic(request.getIsPublic());
         }
-        tributeRepository.save(t);
+        tributeRepository.save(tribute);
     }
 
     @Transactional
@@ -85,12 +84,11 @@ public class TributeService {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        Tribute t = tributeRepository.findById(tributeId)
-            .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(t.getUserId())) {
+        Tribute tribute = tributeRepository.findById(tributeId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        if (!user.getId().equals(tribute.getUserId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
-        tributeRepository.delete(t);
+        tributeRepository.delete(tribute);
     }
 
     public Slice<TributeResponse> listByUser(Long userId, @ParameterObject Pageable pageable) {

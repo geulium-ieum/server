@@ -99,10 +99,10 @@ public class GlobalExceptionHandler {
     }
 
     private Map<String, Object> toFieldError(FieldError fe) {
-        Map<String, Object> m = new HashMap<>();
-        m.put("field", fe.getField());
-        m.put("rejectedValue", fe.getRejectedValue());
-        m.put("message", fe.getDefaultMessage());
-        return m;
+        Map<String, Object> map = new HashMap<>();
+        map.put("field", fe.getField());
+        map.put("rejectedValue", fe.getRejectedValue());
+        map.put("message", fe.getDefaultMessage());
+        return map;
     }
 }

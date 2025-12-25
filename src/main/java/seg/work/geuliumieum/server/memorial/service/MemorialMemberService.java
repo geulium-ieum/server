@@ -26,8 +26,7 @@ public class MemorialMemberService {
     private final MemorialMemberRepository memorialMemberRepository;
 
     public Slice<MemorialMemberResponse> list(Long memorialId, @ParameterObject Pageable pageable, UserInfo user) {
-        Memorial memorial = memorialRepository.findById(memorialId)
-            .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
+        Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         // 목록 조회/관리 권한: 소유자만
         if (user == null || user.getId() == null || !user.getId().equals(memorial.getCreatedBy())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
@@ -38,8 +37,7 @@ public class MemorialMemberService {
     @Transactional
     @CacheEvict(cacheNames = "memorial:access", allEntries = true)
     public void add(Long memorialId, UserInfo user, MemberAddRequest request) {
-        Memorial memorial = memorialRepository.findById(memorialId)
-            .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
+        Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
@@ -52,36 +50,33 @@ public class MemorialMemberService {
             // 중복 멤버 추가 요청
             throw new ApiException(ErrorCode.BAD_REQUEST);
         }
-        MemorialMember m = new MemorialMember();
-        m.setMemorialId(memorialId);
-        m.setUserId(request.getUserId());
-        m.setRelationship(request.getRelationship());
-        m.setRole(request.getRole());
-        memorialMemberRepository.save(m);
+        MemorialMember memorialMember = new MemorialMember();
+        memorialMember.setMemorialId(memorialId);
+        memorialMember.setUserId(request.getUserId());
+        memorialMember.setRelationship(request.getRelationship());
+        memorialMember.setRole(request.getRole());
+        memorialMemberRepository.save(memorialMember);
     }
 
     @Transactional
     @CacheEvict(cacheNames = "memorial:access", allEntries = true)
     public void changeRole(Long memorialId, Long targetUserId, UserInfo user, MemberRoleUpdateRequest request) {
-        Memorial memorial = memorialRepository.findById(memorialId)
-            .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
+        Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         if (!user.getId().equals(memorial.getCreatedBy())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
-        MemorialMember m = memorialMemberRepository.findByMemorialIdAndUserId(memorialId, targetUserId)
-            .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        m.setRole(request.getRole());
-        memorialMemberRepository.save(m);
+        MemorialMember memorialMember = memorialMemberRepository.findByMemorialIdAndUserId(memorialId, targetUserId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        memorialMember.setRole(request.getRole());
+        memorialMemberRepository.save(memorialMember);
     }
 
     @Transactional
     @CacheEvict(cacheNames = "memorial:access", allEntries = true)
     public void remove(Long memorialId, Long targetUserId, UserInfo user) {
-        Memorial memorial = memorialRepository.findById(memorialId)
-            .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
+        Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }

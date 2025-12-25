@@ -45,8 +45,7 @@ public class MemorialController {
      */
     @Operation(summary = "추모관 목록 조회", description = "페이지네이션으로 추모관 목록을 조회합니다.")
     @GetMapping("/list")
-    public Slice<MemorialResponse> getMemorialList(
-        @ParameterObject Pageable pageable) {
+    public Slice<MemorialResponse> getMemorialList(@ParameterObject Pageable pageable) {
         return memorialService.getMemorialList(pageable);
     }
 
@@ -55,10 +54,7 @@ public class MemorialController {
      */
     @Operation(summary = "추모관 수정", description = "ID로 특정 추모관의 정보를 수정합니다.")
     @PutMapping("/{id}")
-    public void updateMemorial(
-        UserInfo userInfo,
-        @Parameter(description = "추모관 ID", example = "1001") @PathVariable Long id,
-        @Valid @RequestBody UpdateRequest request) {
+    public void updateMemorial(UserInfo userInfo, @Parameter(description = "추모관 ID", example = "1001") @PathVariable Long id, @Valid @RequestBody UpdateRequest request) {
         memorialService.updateMemorial(userInfo, id, request);
     }
 
@@ -67,9 +63,7 @@ public class MemorialController {
      */
     @Operation(summary = "추모관 삭제", description = "ID로 특정 추모관을 삭제합니다.")
     @DeleteMapping("/{id}")
-    public void deleteMemorial(
-        UserInfo userInfo,
-        @Parameter(description = "추모관 ID", example = "1001") @PathVariable Long id) {
+    public void deleteMemorial(UserInfo userInfo, @Parameter(description = "추모관 ID", example = "1001") @PathVariable Long id) {
         memorialService.deleteMemorial(userInfo, id);
     }
 
@@ -93,9 +87,7 @@ public class MemorialController {
      */
     @Operation(summary = "추모관 접근 권한 확인", description = "현재 사용자의 접근 권한을 확인합니다.")
     @GetMapping("/{id}/access")
-    public AccessResponse checkAccess(
-        UserInfo userInfo,
-        @Parameter(description = "추모관 ID", example = "1001") @PathVariable Long id) {
+    public AccessResponse checkAccess(UserInfo userInfo, @Parameter(description = "추모관 ID", example = "1001") @PathVariable Long id) {
         return memorialService.getAccess(userInfo, id);
     }
 
@@ -104,9 +96,7 @@ public class MemorialController {
      */
     @Operation(summary = "추모관 생성", description = "현재 사용자 컨텍스트로 새로운 추모관을 생성합니다.")
     @PostMapping
-    public void createMemorial(
-        UserInfo userInfo,
-        @Valid @RequestBody RegisterRequest request) {
+    public void createMemorial(UserInfo userInfo, @Valid @RequestBody RegisterRequest request) {
         memorialService.createMemorial(userInfo, request);
     }
 }

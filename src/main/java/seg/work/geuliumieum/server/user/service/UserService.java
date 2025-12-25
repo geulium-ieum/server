@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -116,7 +117,7 @@ public class UserService {
     }
 
     public Slice<MemorialResponse> getJoinedMemorials(Long id, @ParameterObject Pageable pageable) {
-        var page = memorialMemberRepository.findByUserId(id, pageable);
+        Page<MemorialMember> page = memorialMemberRepository.findByUserId(id, pageable);
         List<Long> memorialIds = page.getContent().stream()
             .map(MemorialMember::getMemorialId)
             .toList();

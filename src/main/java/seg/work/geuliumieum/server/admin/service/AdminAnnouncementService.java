@@ -4,7 +4,7 @@ import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import seg.work.geuliumieum.server.admin.dto.AdminAnnouncementResponse;
+import seg.work.geuliumieum.server.admin.dto.response.AdminAnnouncementResponse;
 import seg.work.geuliumieum.server.announcement.dto.AnnouncementCreateRequest;
 import seg.work.geuliumieum.server.announcement.dto.AnnouncementUpdateRequest;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
@@ -32,49 +32,46 @@ public class AdminAnnouncementService {
     @Transactional
     public AdminAnnouncementResponse create(UserInfo user, AnnouncementCreateRequest request) {
         ensureAdmin(user);
-        Announcement a = new Announcement();
-        a.setTitle(request.getTitle());
-        a.setContent(request.getContent());
-        a.setAuthorId(user.getId());
-        a.setIsPinned(Boolean.TRUE.equals(request.getIsPinned()));
-        a.setIsPublished(false);
-        a.setPublishedAt(null);
-        announcementRepository.save(a);
-        return AdminAnnouncementResponse.from(a);
+        Announcement announcement = new Announcement();
+        announcement.setTitle(request.getTitle());
+        announcement.setContent(request.getContent());
+        announcement.setAuthorId(user.getId());
+        announcement.setIsPinned(Boolean.TRUE.equals(request.getIsPinned()));
+        announcement.setIsPublished(false);
+        announcement.setPublishedAt(null);
+        announcementRepository.save(announcement);
+        return AdminAnnouncementResponse.from(announcement);
     }
 
     @Transactional
     public void update(UserInfo user, Long id, AnnouncementUpdateRequest request) {
         ensureAdmin(user);
-        Announcement a = announcementRepository.findById(id)
-            .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        Announcement announcement = announcementRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         if (request.getTitle() != null) {
-            a.setTitle(request.getTitle());
+            announcement.setTitle(request.getTitle());
         }
         if (request.getContent() != null) {
-            a.setContent(request.getContent());
+            announcement.setContent(request.getContent());
         }
         if (request.getIsPinned() != null) {
-            a.setIsPinned(request.getIsPinned());
+            announcement.setIsPinned(request.getIsPinned());
         }
-        announcementRepository.save(a);
+        announcementRepository.save(announcement);
     }
 
     @Transactional
     public void delete(UserInfo user, Long id) {
         ensureAdmin(user);
-        Announcement a = announcementRepository.findById(id)
-            .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        announcementRepository.delete(a);
+        Announcement announcement = announcementRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        announcementRepository.delete(announcement);
     }
 
     @Transactional
     public void publish(UserInfo user, Long id) {
         ensureAdmin(user);
-        Announcement a = announcementRepository.findById(id)
-            .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        a.setIsPublished(true);
-        a.setPublishedAt(OffsetDateTime.now());
-        announcementRepository.save(a);
+        Announcement announcement = announcementRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        announcement.setIsPublished(true);
+        announcement.setPublishedAt(OffsetDateTime.now());
+        announcementRepository.save(announcement);
     }
 }

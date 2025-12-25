@@ -18,11 +18,13 @@ public class MailClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
+    @Value("${hermes.sendTemplateUrl}")
+    private String sendTemplateUrl;
+
     @Value("${hermes.groupKey}")
     private String groupKey;
 
     public void sendVerificationEmail(String to, String name, String verificationUrl, String code, int expiryMinutes) {
-        String url = "http://hermes:8020/mail/send/template";
         Map<String, Object> body = new HashMap<>();
         body.put("groupKey", groupKey);
         body.put("to", to);
@@ -38,14 +40,13 @@ public class MailClient {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            restTemplate.postForEntity(url, new HttpEntity<>(body, headers), Void.class);
+            restTemplate.postForEntity(sendTemplateUrl, new HttpEntity<>(body, headers), Void.class);
         } catch (Exception e) {
             log.warn("Failed to send verification email to {}: {}", to, e.getMessage());
         }
     }
 
     public void sendPasswordResetEmail(String to, String name, String resetUrl, String code, int expiryMinutes) {
-        String url = "http://hermes:8020/mail/send/template";
         Map<String, Object> body = new HashMap<>();
         body.put("groupKey", groupKey);
         body.put("to", to);
@@ -61,7 +62,7 @@ public class MailClient {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            restTemplate.postForEntity(url, new HttpEntity<>(body, headers), Void.class);
+            restTemplate.postForEntity(sendTemplateUrl, new HttpEntity<>(body, headers), Void.class);
         } catch (Exception e) {
             log.warn("Failed to send password reset email to {}: {}", to, e.getMessage());
         }

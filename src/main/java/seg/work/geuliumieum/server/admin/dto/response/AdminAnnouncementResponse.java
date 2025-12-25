@@ -1,4 +1,4 @@
-package seg.work.geuliumieum.server.admin.dto;
+package seg.work.geuliumieum.server.admin.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;

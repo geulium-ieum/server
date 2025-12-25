@@ -31,8 +31,7 @@ public class GuestbookService {
 
     public Slice<GuestbookResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo user) {
         memorialService.checkAccess(user, memorialId);
-        return guestbookEntryRepository.findByMemorialIdAndIsApprovedTrue(memorialId, pageable)
-            .map(GuestbookResponse::from);
+        return guestbookEntryRepository.findByMemorialIdAndIsApprovedTrue(memorialId, pageable).map(GuestbookResponse::from);
     }
 
     @Transactional
@@ -41,13 +40,13 @@ public class GuestbookService {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
-        GuestbookEntry e = new GuestbookEntry();
-        e.setMemorialId(memorialId);
-        e.setUserId(user.getId());
-        e.setAuthorName(request.getAuthorName());
-        e.setContent(request.getContent());
-        e.setIsApproved(Boolean.FALSE);
-        guestbookEntryRepository.save(e);
+        GuestbookEntry guestbookEntry = new GuestbookEntry();
+        guestbookEntry.setMemorialId(memorialId);
+        guestbookEntry.setUserId(user.getId());
+        guestbookEntry.setAuthorName(request.getAuthorName());
+        guestbookEntry.setContent(request.getContent());
+        guestbookEntry.setIsApproved(Boolean.FALSE);
+        guestbookEntryRepository.save(guestbookEntry);
 
         // 추모관 생성자에게 알림 발송 (승인 대기 알림)
         if (memorial.getCreatedBy() != null && !memorial.getCreatedBy().equals(user.getId())) {
@@ -61,7 +60,7 @@ public class GuestbookService {
                 .build());
         }
 
-        return GuestbookResponse.from(e);
+        return GuestbookResponse.from(guestbookEntry);
     }
 
     @Transactional
@@ -69,19 +68,18 @@ public class GuestbookService {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        GuestbookEntry e = guestbookEntryRepository.findById(entryId)
-            .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(e.getUserId())) {
+        GuestbookEntry guestbookEntry = guestbookEntryRepository.findById(entryId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        if (!user.getId().equals(guestbookEntry.getUserId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         if (request.getAuthorName() != null) {
-            e.setAuthorName(request.getAuthorName());
+            guestbookEntry.setAuthorName(request.getAuthorName());
         }
         if (request.getContent() != null) {
-            e.setContent(request.getContent());
+            guestbookEntry.setContent(request.getContent());
         }
         // 수정 시 재승인 필요 정책은 추후 고려. 여기서는 승인 상태 유지.
-        guestbookEntryRepository.save(e);
+        guestbookEntryRepository.save(guestbookEntry);
     }
 
     @Transactional
@@ -89,12 +87,11 @@ public class GuestbookService {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        GuestbookEntry e = guestbookEntryRepository.findById(entryId)
-            .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(e.getUserId())) {
+        GuestbookEntry guestbookEntry = guestbookEntryRepository.findById(entryId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        if (!user.getId().equals(guestbookEntry.getUserId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
-        guestbookEntryRepository.delete(e);
+        guestbookEntryRepository.delete(guestbookEntry);
     }
 
     @Transactional
@@ -105,9 +102,8 @@ public class GuestbookService {
         if (!(user.getRole() == UserRole.ADMIN || user.getRole() == UserRole.SUPER_ADMIN)) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
-        GuestbookEntry e = guestbookEntryRepository.findById(entryId)
-            .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        e.setIsApproved(Boolean.TRUE);
-        guestbookEntryRepository.save(e);
+        GuestbookEntry guestbookEntry = guestbookEntryRepository.findById(entryId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        guestbookEntry.setIsApproved(Boolean.TRUE);
+        guestbookEntryRepository.save(guestbookEntry);
     }
 }

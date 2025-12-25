@@ -43,8 +43,7 @@ public class ReminderService {
         }
         // 존재 확인
         memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
-        return reminderRepository.findByUserIdAndMemorialId(user.getId(), memorialId, pageable)
-            .map(ReminderService::toResponse);
+        return reminderRepository.findByUserIdAndMemorialId(user.getId(), memorialId, pageable).map(ReminderService::toResponse);
     }
 
     @Transactional
@@ -52,18 +51,18 @@ public class ReminderService {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        Memorial m = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
-        Reminder r = new Reminder();
-        r.setMemorialId(m.getId());
-        r.setUserId(user.getId());
-        r.setTitle(request.getTitle());
-        r.setReminderDate(request.getReminderDate());
-        r.setRepeatRule(request.getRepeatRule());
-        r.setDaysBefore(request.getDaysBefore());
-        r.setIsActive(request.getIsActive());
-        r.setChannel(request.getChannel());
-        reminderRepository.save(r);
-        return toResponse(r);
+        Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
+        Reminder reminder = new Reminder();
+        reminder.setMemorialId(memorial.getId());
+        reminder.setUserId(user.getId());
+        reminder.setTitle(request.getTitle());
+        reminder.setReminderDate(request.getReminderDate());
+        reminder.setRepeatRule(request.getRepeatRule());
+        reminder.setDaysBefore(request.getDaysBefore());
+        reminder.setIsActive(request.getIsActive());
+        reminder.setChannel(request.getChannel());
+        reminderRepository.save(reminder);
+        return toResponse(reminder);
     }
 
     @Transactional
@@ -71,29 +70,29 @@ public class ReminderService {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        Reminder r = reminderRepository.findById(reminderId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(r.getUserId())) {
+        Reminder reminder = reminderRepository.findById(reminderId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        if (!user.getId().equals(reminder.getUserId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         if (request.getTitle() != null) {
-            r.setTitle(request.getTitle());
+            reminder.setTitle(request.getTitle());
         }
         if (request.getReminderDate() != null) {
-            r.setReminderDate(request.getReminderDate());
+            reminder.setReminderDate(request.getReminderDate());
         }
         if (request.getRepeatRule() != null) {
-            r.setRepeatRule(request.getRepeatRule());
+            reminder.setRepeatRule(request.getRepeatRule());
         }
         if (request.getDaysBefore() != null) {
-            r.setDaysBefore(request.getDaysBefore());
+            reminder.setDaysBefore(request.getDaysBefore());
         }
         if (request.getIsActive() != null) {
-            r.setIsActive(request.getIsActive());
+            reminder.setIsActive(request.getIsActive());
         }
         if (request.getChannel() != null) {
-            r.setChannel(request.getChannel());
+            reminder.setChannel(request.getChannel());
         }
-        reminderRepository.save(r);
+        reminderRepository.save(reminder);
     }
 
     @Transactional
@@ -101,11 +100,11 @@ public class ReminderService {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        Reminder r = reminderRepository.findById(reminderId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(r.getUserId())) {
+        Reminder reminder = reminderRepository.findById(reminderId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        if (!user.getId().equals(reminder.getUserId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
-        reminderRepository.delete(r);
+        reminderRepository.delete(reminder);
     }
 
     public List<ReminderResponse> upcoming(UserInfo user) {
@@ -116,10 +115,10 @@ public class ReminderService {
         LocalDate until = today.plusDays(30);
         List<Reminder> actives = reminderRepository.findByUserIdAndIsActiveTrue(user.getId());
         List<ReminderResponse> results = new ArrayList<>();
-        for (Reminder r : actives) {
-            LocalDate next = nextOccurrenceDate(r, today);
+        for (Reminder reminder : actives) {
+            LocalDate next = nextOccurrenceDate(reminder, today);
             if (next != null && (next.isEqual(today) || (next.isAfter(today) && !next.isAfter(until)))) {
-                ReminderResponse resp = toResponse(r);
+                ReminderResponse resp = toResponse(reminder);
                 // attach nextOccurrence via builder recreation
                 results.add(ReminderResponse.builder()
                     .id(resp.getId())
@@ -145,13 +144,13 @@ public class ReminderService {
         return ReminderResponse.from(r);
     }
 
-    private LocalDate nextOccurrenceDate(Reminder r, LocalDate today) {
-        if (Boolean.FALSE.equals(r.getIsActive())) {
+    private LocalDate nextOccurrenceDate(Reminder reminder, LocalDate today) {
+        if (Boolean.FALSE.equals(reminder.getIsActive())) {
             return null;
         }
-        int daysBefore = r.getDaysBefore() == null ? 0 : r.getDaysBefore();
-        LocalDate base = r.getReminderDate();
-        RepeatRule rule = r.getRepeatRule() == null ? RepeatRule.YEARLY : r.getRepeatRule();
+        int daysBefore = reminder.getDaysBefore() == null ? 0 : reminder.getDaysBefore();
+        LocalDate base = reminder.getReminderDate();
+        RepeatRule rule = reminder.getRepeatRule() == null ? RepeatRule.YEARLY : reminder.getRepeatRule();
 
         LocalDate candidate;
         switch (rule) {

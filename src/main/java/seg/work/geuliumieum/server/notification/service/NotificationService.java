@@ -24,8 +24,7 @@ public class NotificationService {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        return notificationRepository.findByUserIdOrderByCreatedAtDesc(user.getId(), pageable)
-            .map(NotificationResponse::from);
+        return notificationRepository.findByUserIdOrderByCreatedAtDesc(user.getId(), pageable).map(NotificationResponse::from);
     }
 
     public long unreadCount(UserInfo user) {
@@ -65,8 +64,8 @@ public class NotificationService {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        Notification n = notificationRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(n.getUserId())) {
+        Notification notification = notificationRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        if (!user.getId().equals(notification.getUserId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         notificationRepository.deleteByUserIdAndId(user.getId(), id);
@@ -84,17 +83,17 @@ public class NotificationService {
     @Transactional
     public void publish(Long userId, String type, String title, String message,
         String relatedType, Long relatedId) {
-        Notification n = new Notification();
-        n.setUserId(userId);
-        n.setType(type);
-        n.setTitle(title);
-        n.setMessage(message);
-        n.setRelatedType(relatedType);
-        n.setRelatedId(relatedId);
-        n.setIsRead(false);
+        Notification notification = new Notification();
+        notification.setUserId(userId);
+        notification.setType(type);
+        notification.setTitle(title);
+        notification.setMessage(message);
+        notification.setRelatedType(relatedType);
+        notification.setRelatedId(relatedId);
+        notification.setIsRead(false);
         // createdAt will be set by auditing
-        notificationRepository.save(n);
-        NotificationResponse resp = NotificationResponse.from(n);
+        notificationRepository.save(notification);
+        NotificationResponse resp = NotificationResponse.from(notification);
         sseService.sendNew(userId, resp);
     }
 }

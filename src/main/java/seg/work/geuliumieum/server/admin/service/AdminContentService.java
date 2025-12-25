@@ -41,9 +41,8 @@ public class AdminContentService {
     @Transactional
     public void deleteTribute(UserInfo admin, Long tributeId) {
         ensureAdmin(admin);
-        Tribute t = tributeRepository.findById(tributeId)
-            .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        tributeRepository.delete(t);
+        Tribute tribute = tributeRepository.findById(tributeId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        tributeRepository.delete(tribute);
     }
 
     public Slice<GuestbookResponse> listAllGuestbooks(UserInfo admin, @ParameterObject Pageable pageable) {
@@ -54,17 +53,15 @@ public class AdminContentService {
     @Transactional
     public void approveGuestbook(UserInfo admin, Long entryId) {
         ensureAdmin(admin);
-        GuestbookEntry e = guestbookEntryRepository.findById(entryId)
-            .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        e.setIsApproved(Boolean.TRUE);
-        guestbookEntryRepository.save(e);
+        GuestbookEntry guestbookEntry = guestbookEntryRepository.findById(entryId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        guestbookEntry.setIsApproved(Boolean.TRUE);
+        guestbookEntryRepository.save(guestbookEntry);
     }
 
     @Transactional
     public void deleteGuestbook(UserInfo admin, Long entryId) {
         ensureAdmin(admin);
-        GuestbookEntry e = guestbookEntryRepository.findById(entryId)
-            .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        guestbookEntryRepository.delete(e);
+        GuestbookEntry guestbookEntry = guestbookEntryRepository.findById(entryId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        guestbookEntryRepository.delete(guestbookEntry);
     }
 }

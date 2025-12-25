@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.stream.PendingMessagesSummary;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -75,7 +76,7 @@ public class AuditStreamMaintenance {
 
         // XPENDING summary (group 기준)
         try {
-            var summary = stringRedisTemplate.opsForStream().pending(props.getStreamKey(), props.getGroup());
+            PendingMessagesSummary summary = stringRedisTemplate.opsForStream().pending(props.getStreamKey(), props.getGroup());
             if (summary != null) {
                 gaugePendingCount.set(summary.getTotalPendingMessages());
                 // max idle 계산: summary는 최소/최대 ID와 consumer별 요약 제공. idle 시간은 제공되지 않으므로

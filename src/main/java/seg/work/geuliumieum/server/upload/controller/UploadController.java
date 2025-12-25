@@ -26,24 +26,19 @@ public class UploadController {
 
     @Operation(summary = "프로필 사진 업로드", description = "현재 사용자의 프로필 사진을 업로드합니다.")
     @PostMapping("/profile-photo")
-    public ResponseEntity<UploadResponse> uploadProfile(UserInfo user,
-        @RequestPart("file") MultipartFile file) {
+    public ResponseEntity<UploadResponse> uploadProfile(UserInfo user, @RequestPart("file") MultipartFile file) {
         return ResponseEntity.ok(uploadService.uploadProfilePhoto(user, file));
     }
 
     @Operation(summary = "추모관 사진 업로드", description = "특정 추모관의 사진을 업로드합니다.")
     @PostMapping("/memorial-photo")
-    public ResponseEntity<UploadResponse> uploadMemorial(UserInfo user,
-        @RequestParam("memorialId") Long memorialId,
-        @RequestPart("file") MultipartFile file) {
+    public ResponseEntity<UploadResponse> uploadMemorial(UserInfo user, @RequestParam("memorialId") Long memorialId, @RequestPart("file") MultipartFile file) {
         return ResponseEntity.ok(uploadService.uploadMemorialPhoto(user, memorialId, file));
     }
 
     @Operation(summary = "앨범 사진 업로드", description = "특정 앨범에 사진을 업로드합니다.")
     @PostMapping("/album-photo")
-    public ResponseEntity<UploadResponse> uploadAlbum(UserInfo user,
-        @RequestParam("albumId") Long albumId,
-        @RequestPart("file") MultipartFile file) {
+    public ResponseEntity<UploadResponse> uploadAlbum(UserInfo user, @RequestParam("albumId") Long albumId, @RequestPart("file") MultipartFile file) {
         return ResponseEntity.ok(uploadService.uploadAlbumPhoto(user, albumId, file));
     }
 

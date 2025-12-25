@@ -36,7 +36,7 @@ public class AnnouncementController {
 
     @Operation(summary = "공지사항 상세", description = "발행된 공지사항 상세를 조회합니다.")
     @GetMapping("/{id}")
-    public ResponseEntity<AnnouncementResponse> get(@PathVariable("id") Long id) {
+    public ResponseEntity<AnnouncementResponse> get(@PathVariable Long id) {
         return ResponseEntity.ok(announcementService.get(id));
     }
 }

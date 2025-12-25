@@ -30,8 +30,8 @@ public class AnnouncementService {
     }
 
     public AnnouncementResponse get(Long id) {
-        Announcement a = announcementRepository.findByIdAndIsPublishedTrue(id)
+        Announcement announcement = announcementRepository.findByIdAndIsPublishedTrue(id)
             .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        return AnnouncementResponse.from(a);
+        return AnnouncementResponse.from(announcement);
     }
 }

@@ -37,9 +37,9 @@ public class AlbumService {
     }
 
     public AlbumResponse getAlbum(Long albumId, UserInfo user) {
-        Album a = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        memorialService.checkAccess(user, a.getMemorialId());
-        return AlbumResponse.from(a);
+        Album album = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        memorialService.checkAccess(user, album.getMemorialId());
+        return AlbumResponse.from(album);
     }
 
     @Transactional
@@ -48,13 +48,13 @@ public class AlbumService {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
-        Album a = new Album();
-        a.setMemorialId(memorialId);
-        a.setTitle(request.getTitle());
-        a.setDescription(request.getDescription());
-        a.setCreatedBy(user.getId());
-        albumRepository.save(a);
-        return AlbumResponse.from(a);
+        Album album = new Album();
+        album.setMemorialId(memorialId);
+        album.setTitle(request.getTitle());
+        album.setDescription(request.getDescription());
+        album.setCreatedBy(user.getId());
+        albumRepository.save(album);
+        return AlbumResponse.from(album);
     }
 
     @Transactional
@@ -62,17 +62,17 @@ public class AlbumService {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        Album a = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(a.getCreatedBy())) {
+        Album album = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        if (!user.getId().equals(album.getCreatedBy())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         if (request.getTitle() != null) {
-            a.setTitle(request.getTitle());
+            album.setTitle(request.getTitle());
         }
         if (request.getDescription() != null) {
-            a.setDescription(request.getDescription());
+            album.setDescription(request.getDescription());
         }
-        albumRepository.save(a);
+        albumRepository.save(album);
     }
 
     @Transactional
@@ -80,16 +80,16 @@ public class AlbumService {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        Album a = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(a.getCreatedBy())) {
+        Album album = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        if (!user.getId().equals(album.getCreatedBy())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
-        albumRepository.delete(a);
+        albumRepository.delete(album);
     }
 
     public Slice<PhotoResponse> listPhotos(Long albumId, @ParameterObject Pageable pageable, UserInfo user) {
-        Album a = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        memorialService.checkAccess(user, a.getMemorialId());
+        Album album = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        memorialService.checkAccess(user, album.getMemorialId());
         return albumPhotoRepository.findByAlbumId(albumId, pageable).map(PhotoResponse::from);
     }
 
@@ -98,18 +98,18 @@ public class AlbumService {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        Album a = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        Album album = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         // 작성 권한: 앨범 소유자만으로 제한
-        if (!user.getId().equals(a.getCreatedBy())) {
+        if (!user.getId().equals(album.getCreatedBy())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
-        AlbumPhoto p = new AlbumPhoto();
-        p.setAlbumId(albumId);
-        p.setPhotoUrl(request.getPhotoUrl());
-        p.setCaption(request.getCaption());
-        p.setUploadedBy(user.getId());
-        albumPhotoRepository.save(p);
-        return PhotoResponse.from(p);
+        AlbumPhoto albumPhoto = new AlbumPhoto();
+        albumPhoto.setAlbumId(albumId);
+        albumPhoto.setPhotoUrl(request.getPhotoUrl());
+        albumPhoto.setCaption(request.getCaption());
+        albumPhoto.setUploadedBy(user.getId());
+        albumPhotoRepository.save(albumPhoto);
+        return PhotoResponse.from(albumPhoto);
     }
 
     @Transactional
@@ -117,16 +117,16 @@ public class AlbumService {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        AlbumPhoto p = albumPhotoRepository.findById(photoId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        Album a = albumRepository.findById(p.getAlbumId()).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        AlbumPhoto albumPhoto = albumPhotoRepository.findById(photoId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        Album album = albumRepository.findById(albumPhoto.getAlbumId()).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         // 수정 권한: 업로더 또는 앨범 소유자
-        if (!user.getId().equals(p.getUploadedBy()) && !user.getId().equals(a.getCreatedBy())) {
+        if (!user.getId().equals(albumPhoto.getUploadedBy()) && !user.getId().equals(album.getCreatedBy())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         if (request.getCaption() != null) {
-            p.setCaption(request.getCaption());
+            albumPhoto.setCaption(request.getCaption());
         }
-        albumPhotoRepository.save(p);
+        albumPhotoRepository.save(albumPhoto);
     }
 
     @Transactional
@@ -134,11 +134,11 @@ public class AlbumService {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        AlbumPhoto p = albumPhotoRepository.findById(photoId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        Album a = albumRepository.findById(p.getAlbumId()).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(p.getUploadedBy()) && !user.getId().equals(a.getCreatedBy())) {
+        AlbumPhoto albumPhoto = albumPhotoRepository.findById(photoId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        Album album = albumRepository.findById(albumPhoto.getAlbumId()).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
+        if (!user.getId().equals(albumPhoto.getUploadedBy()) && !user.getId().equals(album.getCreatedBy())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
-        albumPhotoRepository.delete(p);
+        albumPhotoRepository.delete(albumPhoto);
     }
 }

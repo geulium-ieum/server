@@ -55,23 +55,21 @@ public class AdminMemorialService {
 
     public void approve(UserInfo user, Long memorialId) {
         ensureAdmin(user);
-        Memorial m = memorialRepository.findById(memorialId)
-            .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
-        m.setStatus(STATUS.APPROVED);
-        m.setApprovedBy(user.getId());
-        m.setApprovedAt(OffsetDateTime.now());
-        m.setRejectionReason(null);
-        memorialRepository.save(m);
+        Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
+        memorial.setStatus(STATUS.APPROVED);
+        memorial.setApprovedBy(user.getId());
+        memorial.setApprovedAt(OffsetDateTime.now());
+        memorial.setRejectionReason(null);
+        memorialRepository.save(memorial);
     }
 
     public void reject(UserInfo user, Long memorialId, String reason) {
         ensureAdmin(user);
-        Memorial m = memorialRepository.findById(memorialId)
-            .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
-        m.setStatus(STATUS.REJECT);
-        m.setApprovedBy(user.getId());
-        m.setApprovedAt(OffsetDateTime.now());
-        m.setRejectionReason(reason);
-        memorialRepository.save(m);
+        Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
+        memorial.setStatus(STATUS.REJECT);
+        memorial.setApprovedBy(user.getId());
+        memorial.setApprovedAt(OffsetDateTime.now());
+        memorial.setRejectionReason(reason);
+        memorialRepository.save(memorial);
     }
 }

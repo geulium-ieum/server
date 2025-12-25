@@ -49,25 +49,21 @@ public class UserController {
 
     @Operation(summary = "사용자 정보 수정", description = "사용자 본인만 수정 가능합니다.")
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateUser(@PathVariable Long id,
-        UserInfo user,
-        @RequestBody UserUpdateRequest request) {
+    public ResponseEntity<Void> updateUser(UserInfo user, @PathVariable Long id, @RequestBody UserUpdateRequest request) {
         userService.updateUser(id, user == null ? null : user.getId(), request);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "사용자 삭제", description = "사용자 본인만 삭제 가능합니다.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id, UserInfo user) {
+    public ResponseEntity<Void> deleteUser(UserInfo user, @PathVariable Long id) {
         userService.deleteUser(id, user == null ? null : user.getId());
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "프로필 사진 업데이트", description = "사전에 업로드된 S3 URL을 등록합니다.")
     @PatchMapping("/{id}/profile-photo")
-    public ResponseEntity<Void> updateProfilePhoto(@PathVariable Long id,
-        UserInfo user,
-        @RequestBody ProfilePhotoUpdateRequest request) {
+    public ResponseEntity<Void> updateProfilePhoto(UserInfo user, @PathVariable Long id, @RequestBody ProfilePhotoUpdateRequest request) {
         userService.updateProfilePhoto(id, user == null ? null : user.getId(), request);
         return ResponseEntity.ok().build();
     }
@@ -80,15 +76,13 @@ public class UserController {
 
     @Operation(summary = "내가 생성한 추모관 목록", description = "사용자가 생성한 추모관 목록을 조회합니다.")
     @GetMapping("/{id}/memorial/list")
-    public ResponseEntity<Slice<MemorialResponse>> getMyMemorials(@PathVariable Long id,
-        @ParameterObject Pageable pageable) {
+    public ResponseEntity<Slice<MemorialResponse>> getMyMemorials(@PathVariable Long id, @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(userService.getCreatedMemorials(id, pageable));
     }
 
     @Operation(summary = "내가 참여한 추모관 목록", description = "사용자가 멤버로 참여한 추모관 목록을 조회합니다.")
     @GetMapping("/{id}/joined-memorial/list")
-    public ResponseEntity<Slice<MemorialResponse>> getJoinedMemorials(@PathVariable Long id,
-        @ParameterObject Pageable pageable) {
+    public ResponseEntity<Slice<MemorialResponse>> getJoinedMemorials(@PathVariable Long id, @ParameterObject Pageable pageable) {
         return ResponseEntity.ok(userService.getJoinedMemorials(id, pageable));
     }
 }
