@@ -3,8 +3,11 @@ package seg.work.geuliumieum.server.memorial.service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -28,13 +31,29 @@ import seg.work.geuliumieum.server.memorial.dto.response.MemorialResponse;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class MemorialService {
 
     private final MemorialRepository memorialRepository;
     private final MemorialMemberRepository memorialMemberRepository;
     private final FamilyGroupMemberRepository familyGroupMemberRepository;
     private final FamilyGroupMemorialRepository familyGroupMemorialRepository;
+
+    private MemorialService self;
+
+    public MemorialService(MemorialRepository memorialRepository,
+        MemorialMemberRepository memorialMemberRepository,
+        FamilyGroupMemberRepository familyGroupMemberRepository,
+        FamilyGroupMemorialRepository familyGroupMemorialRepository) {
+        this.memorialRepository = memorialRepository;
+        this.memorialMemberRepository = memorialMemberRepository;
+        this.familyGroupMemberRepository = familyGroupMemberRepository;
+        this.familyGroupMemorialRepository = familyGroupMemorialRepository;
+    }
+
+    @Autowired
+    public void setSelf(@Lazy MemorialService self) {
+        this.self = self;
+    }
 
     public MemorialResponse getMemorial(Long id, UserInfo userInfo) {
         checkAccess(userInfo, id);
@@ -54,6 +73,7 @@ public class MemorialService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "memorial:access", allEntries = true)
     public void updateMemorial(UserInfo userInfo, Long id, UpdateRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -68,6 +88,7 @@ public class MemorialService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "memorial:access", allEntries = true)
     public void deleteMemorial(UserInfo userInfo, Long id) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -109,7 +130,7 @@ public class MemorialService {
     }
 
     public void checkAccess(UserInfo userInfo, Long id) {
-        AccessResponse access = getAccess(userInfo, id);
+        AccessResponse access = self.getAccess(userInfo, id);
         if (!access.isAllowed()) {
             if ("LOGIN_REQUIRED".equals(access.getReason())) {
                 throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -118,6 +139,7 @@ public class MemorialService {
         }
     }
 
+    @Cacheable(cacheNames = "memorial:access", key = "#id + ':' + (#userInfo != null ? #userInfo.id : 'guest')")
     public AccessResponse getAccess(UserInfo userInfo, Long id) {
         Memorial memorial = memorialRepository.findById(id)
             .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));

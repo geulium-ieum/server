@@ -2,6 +2,7 @@ package seg.work.geuliumieum.server.memorial.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ public class MemorialMemberService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "memorial:access", allEntries = true)
     public void add(Long memorialId, UserInfo user, MemberAddRequest request) {
         Memorial memorial = memorialRepository.findById(memorialId)
             .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
@@ -59,6 +61,7 @@ public class MemorialMemberService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "memorial:access", allEntries = true)
     public void changeRole(Long memorialId, Long targetUserId, UserInfo user, MemberRoleUpdateRequest request) {
         Memorial memorial = memorialRepository.findById(memorialId)
             .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
@@ -75,6 +78,7 @@ public class MemorialMemberService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "memorial:access", allEntries = true)
     public void remove(Long memorialId, Long targetUserId, UserInfo user) {
         Memorial memorial = memorialRepository.findById(memorialId)
             .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));

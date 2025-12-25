@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -132,6 +133,7 @@ public class FamilyGroupService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "memorial:access", allEntries = true)
     public void invite(UserInfo user, Long groupId, InviteRequest request) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -152,6 +154,7 @@ public class FamilyGroupService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "memorial:access", allEntries = true)
     public void join(UserInfo user, Long groupId) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -168,6 +171,7 @@ public class FamilyGroupService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "memorial:access", allEntries = true)
     public void removeMember(UserInfo user, Long groupId, Long targetUserId) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -184,6 +188,7 @@ public class FamilyGroupService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "memorial:access", allEntries = true)
     public void changeRole(UserInfo user, Long groupId, Long targetUserId, MemberRoleUpdateRequest request) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -218,6 +223,7 @@ public class FamilyGroupService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "memorial:access", allEntries = true)
     public void addMemorial(UserInfo user, Long groupId, AddMemorialRequest request) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -237,6 +243,7 @@ public class FamilyGroupService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "memorial:access", allEntries = true)
     public void removeMemorial(UserInfo user, Long groupId, Long memorialId) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
