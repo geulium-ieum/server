@@ -2,6 +2,8 @@ package seg.work.geuliumieum.server.admin.service;
 
 import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seg.work.geuliumieum.server.admin.dto.response.AdminAnnouncementResponse;
@@ -44,6 +46,10 @@ public class AdminAnnouncementService {
     }
 
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(cacheNames = "announcement:list", allEntries = true),
+        @CacheEvict(cacheNames = "announcement:detail", key = "#id")
+    })
     public void update(UserInfo user, Long id, AnnouncementUpdateRequest request) {
         ensureAdmin(user);
         Announcement announcement = announcementRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
@@ -60,6 +66,10 @@ public class AdminAnnouncementService {
     }
 
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(cacheNames = "announcement:list", allEntries = true),
+        @CacheEvict(cacheNames = "announcement:detail", key = "#id")
+    })
     public void delete(UserInfo user, Long id) {
         ensureAdmin(user);
         Announcement announcement = announcementRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
@@ -67,6 +77,10 @@ public class AdminAnnouncementService {
     }
 
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(cacheNames = "announcement:list", allEntries = true),
+        @CacheEvict(cacheNames = "announcement:detail", key = "#id")
+    })
     public void publish(UserInfo user, Long id) {
         ensureAdmin(user);
         Announcement announcement = announcementRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));

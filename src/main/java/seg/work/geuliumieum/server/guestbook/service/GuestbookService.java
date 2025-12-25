@@ -2,6 +2,8 @@ package seg.work.geuliumieum.server.guestbook.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -29,12 +31,14 @@ public class GuestbookService {
     private final MemorialService memorialService;
     private final ApplicationEventPublisher eventPublisher;
 
+    @Cacheable(cacheNames = "guestbook:list", key = "#memorialId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Slice<GuestbookResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo user) {
         memorialService.checkAccess(user, memorialId);
         return guestbookEntryRepository.findByMemorialIdAndIsApprovedTrue(memorialId, pageable).map(GuestbookResponse::from);
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "guestbook:list", key = "#memorialId")
     public GuestbookResponse create(Long memorialId, UserInfo user, GuestbookRequest request) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -64,6 +68,7 @@ public class GuestbookService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "guestbook:list", allEntries = true)
     public void update(Long entryId, UserInfo user, GuestbookRequest request) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -83,6 +88,7 @@ public class GuestbookService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "guestbook:list", allEntries = true)
     public void delete(Long entryId, UserInfo user) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -95,6 +101,7 @@ public class GuestbookService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "guestbook:list", allEntries = true)
     public void approve(Long entryId, UserInfo user) {
         if (user == null || user.getRole() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);

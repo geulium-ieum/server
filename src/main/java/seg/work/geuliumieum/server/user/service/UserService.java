@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -50,13 +51,17 @@ public class UserService {
         return UserMeResponse.from(user);
     }
 
+    @Cacheable(cacheNames = "user:profile", key = "#id", unless = "#result == null")
     public UserMeResponse getUserProfile(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
         return UserMeResponse.from(user);
     }
 
     @Transactional
-    @CacheEvict(cacheNames = "user:me", allEntries = true)
+    @Caching(evict = {
+        @CacheEvict(cacheNames = "user:me", key = "#id"),
+        @CacheEvict(cacheNames = "user:profile", key = "#id")
+    })
     public void updateUser(Long id, Long actorId, UserUpdateRequest request) {
         if (actorId == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -78,7 +83,10 @@ public class UserService {
     }
 
     @Transactional
-    @CacheEvict(cacheNames = "user:me", allEntries = true)
+    @Caching(evict = {
+        @CacheEvict(cacheNames = "user:me", key = "#id"),
+        @CacheEvict(cacheNames = "user:profile", key = "#id")
+    })
     public void deleteUser(Long id, Long actorId) {
         if (actorId == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -91,7 +99,10 @@ public class UserService {
     }
 
     @Transactional
-    @CacheEvict(cacheNames = "user:me", allEntries = true)
+    @Caching(evict = {
+        @CacheEvict(cacheNames = "user:me", key = "#id"),
+        @CacheEvict(cacheNames = "user:profile", key = "#id")
+    })
     public void updateProfilePhoto(Long id, Long actorId, ProfilePhotoUpdateRequest request) {
         if (actorId == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -104,6 +115,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Cacheable(cacheNames = "user:activity", key = "#id", unless = "#result == null")
     public UserActivityResponse getUserActivity(Long id) {
         // 간단 합산 통계
         long tribute = tributeRepository.countByUserId(id);

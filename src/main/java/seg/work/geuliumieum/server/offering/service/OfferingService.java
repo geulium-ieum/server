@@ -3,6 +3,8 @@ package seg.work.geuliumieum.server.offering.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ public class OfferingService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "offering:stats", key = "#memorialId")
     public OfferingResponse create(Long memorialId, UserInfo user, OfferingRequest request) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -47,6 +50,7 @@ public class OfferingService {
         return OfferingResponse.from(offering);
     }
 
+    @Cacheable(cacheNames = "offering:stats", key = "#memorialId")
     public OfferingStatsResponse statsByMemorial(Long memorialId) {
         memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         List<OfferingRepository.OfferingTypeCount> rows = offeringRepository.countByMemorialGroupByType(memorialId);

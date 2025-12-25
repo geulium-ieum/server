@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -39,6 +41,7 @@ public class FamilyGroupService {
     private final FamilyGroupMemorialRepository familyGroupMemorialRepository;
     private final MemorialRepository memorialRepository;
 
+    @Cacheable(cacheNames = "family:my-groups", key = "#user.id + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Slice<FamilyGroupResponse> myGroups(UserInfo user, @ParameterObject Pageable pageable) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -62,6 +65,7 @@ public class FamilyGroupService {
         return new SliceImpl<>(content, pageable, hasNext);
     }
 
+    @Cacheable(cacheNames = "family:detail", key = "#id")
     public FamilyGroupResponse get(UserInfo user, Long id) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -78,6 +82,7 @@ public class FamilyGroupService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "family:my-groups", allEntries = true)
     public void create(UserInfo user, FamilyGroupCreateRequest request) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -90,6 +95,10 @@ public class FamilyGroupService {
     }
 
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(cacheNames = "family:detail", key = "#id"),
+        @CacheEvict(cacheNames = "family:my-groups", allEntries = true)
+    })
     public void update(UserInfo user, Long id, FamilyGroupUpdateRequest request) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -108,6 +117,10 @@ public class FamilyGroupService {
     }
 
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(cacheNames = "family:detail", key = "#id"),
+        @CacheEvict(cacheNames = "family:my-groups", allEntries = true)
+    })
     public void delete(UserInfo user, Long id) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);

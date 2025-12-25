@@ -2,6 +2,8 @@ package seg.work.geuliumieum.server.tribute.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -28,12 +30,14 @@ public class TributeService {
     private final MemorialService memorialService;
     private final ApplicationEventPublisher eventPublisher;
 
+    @Cacheable(cacheNames = "tribute:list", key = "#memorialId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Slice<TributeResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo user) {
         memorialService.checkAccess(user, memorialId);
         return tributeRepository.findByMemorialId(memorialId, pageable).map(TributeResponse::from);
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "tribute:list", key = "#memorialId")
     public TributeResponse create(Long memorialId, UserInfo user, TributeRequest request) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -62,6 +66,7 @@ public class TributeService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "tribute:list", allEntries = true)
     public void update(Long tributeId, UserInfo user, TributeRequest request) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -80,6 +85,7 @@ public class TributeService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "tribute:list", allEntries = true)
     public void delete(Long tributeId, UserInfo user) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);

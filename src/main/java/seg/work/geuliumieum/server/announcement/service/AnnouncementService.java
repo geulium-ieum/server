@@ -2,6 +2,7 @@ package seg.work.geuliumieum.server.announcement.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -17,18 +18,21 @@ public class AnnouncementService {
 
     private final AnnouncementRepository announcementRepository;
 
+    @Cacheable(cacheNames = "announcement:list", key = "#pageable.pageNumber + ':' + #pageable.pageSize")
     public Slice<AnnouncementResponse> list(@ParameterObject Pageable pageable) {
         return announcementRepository
             .findByIsPublishedTrueOrderByIsPinnedDescCreatedAtDesc(pageable)
             .map(AnnouncementResponse::from);
     }
 
+    @Cacheable(cacheNames = "announcement:list", key = "'pinned:' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Slice<AnnouncementResponse> pinned(@ParameterObject Pageable pageable) {
         return announcementRepository
             .findByIsPublishedTrueAndIsPinnedTrueOrderByCreatedAtDesc(pageable)
             .map(AnnouncementResponse::from);
     }
 
+    @Cacheable(cacheNames = "announcement:detail", key = "#id")
     public AnnouncementResponse get(Long id) {
         Announcement announcement = announcementRepository.findByIdAndIsPublishedTrue(id)
             .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));

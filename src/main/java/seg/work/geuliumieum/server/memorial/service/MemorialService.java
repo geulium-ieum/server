@@ -57,6 +57,11 @@ public class MemorialService {
 
     public MemorialResponse getMemorial(Long id, UserInfo userInfo) {
         checkAccess(userInfo, id);
+        return self.getMemorialDetail(id);
+    }
+
+    @Cacheable(cacheNames = "memorial:detail", key = "#id")
+    public MemorialResponse getMemorialDetail(Long id) {
         Memorial memorial = memorialRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         return MemorialResponse.from(memorial);
     }
@@ -72,7 +77,7 @@ public class MemorialService {
     }
 
     @Transactional
-    @CacheEvict(cacheNames = "memorial:access", allEntries = true)
+    @CacheEvict(cacheNames = {"memorial:access", "memorial:detail"}, allEntries = true)
     public void updateMemorial(UserInfo userInfo, Long id, UpdateRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -86,7 +91,7 @@ public class MemorialService {
     }
 
     @Transactional
-    @CacheEvict(cacheNames = "memorial:access", allEntries = true)
+    @CacheEvict(cacheNames = {"memorial:access", "memorial:detail"}, allEntries = true)
     public void deleteMemorial(UserInfo userInfo, Long id) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);

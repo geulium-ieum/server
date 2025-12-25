@@ -37,7 +37,20 @@ public class RedisCacheConfig {
         // 캐시 이름별 개별 TTL 정의
         Map<String, RedisCacheConfiguration> cacheConfigs = new HashMap<>();
         cacheConfigs.put("user:me", defaultConfig.entryTtl(Duration.ofMinutes(5)));
+        cacheConfigs.put("user:profile", defaultConfig.entryTtl(Duration.ofMinutes(10)));
+        cacheConfigs.put("user:activity", defaultConfig.entryTtl(Duration.ofMinutes(1)));
         cacheConfigs.put("memorial:access", defaultConfig.entryTtl(Duration.ofSeconds(30)));
+        cacheConfigs.put("memorial:detail", defaultConfig.entryTtl(Duration.ofMinutes(10)));
+        cacheConfigs.put("offering:stats", defaultConfig.entryTtl(Duration.ofMinutes(1)));
+        cacheConfigs.put("announcement:list", defaultConfig.entryTtl(Duration.ofMinutes(30)));
+        cacheConfigs.put("announcement:detail", defaultConfig.entryTtl(Duration.ofMinutes(30)));
+        cacheConfigs.put("family:detail", defaultConfig.entryTtl(Duration.ofMinutes(5)));
+        cacheConfigs.put("family:my-groups", defaultConfig.entryTtl(Duration.ofMinutes(5)));
+        cacheConfigs.put("album:list", defaultConfig.entryTtl(Duration.ofMinutes(10)));
+        cacheConfigs.put("album:detail", defaultConfig.entryTtl(Duration.ofMinutes(10)));
+        cacheConfigs.put("album:photo:list", defaultConfig.entryTtl(Duration.ofMinutes(10)));
+        cacheConfigs.put("tribute:list", defaultConfig.entryTtl(Duration.ofMinutes(5)));
+        cacheConfigs.put("guestbook:list", defaultConfig.entryTtl(Duration.ofMinutes(5)));
 
         return RedisCacheManager.builder(connectionFactory)
             .cacheDefaults(defaultConfig)

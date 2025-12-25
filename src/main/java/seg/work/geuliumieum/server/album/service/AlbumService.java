@@ -2,6 +2,9 @@ package seg.work.geuliumieum.server.album.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -31,11 +34,13 @@ public class AlbumService {
     private final MemorialRepository memorialRepository;
     private final MemorialService memorialService;
 
+    @Cacheable(cacheNames = "album:list", key = "#memorialId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Slice<AlbumResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo user) {
         memorialService.checkAccess(user, memorialId);
         return albumRepository.findByMemorialId(memorialId, pageable).map(AlbumResponse::from);
     }
 
+    @Cacheable(cacheNames = "album:detail", key = "#albumId")
     public AlbumResponse getAlbum(Long albumId, UserInfo user) {
         Album album = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         memorialService.checkAccess(user, album.getMemorialId());
@@ -43,6 +48,7 @@ public class AlbumService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "album:list", key = "#memorialId")
     public AlbumResponse createAlbum(Long memorialId, UserInfo user, AlbumCreateRequest request) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -58,6 +64,10 @@ public class AlbumService {
     }
 
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(cacheNames = "album:detail", key = "#albumId"),
+        @CacheEvict(cacheNames = "album:list", allEntries = true)
+    })
     public void updateAlbum(Long albumId, UserInfo user, AlbumUpdateRequest request) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -76,6 +86,10 @@ public class AlbumService {
     }
 
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(cacheNames = "album:detail", key = "#albumId"),
+        @CacheEvict(cacheNames = "album:list", allEntries = true)
+    })
     public void deleteAlbum(Long albumId, UserInfo user) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -87,6 +101,7 @@ public class AlbumService {
         albumRepository.delete(album);
     }
 
+    @Cacheable(cacheNames = "album:photo:list", key = "#albumId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Slice<PhotoResponse> listPhotos(Long albumId, @ParameterObject Pageable pageable, UserInfo user) {
         Album album = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         memorialService.checkAccess(user, album.getMemorialId());
@@ -94,6 +109,7 @@ public class AlbumService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "album:photo:list", key = "#albumId")
     public PhotoResponse createPhoto(Long albumId, UserInfo user, PhotoCreateRequest request) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -113,6 +129,7 @@ public class AlbumService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "album:photo:list", allEntries = true)
     public void updatePhoto(Long photoId, UserInfo user, PhotoUpdateRequest request) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -130,6 +147,7 @@ public class AlbumService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "album:photo:list", allEntries = true)
     public void deletePhoto(Long photoId, UserInfo user) {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
