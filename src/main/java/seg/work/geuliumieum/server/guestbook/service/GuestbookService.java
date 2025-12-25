@@ -2,12 +2,14 @@ package seg.work.geuliumieum.server.guestbook.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
 import seg.work.geuliumieum.server.common.entity.GuestbookEntry;
+import seg.work.geuliumieum.server.common.entity.Memorial;
 import seg.work.geuliumieum.server.common.exception.ApiException;
 import seg.work.geuliumieum.server.common.exception.ErrorCode;
 import seg.work.geuliumieum.server.common.repository.GuestbookEntryRepository;
@@ -15,6 +17,7 @@ import seg.work.geuliumieum.server.common.repository.MemorialRepository;
 import seg.work.geuliumieum.server.config.security.UserRole;
 import seg.work.geuliumieum.server.guestbook.dto.request.GuestbookRequest;
 import seg.work.geuliumieum.server.guestbook.dto.response.GuestbookResponse;
+import seg.work.geuliumieum.server.notification.event.NotificationEvent;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class GuestbookService {
 
     private final GuestbookEntryRepository guestbookEntryRepository;
     private final MemorialRepository memorialRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public Slice<GuestbookResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable) {
         // 존재 확인
@@ -35,7 +39,7 @@ public class GuestbookService {
         if (user == null || user.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
+        Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         GuestbookEntry e = new GuestbookEntry();
         e.setMemorialId(memorialId);
         e.setUserId(user.getId());
@@ -43,6 +47,19 @@ public class GuestbookService {
         e.setContent(request.getContent());
         e.setIsApproved(Boolean.FALSE);
         guestbookEntryRepository.save(e);
+
+        // 추모관 생성자에게 알림 발송 (승인 대기 알림)
+        if (memorial.getCreatedBy() != null && !memorial.getCreatedBy().equals(user.getId())) {
+            eventPublisher.publishEvent(NotificationEvent.builder()
+                .userId(memorial.getCreatedBy())
+                .type("GUESTBOOK_WAITING")
+                .title("방명록 승인 대기")
+                .message(user.getName() + "님이 방명록을 남겼습니다. 승인이 필요합니다.")
+                .relatedType("MEMORIAL")
+                .relatedId(memorialId)
+                .build());
+        }
+
         return GuestbookResponse.from(e);
     }
 

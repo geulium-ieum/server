@@ -11,6 +11,7 @@ import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import seg.work.geuliumieum.server.config.property.RedisConfigProperty;
 import seg.work.geuliumieum.server.util.RedisUtil;
@@ -68,5 +69,12 @@ public class RedisConfig {
         template.setConnectionFactory(lettuceConnectionFactory);
         template.afterPropertiesSet();
         return template;
+    }
+
+    @Bean
+    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("lettuceConnectionFactory") LettuceConnectionFactory lettuceConnectionFactory) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(lettuceConnectionFactory);
+        return container;
     }
 }
