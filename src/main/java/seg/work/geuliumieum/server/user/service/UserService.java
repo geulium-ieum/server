@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -54,6 +55,7 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "user:me", allEntries = true)
     public void updateUser(Long id, Long actorId, UserUpdateRequest request) {
         if (actorId == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -75,6 +77,7 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "user:me", allEntries = true)
     public void deleteUser(Long id, Long actorId) {
         if (actorId == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -87,6 +90,7 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "user:me", allEntries = true)
     public void updateProfilePhoto(Long id, Long actorId, ProfilePhotoUpdateRequest request) {
         if (actorId == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
