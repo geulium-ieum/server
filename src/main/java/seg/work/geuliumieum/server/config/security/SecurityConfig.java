@@ -40,7 +40,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/error", "/", "/favicon.ico").permitAll()
+                .requestMatchers("/error", "/", "/favicon.ico", "/index.html", "/static/**", "/css/**", "/js/**", "/images/**").permitAll()
                 .requestMatchers("/api/docs/**", "/api/swagger-ui/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
