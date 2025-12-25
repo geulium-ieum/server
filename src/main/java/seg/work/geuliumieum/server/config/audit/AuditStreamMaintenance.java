@@ -126,7 +126,6 @@ public class AuditStreamMaintenance {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void reclaimOnce(RedisConnection connection) throws DataAccessException {
         final byte[] key = b(props.getStreamKey());
         final byte[] group = b(props.getGroup());
@@ -216,7 +215,6 @@ public class AuditStreamMaintenance {
                     // DLQ로 json 필드만 복사
                     String json = fields.get("json");
                     if (json != null) {
-                        java.util.Map<String, String> body = java.util.Map.of("json", json);
                         connection.execute(
                             "XADD",
                             b(props.getDlqStreamKey()), b("*"),
