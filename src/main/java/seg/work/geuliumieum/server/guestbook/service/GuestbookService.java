@@ -17,6 +17,7 @@ import seg.work.geuliumieum.server.common.repository.MemorialRepository;
 import seg.work.geuliumieum.server.config.security.UserRole;
 import seg.work.geuliumieum.server.guestbook.dto.request.GuestbookRequest;
 import seg.work.geuliumieum.server.guestbook.dto.response.GuestbookResponse;
+import seg.work.geuliumieum.server.memorial.service.MemorialService;
 import seg.work.geuliumieum.server.notification.event.NotificationEvent;
 
 @Service
@@ -25,11 +26,11 @@ public class GuestbookService {
 
     private final GuestbookEntryRepository guestbookEntryRepository;
     private final MemorialRepository memorialRepository;
+    private final MemorialService memorialService;
     private final ApplicationEventPublisher eventPublisher;
 
-    public Slice<GuestbookResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable) {
-        // 존재 확인
-        memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
+    public Slice<GuestbookResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo user) {
+        memorialService.checkAccess(user, memorialId);
         return guestbookEntryRepository.findByMemorialIdAndIsApprovedTrue(memorialId, pageable)
             .map(GuestbookResponse::from);
     }

@@ -6,4 +6,5 @@ import lombok.Getter;
 public enum VISIBILITY {
     PUBLIC,
     PRIVATE,
+    FAMILY_ONLY,
 }

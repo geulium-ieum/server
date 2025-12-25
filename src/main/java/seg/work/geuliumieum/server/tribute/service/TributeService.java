@@ -14,7 +14,7 @@ import seg.work.geuliumieum.server.common.exception.ApiException;
 import seg.work.geuliumieum.server.common.exception.ErrorCode;
 import seg.work.geuliumieum.server.common.repository.MemorialRepository;
 import seg.work.geuliumieum.server.common.repository.TributeRepository;
-import seg.work.geuliumieum.server.memorial.constant.VISIBILITY;
+import seg.work.geuliumieum.server.memorial.service.MemorialService;
 import seg.work.geuliumieum.server.notification.event.NotificationEvent;
 import seg.work.geuliumieum.server.tribute.dto.request.TributeRequest;
 import seg.work.geuliumieum.server.tribute.dto.response.TributeResponse;
@@ -25,14 +25,11 @@ public class TributeService {
 
     private final TributeRepository tributeRepository;
     private final MemorialRepository memorialRepository;
+    private final MemorialService memorialService;
     private final ApplicationEventPublisher eventPublisher;
 
     public Slice<TributeResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo user) {
-        Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
-        // 비공개/가족공개 등의 상세 접근정책은 이후 단계에서 강화
-        if (memorial.getVisibility() != VISIBILITY.PUBLIC && (user == null || user.getId() == null)) {
-            throw new ApiException(ErrorCode.UNAUTHORIZED);
-        }
+        memorialService.checkAccess(user, memorialId);
         return tributeRepository.findByMemorialId(memorialId, pageable).map(TributeResponse::from);
     }
 

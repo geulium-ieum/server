@@ -15,13 +15,12 @@ import seg.work.geuliumieum.server.album.dto.response.PhotoResponse;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
 import seg.work.geuliumieum.server.common.entity.Album;
 import seg.work.geuliumieum.server.common.entity.AlbumPhoto;
-import seg.work.geuliumieum.server.common.entity.Memorial;
 import seg.work.geuliumieum.server.common.exception.ApiException;
 import seg.work.geuliumieum.server.common.exception.ErrorCode;
 import seg.work.geuliumieum.server.common.repository.AlbumPhotoRepository;
 import seg.work.geuliumieum.server.common.repository.AlbumRepository;
 import seg.work.geuliumieum.server.common.repository.MemorialRepository;
-import seg.work.geuliumieum.server.memorial.constant.VISIBILITY;
+import seg.work.geuliumieum.server.memorial.service.MemorialService;
 
 @Service
 @RequiredArgsConstructor
@@ -30,23 +29,16 @@ public class AlbumService {
     private final AlbumRepository albumRepository;
     private final AlbumPhotoRepository albumPhotoRepository;
     private final MemorialRepository memorialRepository;
+    private final MemorialService memorialService;
 
     public Slice<AlbumResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo user) {
-        Memorial memorial = memorialRepository.findById(memorialId)
-            .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
-        if (memorial.getVisibility() != VISIBILITY.PUBLIC && (user == null || user.getId() == null)) {
-            throw new ApiException(ErrorCode.UNAUTHORIZED);
-        }
+        memorialService.checkAccess(user, memorialId);
         return albumRepository.findByMemorialId(memorialId, pageable).map(AlbumResponse::from);
     }
 
     public AlbumResponse getAlbum(Long albumId, UserInfo user) {
         Album a = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        Memorial memorial = memorialRepository.findById(a.getMemorialId())
-            .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
-        if (memorial.getVisibility() != VISIBILITY.PUBLIC && (user == null || user.getId() == null)) {
-            throw new ApiException(ErrorCode.UNAUTHORIZED);
-        }
+        memorialService.checkAccess(user, a.getMemorialId());
         return AlbumResponse.from(a);
     }
 
@@ -97,11 +89,7 @@ public class AlbumService {
 
     public Slice<PhotoResponse> listPhotos(Long albumId, @ParameterObject Pageable pageable, UserInfo user) {
         Album a = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        Memorial memorial = memorialRepository.findById(a.getMemorialId())
-            .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
-        if (memorial.getVisibility() != VISIBILITY.PUBLIC && (user == null || user.getId() == null)) {
-            throw new ApiException(ErrorCode.UNAUTHORIZED);
-        }
+        memorialService.checkAccess(user, a.getMemorialId());
         return albumPhotoRepository.findByAlbumId(albumId, pageable).map(PhotoResponse::from);
     }
 

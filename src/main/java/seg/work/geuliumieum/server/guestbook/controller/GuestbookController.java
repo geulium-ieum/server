@@ -33,8 +33,9 @@ public class GuestbookController {
     @Operation(summary = "방명록 목록", description = "추모관별 승인된 방명록 목록을 조회합니다.")
     @GetMapping("/memorial/{id}/list")
     public ResponseEntity<Slice<GuestbookResponse>> list(@PathVariable("id") Long memorialId,
-        @ParameterObject Pageable pageable) {
-        return ResponseEntity.ok(guestbookService.listByMemorial(memorialId, pageable));
+        @ParameterObject Pageable pageable,
+        UserInfo user) {
+        return ResponseEntity.ok(guestbookService.listByMemorial(memorialId, pageable, user));
     }
 
     @Operation(summary = "방명록 작성", description = "해당 추모관에 방명록을 작성합니다.")

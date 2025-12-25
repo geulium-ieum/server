@@ -8,13 +8,12 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
-import seg.work.geuliumieum.server.common.entity.Memorial;
 import seg.work.geuliumieum.server.common.entity.Offering;
 import seg.work.geuliumieum.server.common.exception.ApiException;
 import seg.work.geuliumieum.server.common.exception.ErrorCode;
 import seg.work.geuliumieum.server.common.repository.MemorialRepository;
 import seg.work.geuliumieum.server.common.repository.OfferingRepository;
-import seg.work.geuliumieum.server.memorial.constant.VISIBILITY;
+import seg.work.geuliumieum.server.memorial.service.MemorialService;
 import seg.work.geuliumieum.server.offering.dto.request.OfferingRequest;
 import seg.work.geuliumieum.server.offering.dto.response.OfferingResponse;
 import seg.work.geuliumieum.server.offering.dto.response.OfferingStatsResponse;
@@ -25,13 +24,10 @@ public class OfferingService {
 
     private final OfferingRepository offeringRepository;
     private final MemorialRepository memorialRepository;
+    private final MemorialService memorialService;
 
     public Slice<OfferingResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo user) {
-        Memorial memorial = memorialRepository.findById(memorialId)
-            .orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
-        if (memorial.getVisibility() != VISIBILITY.PUBLIC && (user == null || user.getId() == null)) {
-            throw new ApiException(ErrorCode.UNAUTHORIZED);
-        }
+        memorialService.checkAccess(user, memorialId);
         return offeringRepository.findByMemorialId(memorialId, pageable).map(OfferingResponse::from);
     }
 
