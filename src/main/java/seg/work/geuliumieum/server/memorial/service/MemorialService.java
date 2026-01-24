@@ -104,28 +104,17 @@ public class MemorialService {
         memorialRepository.delete(memorial);
     }
 
-    public Slice<MemorialResponse> filter(String name, String birthFrom, String birthTo, String deathFrom, String deathTo, Pageable pageable) {
+    public Slice<MemorialResponse> filter(String name, String birthDate, String deathDate, Pageable pageable) {
         Specification<Memorial> spec = (root, q, cb) -> cb.conjunction();
 
-        LocalDate bf = parseDate(birthFrom);
-        LocalDate bt = parseDate(birthTo);
-        LocalDate df = parseDate(deathFrom);
-        LocalDate dt = parseDate(deathTo);
+        LocalDate bd = parseDate(birthDate);
+        LocalDate dd = parseDate(deathDate);
 
         if (name != null) {
             spec = spec.and((root, q, cb) -> cb.like(root.get("deceasedName"), "%" + name + "%"));
         }
-        if (bf != null) {
-            spec = spec.and((root, q, cb) -> cb.greaterThanOrEqualTo(root.get("birthDate"), bf));
-        }
-        if (bt != null) {
-            spec = spec.and((root, q, cb) -> cb.lessThanOrEqualTo(root.get("birthDate"), bt));
-        }
-        if (df != null) {
-            spec = spec.and((root, q, cb) -> cb.greaterThanOrEqualTo(root.get("deathDate"), df));
-        }
-        if (dt != null) {
-            spec = spec.and((root, q, cb) -> cb.lessThanOrEqualTo(root.get("deathDate"), dt));
+        if (bd != null && dd != null) {
+            spec = spec.and((root, q, cb) -> cb.between(root.get("birthDate"), bd, dd));
         }
 
         Page<Memorial> page = memorialRepository.findAll(spec, pageable);

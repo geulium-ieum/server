@@ -74,12 +74,10 @@ public class MemorialController {
     @GetMapping("/filter")
     public Slice<MemorialResponse> filterMemorials(
         @Parameter(description = "고인 이름(부분 일치)") String name,
-        @Parameter(description = "출생일 시작") String birthFrom,
-        @Parameter(description = "출생일 종료") String birthTo,
-        @Parameter(description = "사망일 시작") String deathFrom,
-        @Parameter(description = "사망일 종료") String deathTo,
+        @Parameter(description = "출생일 시작", example = "1998-05-25") String birthDate,
+        @Parameter(description = "사망일 시작", example = "2026-01-24") String deathDate,
         @ParameterObject Pageable pageable) {
-        return memorialService.filter(name, birthFrom, birthTo, deathFrom, deathTo, pageable);
+        return memorialService.filter(name, birthDate, deathDate, pageable);
     }
 
     /**
