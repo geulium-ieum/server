@@ -9,6 +9,7 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import io.swagger.v3.oas.models.servers.Server;
 
 @Configuration
 @Profile({"local", "dev"})
@@ -21,18 +22,25 @@ public class OpenApiConfig {
      */
     @Bean
     public OpenAPI openAPI() {
+        Server server = new Server()
+            .url("/");
+
+        Info info = new Info()
+            .title("그리움-이음 API")
+            .description("API 문서")
+            .version("v1");
+
+        SecurityScheme securityScheme = new SecurityScheme()
+            .name(SECURITY_SCHEME_NAME)
+            .type(SecurityScheme.Type.HTTP)
+            .scheme("bearer")
+            .bearerFormat("JWT");
+
         return new OpenAPI()
-            .info(new Info()
-                .title("그리움-이음 API")
-                .description("API 문서")
-                .version("v1"))
+            .addServersItem(server)
+            .info(info)
             .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME))
-            .components(new Components().addSecuritySchemes(SECURITY_SCHEME_NAME,
-                new SecurityScheme()
-                    .name(SECURITY_SCHEME_NAME)
-                    .type(SecurityScheme.Type.HTTP)
-                    .scheme("bearer")
-                    .bearerFormat("JWT")));
+            .components(new Components().addSecuritySchemes(SECURITY_SCHEME_NAME, securityScheme));
     }
 
     /**
