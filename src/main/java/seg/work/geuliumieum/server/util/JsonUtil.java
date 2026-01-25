@@ -8,11 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JsonUtil {
 
-    private static final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     public static String toJson(Object obj) {
         try {
-            return mapper.writeValueAsString(obj);
+            return objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             log.error("JSON serialization error", e);
             return null;
@@ -21,7 +21,7 @@ public class JsonUtil {
 
     public static <T> T fromJson(String json, Class<T> clazz) {
         try {
-            return mapper.readValue(json, clazz);
+            return objectMapper.readValue(json, clazz);
         } catch (JsonProcessingException e) {
             log.error("JSON deserialization error", e);
             return null;

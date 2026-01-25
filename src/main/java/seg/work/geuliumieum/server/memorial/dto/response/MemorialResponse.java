@@ -3,8 +3,10 @@ package seg.work.geuliumieum.server.memorial.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import seg.work.geuliumieum.server.common.entity.Memorial;
 import seg.work.geuliumieum.server.memorial.constant.STATUS;
 import seg.work.geuliumieum.server.memorial.constant.VISIBILITY;
@@ -12,6 +14,8 @@ import seg.work.geuliumieum.server.memorial.constant.VISIBILITY;
 @Getter
 @Builder
 @Schema(name = "MemorialResponse", description = "추모관 조회 응답")
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemorialResponse {
 
     @Schema(description = "추모관 ID", example = "1001")
@@ -41,21 +45,21 @@ public class MemorialResponse {
     @Schema(description = "수정 시각")
     private LocalDateTime updatedAt;
 
-    public static MemorialResponse from(Memorial e) {
+    public static MemorialResponse from(Memorial memorial) {
         return MemorialResponse.builder()
-            .id(e.getId())
-            .deceasedName(e.getDeceasedName())
-            .birthDate(e.getBirthDate())
-            .deathDate(e.getDeathDate())
-            .location(e.getLocation())
-            .biography(e.getBiography())
-            .photoUrl(e.getPhotoUrl())
-            .visibility(e.getVisibility())
-            .status(e.getStatus())
-            .createdBy(e.getCreatedBy())
-            .updatedBy(e.getUpdatedBy())
-            .createdAt(e.getCreatedAt())
-            .updatedAt(e.getUpdatedAt())
+            .id(memorial.getId())
+            .deceasedName(memorial.getDeceasedName())
+            .birthDate(memorial.getBirthDate())
+            .deathDate(memorial.getDeathDate())
+            .location(memorial.getLocation())
+            .biography(memorial.getBiography())
+            .photoUrl(memorial.getPhotoUrl())
+            .visibility(memorial.getVisibility())
+            .status(memorial.getStatus())
+            .createdBy(memorial.getCreatedBy())
+            .updatedBy(memorial.getUpdatedBy())
+            .createdAt(memorial.getCreatedAt())
+            .updatedAt(memorial.getUpdatedAt())
             .build();
     }
 }
