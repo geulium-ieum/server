@@ -20,6 +20,9 @@ spring:
     banner-mode: off
   messages:
     encoding: UTF-8
+  threads:
+    virtual:
+      enabled: true
 
   datasource:
     url: ENC(Nji7UIFL47mWx4Ikc6ixkdwK0WEuQunlEdrRS39iCeBnZA2GtyLgFVXz5MiJvMRKhp1TLawB3QM5vq/Tg3pCb+iVtyzLZPPom+N2Wua9uP/pH6l4UB+t1o0iDFBkLGDochcnDcFyLY3/FiE2qx+1gCec9P5+emCkS9vDXe07U7wCQQLvwGYZ9/rQTjznp/WKgVSMi5nhvtB07qjJZNd0wQ==)
@@ -51,6 +54,8 @@ spring:
 
   data:
     redis:
+      repositories:
+        enabled: false
       username: ENC(NDuDs8fPrwPgLWrWP8Nb12BcWKzfUB17jZisrOvZmFIjZ2vlX+qe8cbheXPhAIkd)
       password: ENC(F9nrlanv+ywdGYRnrJps1W7ZpvwM//qyuQeuRkFp5qoAvjPNT9L1ZwnOyzHD2XrM)
       database: 0
