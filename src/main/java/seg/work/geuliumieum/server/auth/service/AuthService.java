@@ -225,6 +225,10 @@ public class AuthService {
     }
 
     public void logout(UserInfo userInfo, LogoutRequest request) {
+        if (userInfo == null) {
+            return;
+        }
+
         if (StringUtils.hasText(userInfo.getToken())) {
             try {
                 Claims ac = jwtTokenProvider.parseClaims(userInfo.getToken());
