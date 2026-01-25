@@ -3,12 +3,16 @@ package seg.work.geuliumieum.server.announcement.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import seg.work.geuliumieum.server.common.entity.Announcement;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(name = "AnnouncementResponse", description = "공지사항 응답")
 public class AnnouncementResponse {
 

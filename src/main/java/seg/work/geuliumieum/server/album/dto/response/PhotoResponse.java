@@ -1,12 +1,16 @@
 package seg.work.geuliumieum.server.album.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import seg.work.geuliumieum.server.common.entity.AlbumPhoto;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(name = "PhotoResponse", description = "앨범 사진 응답")
 public class PhotoResponse {
 

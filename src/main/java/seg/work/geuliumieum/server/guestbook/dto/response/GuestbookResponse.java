@@ -1,12 +1,16 @@
 package seg.work.geuliumieum.server.guestbook.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import seg.work.geuliumieum.server.common.entity.GuestbookEntry;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(name = "GuestbookResponse", description = "방명록 응답")
 public class GuestbookResponse {
 

@@ -9,7 +9,9 @@ import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
@@ -20,6 +22,8 @@ import seg.work.geuliumieum.server.config.security.UserRole;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 @Comment("사용자 정보 테이블")
 public class User extends BaseEntity {

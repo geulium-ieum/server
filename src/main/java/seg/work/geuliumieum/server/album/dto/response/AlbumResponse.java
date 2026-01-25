@@ -2,12 +2,16 @@ package seg.work.geuliumieum.server.album.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import seg.work.geuliumieum.server.common.entity.Album;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(name = "AlbumResponse", description = "앨범 응답")
 public class AlbumResponse {
 

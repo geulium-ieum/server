@@ -3,8 +3,10 @@ package seg.work.geuliumieum.server.user.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Schema(name = "UserActivityResponse", description = "사용자 활동 통계 응답")
 public class UserActivityResponse {

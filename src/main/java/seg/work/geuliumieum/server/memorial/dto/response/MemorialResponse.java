@@ -13,9 +13,9 @@ import seg.work.geuliumieum.server.memorial.constant.VISIBILITY;
 
 @Getter
 @Builder
-@Schema(name = "MemorialResponse", description = "추모관 조회 응답")
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(name = "MemorialResponse", description = "추모관 조회 응답")
 public class MemorialResponse {
 
     @Schema(description = "추모관 ID", example = "1001")

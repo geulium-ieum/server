@@ -7,7 +7,9 @@ import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
@@ -19,6 +21,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "announcements")
 @Comment("공지사항 테이블")
 public class Announcement extends BaseEntity {
