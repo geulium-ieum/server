@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,9 +18,14 @@ import seg.work.geuliumieum.server.common.repository.MemorialRepository;
 import seg.work.geuliumieum.server.upload.dto.UploadResponse;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
+import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UploadService {
@@ -35,11 +41,12 @@ public class UploadService {
     private String endpoint;
 
     private static final long MAX_IMAGE_SIZE = 10L * 1024 * 1024; // 10MB
+    private static final String TMP_PREFIX = "tmp/";
 
     public UploadResponse uploadProfilePhoto(UserInfo userInfo, MultipartFile file) {
         ensureAuth(userInfo);
         validateImage(file);
-        String key = buildKey("profile/" + userInfo.getId(), originalExt(file));
+        String key = buildKey(TMP_PREFIX + "profile/" + userInfo.getId(), originalExt(file));
         putToS3(key, file);
         return new UploadResponse(key, publicUrl(key), file.getSize(), contentType(file));
     }
@@ -48,7 +55,7 @@ public class UploadService {
         ensureAuth(userInfo);
         memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         validateImage(file);
-        String key = buildKey("memorial/" + memorialId, originalExt(file));
+        String key = buildKey(TMP_PREFIX + "memorial/" + memorialId, originalExt(file));
         putToS3(key, file);
         return new UploadResponse(key, publicUrl(key), file.getSize(), contentType(file));
     }
@@ -57,9 +64,42 @@ public class UploadService {
         ensureAuth(userInfo);
         albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         validateImage(file);
-        String key = buildKey("album/" + albumId, originalExt(file));
+        String key = buildKey(TMP_PREFIX + "album/" + albumId, originalExt(file));
         putToS3(key, file);
         return new UploadResponse(key, publicUrl(key), file.getSize(), contentType(file));
+    }
+
+    /**
+     * 임시 경로(tmp/...)에 저장된 파일을 실제 경로로 이동시키고 최종 URL을 반환합니다.
+     */
+    public String confirmFile(String fileId) {
+        if (fileId == null || !fileId.startsWith(TMP_PREFIX)) {
+            return fileId;
+        }
+
+        String newKey = fileId.substring(TMP_PREFIX.length());
+
+        try {
+            // S3 Copy
+            CopyObjectRequest copyReq = CopyObjectRequest.builder()
+                .sourceBucket(bucket)
+                .sourceKey(fileId)
+                .destinationBucket(bucket)
+                .destinationKey(newKey)
+                .build();
+            s3.copyObject(copyReq);
+
+            // 원본(tmp) 삭제
+            DeleteObjectRequest delReq = DeleteObjectRequest.builder()
+                .bucket(bucket)
+                .key(fileId)
+                .build();
+            s3.deleteObject(delReq);
+
+            return newKey;
+        } catch (Exception e) {
+            throw new ApiException(ErrorCode.FILE_UPLOAD_ERROR);
+        }
     }
 
     public void delete(UserInfo userInfo, String fileId) {

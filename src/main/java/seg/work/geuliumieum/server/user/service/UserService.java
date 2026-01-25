@@ -31,6 +31,7 @@ import seg.work.geuliumieum.server.user.dto.request.ProfilePhotoUpdateRequest;
 import seg.work.geuliumieum.server.user.dto.request.UserUpdateRequest;
 import seg.work.geuliumieum.server.user.dto.response.UserActivityResponse;
 import seg.work.geuliumieum.server.user.dto.response.UserMeResponse;
+import seg.work.geuliumieum.server.upload.service.UploadService;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +43,7 @@ public class UserService {
     private final TributeRepository tributeRepository;
     private final OfferingRepository offeringRepository;
     private final GuestbookEntryRepository guestbookEntryRepository;
+    private final UploadService uploadService;
 
     @Cacheable(cacheNames = "user:me", key = "#userId", unless = "#result == null")
     public UserMeResponse getCurrentUser(Long userId) {
@@ -113,7 +115,9 @@ public class UserService {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         User user = userRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
-        user.setProfilePhotoUrl(request.getProfilePhotoUrl());
+        if (request.getProfilePhotoUrl() != null) {
+            user.setProfilePhotoUrl(uploadService.confirmFile(request.getProfilePhotoUrl()));
+        }
         userRepository.save(user);
     }
 

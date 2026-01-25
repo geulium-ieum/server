@@ -21,6 +21,7 @@ import seg.work.geuliumieum.server.memorial.dto.request.RegisterRequest;
 import seg.work.geuliumieum.server.memorial.dto.request.UpdateRequest;
 import seg.work.geuliumieum.server.memorial.dto.response.AccessResponse;
 import seg.work.geuliumieum.server.memorial.dto.response.MemorialResponse;
+import seg.work.geuliumieum.server.upload.service.UploadService;
 
 @Slf4j
 @Service
@@ -30,6 +31,8 @@ public class MemorialService {
     private final MemorialAccessService memorialAccessService;
 
     private final MemorialRepository memorialRepository;
+
+    private final UploadService uploadService;
 
     @Cacheable(cacheNames = "memorial:detail", key = "#id")
     public MemorialResponse getMemorial(Long id, UserInfo userInfo) {
@@ -44,6 +47,9 @@ public class MemorialService {
 
     @Transactional
     public void createMemorial(UserInfo userInfo, RegisterRequest request) {
+        if (request.getPhotoUrl() != null) {
+            request.setPhotoUrl(uploadService.confirmFile(request.getPhotoUrl()));
+        }
         Memorial memorial = request.toEntity();
         memorialRepository.save(memorial);
     }
@@ -57,6 +63,9 @@ public class MemorialService {
         Memorial memorial = memorialRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         if (!Objects.equals(memorial.getCreatedBy(), userInfo.getId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
+        }
+        if (request.getPhotoUrl() != null) {
+            request.setPhotoUrl(uploadService.confirmFile(request.getPhotoUrl()));
         }
         request.applyTo(memorial);
         memorialRepository.save(memorial);

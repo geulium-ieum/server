@@ -1,4 +1,4 @@
-package seg.work.geuliumieum.server.upload.config;
+package seg.work.geuliumieum.server.config.cloud;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

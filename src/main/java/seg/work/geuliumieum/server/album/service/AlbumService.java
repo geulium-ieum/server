@@ -24,6 +24,7 @@ import seg.work.geuliumieum.server.common.repository.AlbumPhotoRepository;
 import seg.work.geuliumieum.server.common.repository.AlbumRepository;
 import seg.work.geuliumieum.server.common.repository.MemorialRepository;
 import seg.work.geuliumieum.server.memorial.service.MemorialService;
+import seg.work.geuliumieum.server.upload.service.UploadService;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,7 @@ public class AlbumService {
     private final AlbumPhotoRepository albumPhotoRepository;
     private final MemorialRepository memorialRepository;
     private final MemorialService memorialService;
+    private final UploadService uploadService;
 
     @Cacheable(cacheNames = "album:list", key = "#memorialId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Slice<AlbumResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo userInfo) {
@@ -118,6 +120,9 @@ public class AlbumService {
         // 작성 권한: 앨범 소유자만으로 제한
         if (!userInfo.getId().equals(album.getCreatedBy())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
+        }
+        if (request.getPhotoUrl() != null) {
+            request.setPhotoUrl(uploadService.confirmFile(request.getPhotoUrl()));
         }
         AlbumPhoto albumPhoto = new AlbumPhoto();
         albumPhoto.setAlbumId(albumId);

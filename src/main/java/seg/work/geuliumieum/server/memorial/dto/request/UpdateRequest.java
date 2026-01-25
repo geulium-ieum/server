@@ -41,6 +41,9 @@ public class UpdateRequest {
     @Schema(description = "상태", example = "PENDING")
     private STATUS status;
 
+    @Schema(description = "사진 URL")
+    private String photoUrl;
+
     public void applyTo(Memorial memorial) {
         if (this.deceasedName != null) {
             memorial.setDeceasedName(this.deceasedName);
@@ -56,6 +59,9 @@ public class UpdateRequest {
         }
         if (this.biography != null) {
             memorial.setBiography(this.biography);
+        }
+        if (this.photoUrl != null) {
+            memorial.setPhotoUrl(this.photoUrl);
         }
         if (this.visibility != null) {
             memorial.setVisibility(this.visibility);

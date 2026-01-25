@@ -46,6 +46,9 @@ public class RegisterRequest {
     @Schema(description = "상태", example = "PENDING")
     private STATUS status = STATUS.PENDING;
 
+    @Schema(description = "사진 URL")
+    private String photoUrl;
+
     public Memorial toEntity() {
         return Memorial.builder()
             .deceasedName(this.getDeceasedName())
@@ -53,6 +56,7 @@ public class RegisterRequest {
             .birthDate(this.getBirthDate())
             .deathDate(this.getDeathDate())
             .biography(this.getBiography())
+            .photoUrl(this.getPhotoUrl())
             .visibility(this.getVisibility())
             .status(this.getStatus())
             .build();
