@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -124,6 +125,19 @@ public class GlobalExceptionHandler {
             null
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<ErrorResponse> handlePropertyReference(PropertyReferenceException ex) {
+        log.warn("PropertyReferenceException occurred: {}", ex.getMessage());
+
+        ErrorResponse body = ErrorResponse.of(
+            ErrorCode.SORT_BAD_PROPERTY,
+            "프로퍼티 참조 오류: " + ex.getMessage(),
+            null
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
     @ExceptionHandler(Exception.class)
