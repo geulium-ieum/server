@@ -31,13 +31,13 @@ public class OfferingController {
     @Operation(summary = "헌화/분향/헌촛 목록", description = "추모관별 헌화/분향/헌촛 목록을 조회합니다.")
     @GetMapping("/memorial/{id}/list")
     public ResponseEntity<Slice<OfferingResponse>> list(UserInfo userInfo, @PathVariable("id") Long memorialId, @ParameterObject Pageable pageable) {
-        return ResponseEntity.ok(offeringService.listByMemorial(memorialId, pageable, userInfo));
+        return ResponseEntity.ok(offeringService.listByMemorial(userInfo, memorialId, pageable));
     }
 
     @Operation(summary = "헌화/분향/헌촛 하기", description = "해당 추모관에 헌화/분향/헌촛을 등록합니다.")
     @PostMapping("/memorial/{id}")
     public ResponseEntity<OfferingResponse> create(UserInfo userInfo, @PathVariable("id") Long memorialId, @Valid @RequestBody OfferingRequest request) {
-        return ResponseEntity.ok(offeringService.create(memorialId, userInfo, request));
+        return ResponseEntity.ok(offeringService.create(userInfo, memorialId, request));
     }
 
     @Operation(summary = "헌화/분향/헌촛 통계", description = "추모관별 헌화/분향/헌촛 통계를 조회합니다.")

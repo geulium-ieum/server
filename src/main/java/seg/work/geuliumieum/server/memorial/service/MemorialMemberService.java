@@ -25,7 +25,7 @@ public class MemorialMemberService {
     private final MemorialRepository memorialRepository;
     private final MemorialMemberRepository memorialMemberRepository;
 
-    public Slice<MemorialMemberResponse> list(Long memorialId, @ParameterObject Pageable pageable, UserInfo userInfo) {
+    public Slice<MemorialMemberResponse> list(UserInfo userInfo, Long memorialId, @ParameterObject Pageable pageable) {
         Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         // 목록 조회/관리 권한: 소유자만
         if (userInfo == null || userInfo.getId() == null || !userInfo.getId().equals(memorial.getCreatedBy())) {
@@ -36,7 +36,7 @@ public class MemorialMemberService {
 
     @Transactional
     @CacheEvict(cacheNames = "memorial:access", allEntries = true)
-    public void add(Long memorialId, UserInfo userInfo, MemberAddRequest request) {
+    public void add(UserInfo userInfo, Long memorialId, MemberAddRequest request) {
         Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -60,7 +60,7 @@ public class MemorialMemberService {
 
     @Transactional
     @CacheEvict(cacheNames = "memorial:access", allEntries = true)
-    public void changeRole(Long memorialId, Long targetUserId, UserInfo userInfo, MemberRoleUpdateRequest request) {
+    public void changeRole(UserInfo userInfo, Long memorialId, Long targetUserId, MemberRoleUpdateRequest request) {
         Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -75,7 +75,7 @@ public class MemorialMemberService {
 
     @Transactional
     @CacheEvict(cacheNames = "memorial:access", allEntries = true)
-    public void remove(Long memorialId, Long targetUserId, UserInfo userInfo) {
+    public void remove(UserInfo userInfo, Long memorialId, Long targetUserId) {
         Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);

@@ -37,13 +37,13 @@ public class AlbumService {
     private final UploadService uploadService;
 
     @Cacheable(cacheNames = "album:list", key = "#memorialId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
-    public Slice<AlbumResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo userInfo) {
+    public Slice<AlbumResponse> listByMemorial(UserInfo userInfo, Long memorialId, @ParameterObject Pageable pageable) {
         memorialService.checkAccess(userInfo, memorialId);
         return albumRepository.findByMemorialId(memorialId, pageable).map(AlbumResponse::from);
     }
 
     @Cacheable(cacheNames = "album:detail", key = "#albumId")
-    public AlbumResponse getAlbum(Long albumId, UserInfo userInfo) {
+    public AlbumResponse getAlbum(UserInfo userInfo, Long albumId) {
         Album album = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         memorialService.checkAccess(userInfo, album.getMemorialId());
         return AlbumResponse.from(album);
@@ -51,7 +51,7 @@ public class AlbumService {
 
     @Transactional
     @CacheEvict(cacheNames = "album:list", key = "#memorialId")
-    public AlbumResponse createAlbum(Long memorialId, UserInfo userInfo, AlbumCreateRequest request) {
+    public AlbumResponse createAlbum(UserInfo userInfo, Long memorialId, AlbumCreateRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
@@ -70,7 +70,7 @@ public class AlbumService {
         @CacheEvict(cacheNames = "album:detail", key = "#albumId"),
         @CacheEvict(cacheNames = "album:list", allEntries = true)
     })
-    public void updateAlbum(Long albumId, UserInfo userInfo, AlbumUpdateRequest request) {
+    public void updateAlbum(UserInfo userInfo, Long albumId, AlbumUpdateRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
@@ -92,7 +92,7 @@ public class AlbumService {
         @CacheEvict(cacheNames = "album:detail", key = "#albumId"),
         @CacheEvict(cacheNames = "album:list", allEntries = true)
     })
-    public void deleteAlbum(Long albumId, UserInfo userInfo) {
+    public void deleteAlbum(UserInfo userInfo, Long albumId) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
@@ -104,7 +104,7 @@ public class AlbumService {
     }
 
     @Cacheable(cacheNames = "album:photo:list", key = "#albumId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
-    public Slice<PhotoResponse> listPhotos(Long albumId, @ParameterObject Pageable pageable, UserInfo userInfo) {
+    public Slice<PhotoResponse> listPhotos(UserInfo userInfo, Long albumId, @ParameterObject Pageable pageable) {
         Album album = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         memorialService.checkAccess(userInfo, album.getMemorialId());
         return albumPhotoRepository.findByAlbumId(albumId, pageable).map(PhotoResponse::from);
@@ -112,7 +112,7 @@ public class AlbumService {
 
     @Transactional
     @CacheEvict(cacheNames = "album:photo:list", key = "#albumId")
-    public PhotoResponse createPhoto(Long albumId, UserInfo userInfo, PhotoCreateRequest request) {
+    public PhotoResponse createPhoto(UserInfo userInfo, Long albumId, PhotoCreateRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
@@ -135,7 +135,7 @@ public class AlbumService {
 
     @Transactional
     @CacheEvict(cacheNames = "album:photo:list", allEntries = true)
-    public void updatePhoto(Long photoId, UserInfo userInfo, PhotoUpdateRequest request) {
+    public void updatePhoto(UserInfo userInfo, Long photoId, PhotoUpdateRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
@@ -153,7 +153,7 @@ public class AlbumService {
 
     @Transactional
     @CacheEvict(cacheNames = "album:photo:list", allEntries = true)
-    public void deletePhoto(Long photoId, UserInfo userInfo) {
+    public void deletePhoto(UserInfo userInfo, Long photoId) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }

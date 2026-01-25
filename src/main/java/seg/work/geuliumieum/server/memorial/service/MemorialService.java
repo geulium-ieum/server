@@ -35,7 +35,7 @@ public class MemorialService {
     private final UploadService uploadService;
 
     @Cacheable(cacheNames = "memorial:detail", key = "#id")
-    public MemorialResponse getMemorial(Long id, UserInfo userInfo) {
+    public MemorialResponse getMemorial(UserInfo userInfo, Long id) {
         checkAccess(userInfo, id);
         Memorial memorial = memorialRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         return MemorialResponse.from(memorial);
@@ -46,7 +46,7 @@ public class MemorialService {
     }
 
     @Transactional
-    public void createMemorial(UserInfo userInfo, RegisterRequest request) {
+    public void createMemorial(RegisterRequest request) {
         if (request.getPhotoUrl() != null) {
             request.setPhotoUrl(uploadService.confirmFile(request.getPhotoUrl()));
         }

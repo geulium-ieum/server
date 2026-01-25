@@ -29,14 +29,14 @@ public class OfferingService {
     private final MemorialRepository memorialRepository;
     private final MemorialService memorialService;
 
-    public Slice<OfferingResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo userInfo) {
+    public Slice<OfferingResponse> listByMemorial(UserInfo userInfo, Long memorialId, @ParameterObject Pageable pageable) {
         memorialService.checkAccess(userInfo, memorialId);
         return offeringRepository.findByMemorialId(memorialId, pageable).map(OfferingResponse::from);
     }
 
     @Transactional
     @CacheEvict(cacheNames = "offering:stats", key = "#memorialId")
-    public OfferingResponse create(Long memorialId, UserInfo userInfo, OfferingRequest request) {
+    public OfferingResponse create(UserInfo userInfo, Long memorialId, OfferingRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }

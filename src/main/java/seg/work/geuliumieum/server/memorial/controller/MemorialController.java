@@ -37,7 +37,7 @@ public class MemorialController {
     @Operation(summary = "추모관 단건 조회", description = "ID로 특정 추모관 상세를 조회합니다.")
     @GetMapping("/{id}")
     public MemorialResponse getMemorial(UserInfo userInfo, @Parameter(description = "추모관 ID", example = "1001") @PathVariable Long id) {
-        return memorialService.getMemorial(id, userInfo);
+        return memorialService.getMemorial(userInfo, id);
     }
 
     /**
@@ -95,6 +95,6 @@ public class MemorialController {
     @Operation(summary = "추모관 생성", description = "현재 사용자 컨텍스트로 새로운 추모관을 생성합니다.")
     @PostMapping
     public void createMemorial(UserInfo userInfo, @Valid @RequestBody RegisterRequest request) {
-        memorialService.createMemorial(userInfo, request);
+        memorialService.createMemorial(request);
     }
 }

@@ -31,14 +31,14 @@ public class TributeService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Cacheable(cacheNames = "tribute:list", key = "#memorialId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
-    public Slice<TributeResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo userInfo) {
+    public Slice<TributeResponse> listByMemorial(UserInfo userInfo, Long memorialId, @ParameterObject Pageable pageable) {
         memorialService.checkAccess(userInfo, memorialId);
         return tributeRepository.findByMemorialId(memorialId, pageable).map(TributeResponse::from);
     }
 
     @Transactional
     @CacheEvict(cacheNames = "tribute:list", key = "#memorialId")
-    public TributeResponse create(Long memorialId, UserInfo userInfo, TributeRequest request) {
+    public TributeResponse create(UserInfo userInfo, Long memorialId, TributeRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
@@ -67,7 +67,7 @@ public class TributeService {
 
     @Transactional
     @CacheEvict(cacheNames = "tribute:list", allEntries = true)
-    public void update(Long tributeId, UserInfo userInfo, TributeRequest request) {
+    public void update(UserInfo userInfo, Long tributeId, TributeRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
@@ -86,7 +86,7 @@ public class TributeService {
 
     @Transactional
     @CacheEvict(cacheNames = "tribute:list", allEntries = true)
-    public void delete(Long tributeId, UserInfo userInfo) {
+    public void delete(UserInfo userInfo, Long tributeId) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
