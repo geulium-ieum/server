@@ -27,11 +27,11 @@ import seg.work.geuliumieum.server.common.repository.OfferingRepository;
 import seg.work.geuliumieum.server.common.repository.TributeRepository;
 import seg.work.geuliumieum.server.common.repository.UserRepository;
 import seg.work.geuliumieum.server.memorial.dto.response.MemorialResponse;
+import seg.work.geuliumieum.server.upload.service.UploadService;
 import seg.work.geuliumieum.server.user.dto.request.ProfilePhotoUpdateRequest;
 import seg.work.geuliumieum.server.user.dto.request.UserUpdateRequest;
 import seg.work.geuliumieum.server.user.dto.response.UserActivityResponse;
 import seg.work.geuliumieum.server.user.dto.response.UserMeResponse;
-import seg.work.geuliumieum.server.upload.service.UploadService;
 
 @Service
 @RequiredArgsConstructor

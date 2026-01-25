@@ -58,7 +58,6 @@ public enum ErrorCode {
 
     // sort
     SORT_BAD_PROPERTY(HttpStatus.BAD_REQUEST, "정렬 대상이 잘못되었습니다")
-
     ;
 
     private final HttpStatus status;
