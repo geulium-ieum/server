@@ -32,33 +32,33 @@ public class GuestbookService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Cacheable(cacheNames = "guestbook:list", key = "#memorialId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
-    public Slice<GuestbookResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo user) {
-        memorialService.checkAccess(user, memorialId);
+    public Slice<GuestbookResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo userInfo) {
+        memorialService.checkAccess(userInfo, memorialId);
         return guestbookEntryRepository.findByMemorialIdAndIsApprovedTrue(memorialId, pageable).map(GuestbookResponse::from);
     }
 
     @Transactional
     @CacheEvict(cacheNames = "guestbook:list", key = "#memorialId")
-    public GuestbookResponse create(Long memorialId, UserInfo user, GuestbookRequest request) {
-        if (user == null || user.getId() == null) {
+    public GuestbookResponse create(Long memorialId, UserInfo userInfo, GuestbookRequest request) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         GuestbookEntry guestbookEntry = new GuestbookEntry();
         guestbookEntry.setMemorialId(memorialId);
-        guestbookEntry.setUserId(user.getId());
+        guestbookEntry.setUserId(userInfo.getId());
         guestbookEntry.setAuthorName(request.getAuthorName());
         guestbookEntry.setContent(request.getContent());
         guestbookEntry.setIsApproved(Boolean.FALSE);
         guestbookEntryRepository.save(guestbookEntry);
 
         // 추모관 생성자에게 알림 발송 (승인 대기 알림)
-        if (memorial.getCreatedBy() != null && !memorial.getCreatedBy().equals(user.getId())) {
+        if (memorial.getCreatedBy() != null && !memorial.getCreatedBy().equals(userInfo.getId())) {
             eventPublisher.publishEvent(NotificationEvent.builder()
                 .userId(memorial.getCreatedBy())
                 .type("GUESTBOOK_WAITING")
                 .title("방명록 승인 대기")
-                .message(user.getName() + "님이 방명록을 남겼습니다. 승인이 필요합니다.")
+                .message(userInfo.getName() + "님이 방명록을 남겼습니다. 승인이 필요합니다.")
                 .relatedType("MEMORIAL")
                 .relatedId(memorialId)
                 .build());
@@ -69,12 +69,12 @@ public class GuestbookService {
 
     @Transactional
     @CacheEvict(cacheNames = "guestbook:list", allEntries = true)
-    public void update(Long entryId, UserInfo user, GuestbookRequest request) {
-        if (user == null || user.getId() == null) {
+    public void update(Long entryId, UserInfo userInfo, GuestbookRequest request) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         GuestbookEntry guestbookEntry = guestbookEntryRepository.findById(entryId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(guestbookEntry.getUserId())) {
+        if (!userInfo.getId().equals(guestbookEntry.getUserId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         if (request.getAuthorName() != null) {
@@ -89,12 +89,12 @@ public class GuestbookService {
 
     @Transactional
     @CacheEvict(cacheNames = "guestbook:list", allEntries = true)
-    public void delete(Long entryId, UserInfo user) {
-        if (user == null || user.getId() == null) {
+    public void delete(Long entryId, UserInfo userInfo) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         GuestbookEntry guestbookEntry = guestbookEntryRepository.findById(entryId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(guestbookEntry.getUserId())) {
+        if (!userInfo.getId().equals(guestbookEntry.getUserId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         guestbookEntryRepository.delete(guestbookEntry);
@@ -102,11 +102,11 @@ public class GuestbookService {
 
     @Transactional
     @CacheEvict(cacheNames = "guestbook:list", allEntries = true)
-    public void approve(Long entryId, UserInfo user) {
-        if (user == null || user.getRole() == null) {
+    public void approve(Long entryId, UserInfo userInfo) {
+        if (userInfo == null || userInfo.getRole() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        if (!(user.getRole() == UserRole.ADMIN || user.getRole() == UserRole.SUPER_ADMIN)) {
+        if (!(userInfo.getRole() == UserRole.ADMIN || userInfo.getRole() == UserRole.SUPER_ADMIN)) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         GuestbookEntry guestbookEntry = guestbookEntryRepository.findById(entryId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));

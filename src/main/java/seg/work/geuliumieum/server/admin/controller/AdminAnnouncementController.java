@@ -29,28 +29,28 @@ public class AdminAnnouncementController {
 
     @Operation(summary = "공지사항 작성", description = "관리자가 공지사항을 작성합니다.")
     @PostMapping
-    public ResponseEntity<AdminAnnouncementResponse> create(UserInfo user, @Valid @RequestBody AnnouncementCreateRequest request) {
-        return ResponseEntity.ok(adminAnnouncementService.create(user, request));
+    public ResponseEntity<AdminAnnouncementResponse> create(UserInfo userInfo, @Valid @RequestBody AnnouncementCreateRequest request) {
+        return ResponseEntity.ok(adminAnnouncementService.create(userInfo, request));
     }
 
     @Operation(summary = "공지사항 수정", description = "관리자가 공지사항을 수정합니다.")
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(UserInfo user, @PathVariable Long id, @Valid @RequestBody AnnouncementUpdateRequest request) {
-        adminAnnouncementService.update(user, id, request);
+    public ResponseEntity<Void> update(UserInfo userInfo, @PathVariable Long id, @Valid @RequestBody AnnouncementUpdateRequest request) {
+        adminAnnouncementService.update(userInfo, id, request);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "공지사항 삭제", description = "관리자가 공지사항을 삭제합니다.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(UserInfo user, @PathVariable Long id) {
-        adminAnnouncementService.delete(user, id);
+    public ResponseEntity<Void> delete(UserInfo userInfo, @PathVariable Long id) {
+        adminAnnouncementService.delete(userInfo, id);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "공지사항 발행", description = "관리자가 공지사항을 발행합니다.")
     @PatchMapping("/{id}/publish")
-    public ResponseEntity<Void> publish(UserInfo user, @PathVariable Long id) {
-        adminAnnouncementService.publish(user, id);
+    public ResponseEntity<Void> publish(UserInfo userInfo, @PathVariable Long id) {
+        adminAnnouncementService.publish(userInfo, id);
         return ResponseEntity.ok().build();
     }
 }

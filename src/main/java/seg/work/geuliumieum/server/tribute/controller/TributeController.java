@@ -31,27 +31,27 @@ public class TributeController {
 
     @Operation(summary = "추모글 목록", description = "추모관별 추모글 목록을 조회합니다.")
     @GetMapping("/memorial/{id}/list")
-    public ResponseEntity<Slice<TributeResponse>> list(UserInfo user, @PathVariable("id") Long memorialId, @ParameterObject Pageable pageable) {
-        return ResponseEntity.ok(tributeService.listByMemorial(memorialId, pageable, user));
+    public ResponseEntity<Slice<TributeResponse>> list(UserInfo userInfo, @PathVariable("id") Long memorialId, @ParameterObject Pageable pageable) {
+        return ResponseEntity.ok(tributeService.listByMemorial(memorialId, pageable, userInfo));
     }
 
     @Operation(summary = "추모글 작성", description = "해당 추모관에 추모글을 작성합니다.")
     @PostMapping("/memorial/{id}")
-    public ResponseEntity<TributeResponse> create(UserInfo user, @PathVariable("id") Long memorialId, @Valid @RequestBody TributeRequest request) {
-        return ResponseEntity.ok(tributeService.create(memorialId, user, request));
+    public ResponseEntity<TributeResponse> create(UserInfo userInfo, @PathVariable("id") Long memorialId, @Valid @RequestBody TributeRequest request) {
+        return ResponseEntity.ok(tributeService.create(memorialId, userInfo, request));
     }
 
     @Operation(summary = "추모글 수정", description = "추모글을 수정합니다(작성자만 가능).")
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(UserInfo user, @PathVariable("id") Long tributeId, @Valid @RequestBody TributeRequest request) {
-        tributeService.update(tributeId, user, request);
+    public ResponseEntity<Void> update(UserInfo userInfo, @PathVariable("id") Long tributeId, @Valid @RequestBody TributeRequest request) {
+        tributeService.update(tributeId, userInfo, request);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "추모글 삭제", description = "추모글을 삭제합니다(작성자만 가능).")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(UserInfo user, @PathVariable("id") Long tributeId) {
-        tributeService.delete(tributeId, user);
+    public ResponseEntity<Void> delete(UserInfo userInfo, @PathVariable("id") Long tributeId) {
+        tributeService.delete(tributeId, userInfo);
         return ResponseEntity.ok().build();
     }
 

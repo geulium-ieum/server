@@ -34,40 +34,40 @@ public class AdminMemorialService {
         return MemorialWithStatsResponse.toResponse(v);
     }
 
-    private void ensureAdmin(UserInfo user) {
-        if (user == null || user.getRole() == null) {
+    private void ensureAdmin(UserInfo userInfo) {
+        if (userInfo == null || userInfo.getRole() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        if (!(user.getRole() == UserRole.ADMIN || user.getRole() == UserRole.SUPER_ADMIN)) {
+        if (!(userInfo.getRole() == UserRole.ADMIN || userInfo.getRole() == UserRole.SUPER_ADMIN)) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
     }
 
-    public Slice<MemorialResponse> getPendingList(UserInfo user, @ParameterObject Pageable pageable) {
-        ensureAdmin(user);
+    public Slice<MemorialResponse> getPendingList(UserInfo userInfo, @ParameterObject Pageable pageable) {
+        ensureAdmin(userInfo);
         return memorialRepository.findByStatus(STATUS.PENDING, pageable).map(MemorialResponse::from);
     }
 
-    public Slice<MemorialResponse> getAll(UserInfo user, @ParameterObject Pageable pageable) {
-        ensureAdmin(user);
+    public Slice<MemorialResponse> getAll(UserInfo userInfo, @ParameterObject Pageable pageable) {
+        ensureAdmin(userInfo);
         return memorialRepository.findAllBy(pageable).map(MemorialResponse::from);
     }
 
-    public void approve(UserInfo user, Long memorialId) {
-        ensureAdmin(user);
+    public void approve(UserInfo userInfo, Long memorialId) {
+        ensureAdmin(userInfo);
         Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         memorial.setStatus(STATUS.APPROVED);
-        memorial.setApprovedBy(user.getId());
+        memorial.setApprovedBy(userInfo.getId());
         memorial.setApprovedAt(OffsetDateTime.now());
         memorial.setRejectionReason(null);
         memorialRepository.save(memorial);
     }
 
-    public void reject(UserInfo user, Long memorialId, String reason) {
-        ensureAdmin(user);
+    public void reject(UserInfo userInfo, Long memorialId, String reason) {
+        ensureAdmin(userInfo);
         Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         memorial.setStatus(STATUS.REJECT);
-        memorial.setApprovedBy(user.getId());
+        memorial.setApprovedBy(userInfo.getId());
         memorial.setApprovedAt(OffsetDateTime.now());
         memorial.setRejectionReason(reason);
         memorialRepository.save(memorial);

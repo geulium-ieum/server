@@ -23,10 +23,10 @@ public class NotificationStreamController {
 
     @Operation(summary = "SSE 구독", description = "실시간 알림 스트림을 구독합니다.")
     @GetMapping("/stream")
-    public SseEmitter stream(UserInfo user) {
-        if (user == null || user.getId() == null) {
+    public SseEmitter stream(UserInfo userInfo) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        return sseService.subscribe(user.getId());
+        return sseService.subscribe(userInfo.getId());
     }
 }

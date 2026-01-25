@@ -27,41 +27,41 @@ public class NotificationController {
 
     @Operation(summary = "내 알림 목록", description = "현재 사용자의 알림 목록을 조회합니다.")
     @GetMapping("/list")
-    public ResponseEntity<Slice<NotificationResponse>> list(UserInfo user, @ParameterObject Pageable pageable) {
-        return ResponseEntity.ok(notificationService.list(user, pageable));
+    public ResponseEntity<Slice<NotificationResponse>> list(UserInfo userInfo, @ParameterObject Pageable pageable) {
+        return ResponseEntity.ok(notificationService.list(userInfo, pageable));
     }
 
     @Operation(summary = "읽지 않은 알림 개수", description = "읽지 않은 알림 개수를 조회합니다.")
     @GetMapping("/unread-count")
-    public ResponseEntity<Long> unreadCount(UserInfo user) {
-        return ResponseEntity.ok(notificationService.unreadCount(user));
+    public ResponseEntity<Long> unreadCount(UserInfo userInfo) {
+        return ResponseEntity.ok(notificationService.unreadCount(userInfo));
     }
 
     @Operation(summary = "알림 읽음 처리", description = "특정 알림을 읽음 처리합니다.")
     @PatchMapping("/{id}/read")
-    public ResponseEntity<Void> markRead(UserInfo user, @PathVariable Long id) {
-        notificationService.markRead(user, id);
+    public ResponseEntity<Void> markRead(UserInfo userInfo, @PathVariable Long id) {
+        notificationService.markRead(userInfo, id);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "모든 알림 읽음 처리", description = "현재 사용자의 모든 알림을 읽음 처리합니다.")
     @PatchMapping("/read-all")
-    public ResponseEntity<Void> readAll(UserInfo user) {
-        notificationService.markAllRead(user);
+    public ResponseEntity<Void> readAll(UserInfo userInfo) {
+        notificationService.markAllRead(userInfo);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "알림 삭제", description = "특정 알림을 삭제합니다.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOne(UserInfo user, @PathVariable Long id) {
-        notificationService.deleteOne(user, id);
+    public ResponseEntity<Void> deleteOne(UserInfo userInfo, @PathVariable Long id) {
+        notificationService.deleteOne(userInfo, id);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "모든 알림 삭제", description = "현재 사용자의 모든 알림을 삭제합니다.")
     @DeleteMapping
-    public ResponseEntity<Void> deleteAll(UserInfo user) {
-        notificationService.deleteAll(user);
+    public ResponseEntity<Void> deleteAll(UserInfo userInfo) {
+        notificationService.deleteAll(userInfo);
         return ResponseEntity.ok().build();
     }
 }

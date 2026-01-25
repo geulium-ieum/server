@@ -42,24 +42,24 @@ public class AdminMemorialController {
      * 승인 대기 중인 추모관 목록을 조회합니다.
      */
     @GetMapping("/pending/list")
-    public ResponseEntity<Slice<MemorialResponse>> pendingList(UserInfo user, @ParameterObject Pageable pageable) {
-        return ResponseEntity.ok(adminMemorialService.getPendingList(user, pageable));
+    public ResponseEntity<Slice<MemorialResponse>> pendingList(UserInfo userInfo, @ParameterObject Pageable pageable) {
+        return ResponseEntity.ok(adminMemorialService.getPendingList(userInfo, pageable));
     }
 
     /**
      * 모든 추모관 목록(상태 무관)을 조회합니다.
      */
     @GetMapping("/all")
-    public ResponseEntity<Slice<MemorialResponse>> all(UserInfo user, @ParameterObject Pageable pageable) {
-        return ResponseEntity.ok(adminMemorialService.getAll(user, pageable));
+    public ResponseEntity<Slice<MemorialResponse>> all(UserInfo userInfo, @ParameterObject Pageable pageable) {
+        return ResponseEntity.ok(adminMemorialService.getAll(userInfo, pageable));
     }
 
     /**
      * 추모관을 승인 처리합니다.
      */
     @PatchMapping("/{id}/approve")
-    public ResponseEntity<Void> approve(UserInfo user, @PathVariable Long id) {
-        adminMemorialService.approve(user, id);
+    public ResponseEntity<Void> approve(UserInfo userInfo, @PathVariable Long id) {
+        adminMemorialService.approve(userInfo, id);
         return ResponseEntity.ok().build();
     }
 
@@ -67,8 +67,8 @@ public class AdminMemorialController {
      * 추모관을 반려 처리합니다.
      */
     @PatchMapping("/{id}/reject")
-    public ResponseEntity<Void> reject(UserInfo user, @PathVariable Long id, @RequestBody(required = false) RejectRequest request) {
-        adminMemorialService.reject(user, id, request == null ? null : request.getReason());
+    public ResponseEntity<Void> reject(UserInfo userInfo, @PathVariable Long id, @RequestBody(required = false) RejectRequest request) {
+        adminMemorialService.reject(userInfo, id, request == null ? null : request.getReason());
         return ResponseEntity.ok().build();
     }
 }

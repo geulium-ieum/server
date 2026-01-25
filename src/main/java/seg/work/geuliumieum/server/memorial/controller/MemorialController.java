@@ -36,8 +36,8 @@ public class MemorialController {
      */
     @Operation(summary = "추모관 단건 조회", description = "ID로 특정 추모관 상세를 조회합니다.")
     @GetMapping("/{id}")
-    public MemorialResponse getMemorial(UserInfo user, @Parameter(description = "추모관 ID", example = "1001") @PathVariable Long id) {
-        return memorialService.getMemorial(id, user);
+    public MemorialResponse getMemorial(UserInfo userInfo, @Parameter(description = "추모관 ID", example = "1001") @PathVariable Long id) {
+        return memorialService.getMemorial(id, userInfo);
     }
 
     /**

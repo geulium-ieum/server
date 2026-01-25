@@ -26,26 +26,26 @@ public class UploadController {
 
     @Operation(summary = "프로필 사진 업로드", description = "현재 사용자의 프로필 사진을 업로드합니다.")
     @PostMapping("/profile-photo")
-    public ResponseEntity<UploadResponse> uploadProfile(UserInfo user, @RequestPart("file") MultipartFile file) {
-        return ResponseEntity.ok(uploadService.uploadProfilePhoto(user, file));
+    public ResponseEntity<UploadResponse> uploadProfile(UserInfo userInfo, @RequestPart("file") MultipartFile file) {
+        return ResponseEntity.ok(uploadService.uploadProfilePhoto(userInfo, file));
     }
 
     @Operation(summary = "추모관 사진 업로드", description = "특정 추모관의 사진을 업로드합니다.")
     @PostMapping("/memorial-photo")
-    public ResponseEntity<UploadResponse> uploadMemorial(UserInfo user, @RequestParam("memorialId") Long memorialId, @RequestPart("file") MultipartFile file) {
-        return ResponseEntity.ok(uploadService.uploadMemorialPhoto(user, memorialId, file));
+    public ResponseEntity<UploadResponse> uploadMemorial(UserInfo userInfo, @RequestParam("memorialId") Long memorialId, @RequestPart("file") MultipartFile file) {
+        return ResponseEntity.ok(uploadService.uploadMemorialPhoto(userInfo, memorialId, file));
     }
 
     @Operation(summary = "앨범 사진 업로드", description = "특정 앨범에 사진을 업로드합니다.")
     @PostMapping("/album-photo")
-    public ResponseEntity<UploadResponse> uploadAlbum(UserInfo user, @RequestParam("albumId") Long albumId, @RequestPart("file") MultipartFile file) {
-        return ResponseEntity.ok(uploadService.uploadAlbumPhoto(user, albumId, file));
+    public ResponseEntity<UploadResponse> uploadAlbum(UserInfo userInfo, @RequestParam("albumId") Long albumId, @RequestPart("file") MultipartFile file) {
+        return ResponseEntity.ok(uploadService.uploadAlbumPhoto(userInfo, albumId, file));
     }
 
     @Operation(summary = "파일 삭제", description = "업로드한 파일을 삭제합니다.")
     @DeleteMapping("/{fileId}")
-    public ResponseEntity<Void> delete(UserInfo user, @PathVariable String fileId) {
-        uploadService.delete(user, fileId);
+    public ResponseEntity<Void> delete(UserInfo userInfo, @PathVariable String fileId) {
+        uploadService.delete(userInfo, fileId);
         return ResponseEntity.ok().build();
     }
 }

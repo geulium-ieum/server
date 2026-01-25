@@ -30,31 +30,31 @@ public class ReminderService {
     private final ReminderRepository reminderRepository;
     private final MemorialRepository memorialRepository;
 
-    public Slice<ReminderResponse> myReminders(UserInfo user, @ParameterObject Pageable pageable) {
-        if (user == null || user.getId() == null) {
+    public Slice<ReminderResponse> myReminders(UserInfo userInfo, @ParameterObject Pageable pageable) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        return reminderRepository.findByUserId(user.getId(), pageable).map(ReminderService::toResponse);
+        return reminderRepository.findByUserId(userInfo.getId(), pageable).map(ReminderService::toResponse);
     }
 
-    public Slice<ReminderResponse> memorialReminders(UserInfo user, Long memorialId, @ParameterObject Pageable pageable) {
-        if (user == null || user.getId() == null) {
+    public Slice<ReminderResponse> memorialReminders(UserInfo userInfo, Long memorialId, @ParameterObject Pageable pageable) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         // 존재 확인
         memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
-        return reminderRepository.findByUserIdAndMemorialId(user.getId(), memorialId, pageable).map(ReminderService::toResponse);
+        return reminderRepository.findByUserIdAndMemorialId(userInfo.getId(), memorialId, pageable).map(ReminderService::toResponse);
     }
 
     @Transactional
-    public ReminderResponse create(UserInfo user, Long memorialId, ReminderRequest request) {
-        if (user == null || user.getId() == null) {
+    public ReminderResponse create(UserInfo userInfo, Long memorialId, ReminderRequest request) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         Reminder reminder = new Reminder();
         reminder.setMemorialId(memorial.getId());
-        reminder.setUserId(user.getId());
+        reminder.setUserId(userInfo.getId());
         reminder.setTitle(request.getTitle());
         reminder.setReminderDate(request.getReminderDate());
         reminder.setRepeatRule(request.getRepeatRule());
@@ -66,12 +66,12 @@ public class ReminderService {
     }
 
     @Transactional
-    public void update(UserInfo user, Long reminderId, ReminderUpdateRequest request) {
-        if (user == null || user.getId() == null) {
+    public void update(UserInfo userInfo, Long reminderId, ReminderUpdateRequest request) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         Reminder reminder = reminderRepository.findById(reminderId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(reminder.getUserId())) {
+        if (!userInfo.getId().equals(reminder.getUserId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         if (request.getTitle() != null) {
@@ -96,24 +96,24 @@ public class ReminderService {
     }
 
     @Transactional
-    public void delete(UserInfo user, Long reminderId) {
-        if (user == null || user.getId() == null) {
+    public void delete(UserInfo userInfo, Long reminderId) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         Reminder reminder = reminderRepository.findById(reminderId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(reminder.getUserId())) {
+        if (!userInfo.getId().equals(reminder.getUserId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         reminderRepository.delete(reminder);
     }
 
-    public List<ReminderResponse> upcoming(UserInfo user) {
-        if (user == null || user.getId() == null) {
+    public List<ReminderResponse> upcoming(UserInfo userInfo) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         LocalDate today = LocalDate.now();
         LocalDate until = today.plusDays(30);
-        List<Reminder> actives = reminderRepository.findByUserIdAndIsActiveTrue(user.getId());
+        List<Reminder> actives = reminderRepository.findByUserIdAndIsActiveTrue(userInfo.getId());
         List<ReminderResponse> results = new ArrayList<>();
         for (Reminder reminder : actives) {
             LocalDate next = nextOccurrenceDate(reminder, today);

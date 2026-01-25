@@ -32,34 +32,34 @@ public class GuestbookController {
 
     @Operation(summary = "방명록 목록", description = "추모관별 승인된 방명록 목록을 조회합니다.")
     @GetMapping("/memorial/{id}/list")
-    public ResponseEntity<Slice<GuestbookResponse>> list(UserInfo user, @PathVariable("id") Long memorialId, @ParameterObject Pageable pageable) {
-        return ResponseEntity.ok(guestbookService.listByMemorial(memorialId, pageable, user));
+    public ResponseEntity<Slice<GuestbookResponse>> list(UserInfo userInfo, @PathVariable("id") Long memorialId, @ParameterObject Pageable pageable) {
+        return ResponseEntity.ok(guestbookService.listByMemorial(memorialId, pageable, userInfo));
     }
 
     @Operation(summary = "방명록 작성", description = "해당 추모관에 방명록을 작성합니다.")
     @PostMapping("/memorial/{id}")
-    public ResponseEntity<GuestbookResponse> create(UserInfo user, @PathVariable("id") Long memorialId, @Valid @RequestBody GuestbookRequest request) {
-        return ResponseEntity.ok(guestbookService.create(memorialId, user, request));
+    public ResponseEntity<GuestbookResponse> create(UserInfo userInfo, @PathVariable("id") Long memorialId, @Valid @RequestBody GuestbookRequest request) {
+        return ResponseEntity.ok(guestbookService.create(memorialId, userInfo, request));
     }
 
     @Operation(summary = "방명록 수정", description = "방명록을 수정합니다(작성자만 가능).")
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(UserInfo user, @PathVariable("id") Long entryId, @Valid @RequestBody GuestbookRequest request) {
-        guestbookService.update(entryId, user, request);
+    public ResponseEntity<Void> update(UserInfo userInfo, @PathVariable("id") Long entryId, @Valid @RequestBody GuestbookRequest request) {
+        guestbookService.update(entryId, userInfo, request);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "방명록 삭제", description = "방명록을 삭제합니다(작성자만 가능).")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(UserInfo user, @PathVariable("id") Long entryId) {
-        guestbookService.delete(entryId, user);
+    public ResponseEntity<Void> delete(UserInfo userInfo, @PathVariable("id") Long entryId) {
+        guestbookService.delete(entryId, userInfo);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "방명록 승인", description = "방명록을 승인합니다(관리자만 가능).")
     @PatchMapping("/{id}/approve")
-    public ResponseEntity<Void> approve(UserInfo user, @PathVariable("id") Long entryId) {
-        guestbookService.approve(entryId, user);
+    public ResponseEntity<Void> approve(UserInfo userInfo, @PathVariable("id") Long entryId) {
+        guestbookService.approve(entryId, userInfo);
         return ResponseEntity.ok().build();
     }
 }

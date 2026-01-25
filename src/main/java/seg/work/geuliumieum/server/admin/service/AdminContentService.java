@@ -24,11 +24,11 @@ public class AdminContentService {
     private final TributeRepository tributeRepository;
     private final GuestbookEntryRepository guestbookEntryRepository;
 
-    private void ensureAdmin(UserInfo user) {
-        if (user == null || user.getRole() == null) {
+    private void ensureAdmin(UserInfo userInfo) {
+        if (userInfo == null || userInfo.getRole() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        if (!(user.getRole() == UserRole.ADMIN || user.getRole() == UserRole.SUPER_ADMIN)) {
+        if (!(userInfo.getRole() == UserRole.ADMIN || userInfo.getRole() == UserRole.SUPER_ADMIN)) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
     }

@@ -36,8 +36,8 @@ public class UserController {
      */
     @Operation(summary = "내 정보 조회", description = "현재 로그인한 사용자의 기본 프로필 정보를 조회합니다.")
     @GetMapping("/me")
-    public ResponseEntity<UserMeResponse> me(UserInfo user) {
-        UserMeResponse me = userService.getCurrentUser(user == null ? null : user.getId());
+    public ResponseEntity<UserMeResponse> me(UserInfo userInfo) {
+        UserMeResponse me = userService.getCurrentUser(userInfo == null ? null : userInfo.getId());
         return ResponseEntity.ok(me);
     }
 
@@ -49,22 +49,22 @@ public class UserController {
 
     @Operation(summary = "사용자 정보 수정", description = "사용자 본인만 수정 가능합니다.")
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateUser(UserInfo user, @PathVariable Long id, @RequestBody UserUpdateRequest request) {
-        userService.updateUser(id, user == null ? null : user.getId(), request);
+    public ResponseEntity<Void> updateUser(UserInfo userInfo, @PathVariable Long id, @RequestBody UserUpdateRequest request) {
+        userService.updateUser(id, userInfo == null ? null : userInfo.getId(), request);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "사용자 삭제", description = "사용자 본인만 삭제 가능합니다.")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(UserInfo user, @PathVariable Long id) {
-        userService.deleteUser(id, user == null ? null : user.getId());
+    public ResponseEntity<Void> deleteUser(UserInfo userInfo, @PathVariable Long id) {
+        userService.deleteUser(id, userInfo == null ? null : userInfo.getId());
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "프로필 사진 업데이트", description = "사전에 업로드된 S3 URL을 등록합니다.")
     @PatchMapping("/{id}/profile-photo")
-    public ResponseEntity<Void> updateProfilePhoto(UserInfo user, @PathVariable Long id, @RequestBody ProfilePhotoUpdateRequest request) {
-        userService.updateProfilePhoto(id, user == null ? null : user.getId(), request);
+    public ResponseEntity<Void> updateProfilePhoto(UserInfo userInfo, @PathVariable Long id, @RequestBody ProfilePhotoUpdateRequest request) {
+        userService.updateProfilePhoto(id, userInfo == null ? null : userInfo.getId(), request);
         return ResponseEntity.ok().build();
     }
 

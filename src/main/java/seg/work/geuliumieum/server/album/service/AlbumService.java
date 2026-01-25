@@ -35,22 +35,22 @@ public class AlbumService {
     private final MemorialService memorialService;
 
     @Cacheable(cacheNames = "album:list", key = "#memorialId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
-    public Slice<AlbumResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo user) {
-        memorialService.checkAccess(user, memorialId);
+    public Slice<AlbumResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo userInfo) {
+        memorialService.checkAccess(userInfo, memorialId);
         return albumRepository.findByMemorialId(memorialId, pageable).map(AlbumResponse::from);
     }
 
     @Cacheable(cacheNames = "album:detail", key = "#albumId")
-    public AlbumResponse getAlbum(Long albumId, UserInfo user) {
+    public AlbumResponse getAlbum(Long albumId, UserInfo userInfo) {
         Album album = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        memorialService.checkAccess(user, album.getMemorialId());
+        memorialService.checkAccess(userInfo, album.getMemorialId());
         return AlbumResponse.from(album);
     }
 
     @Transactional
     @CacheEvict(cacheNames = "album:list", key = "#memorialId")
-    public AlbumResponse createAlbum(Long memorialId, UserInfo user, AlbumCreateRequest request) {
-        if (user == null || user.getId() == null) {
+    public AlbumResponse createAlbum(Long memorialId, UserInfo userInfo, AlbumCreateRequest request) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
@@ -58,7 +58,7 @@ public class AlbumService {
         album.setMemorialId(memorialId);
         album.setTitle(request.getTitle());
         album.setDescription(request.getDescription());
-        album.setCreatedBy(user.getId());
+        album.setCreatedBy(userInfo.getId());
         albumRepository.save(album);
         return AlbumResponse.from(album);
     }
@@ -68,12 +68,12 @@ public class AlbumService {
         @CacheEvict(cacheNames = "album:detail", key = "#albumId"),
         @CacheEvict(cacheNames = "album:list", allEntries = true)
     })
-    public void updateAlbum(Long albumId, UserInfo user, AlbumUpdateRequest request) {
-        if (user == null || user.getId() == null) {
+    public void updateAlbum(Long albumId, UserInfo userInfo, AlbumUpdateRequest request) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         Album album = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(album.getCreatedBy())) {
+        if (!userInfo.getId().equals(album.getCreatedBy())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         if (request.getTitle() != null) {
@@ -90,54 +90,54 @@ public class AlbumService {
         @CacheEvict(cacheNames = "album:detail", key = "#albumId"),
         @CacheEvict(cacheNames = "album:list", allEntries = true)
     })
-    public void deleteAlbum(Long albumId, UserInfo user) {
-        if (user == null || user.getId() == null) {
+    public void deleteAlbum(Long albumId, UserInfo userInfo) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         Album album = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(album.getCreatedBy())) {
+        if (!userInfo.getId().equals(album.getCreatedBy())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         albumRepository.delete(album);
     }
 
     @Cacheable(cacheNames = "album:photo:list", key = "#albumId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
-    public Slice<PhotoResponse> listPhotos(Long albumId, @ParameterObject Pageable pageable, UserInfo user) {
+    public Slice<PhotoResponse> listPhotos(Long albumId, @ParameterObject Pageable pageable, UserInfo userInfo) {
         Album album = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        memorialService.checkAccess(user, album.getMemorialId());
+        memorialService.checkAccess(userInfo, album.getMemorialId());
         return albumPhotoRepository.findByAlbumId(albumId, pageable).map(PhotoResponse::from);
     }
 
     @Transactional
     @CacheEvict(cacheNames = "album:photo:list", key = "#albumId")
-    public PhotoResponse createPhoto(Long albumId, UserInfo user, PhotoCreateRequest request) {
-        if (user == null || user.getId() == null) {
+    public PhotoResponse createPhoto(Long albumId, UserInfo userInfo, PhotoCreateRequest request) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         Album album = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         // 작성 권한: 앨범 소유자만으로 제한
-        if (!user.getId().equals(album.getCreatedBy())) {
+        if (!userInfo.getId().equals(album.getCreatedBy())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         AlbumPhoto albumPhoto = new AlbumPhoto();
         albumPhoto.setAlbumId(albumId);
         albumPhoto.setPhotoUrl(request.getPhotoUrl());
         albumPhoto.setCaption(request.getCaption());
-        albumPhoto.setUploadedBy(user.getId());
+        albumPhoto.setUploadedBy(userInfo.getId());
         albumPhotoRepository.save(albumPhoto);
         return PhotoResponse.from(albumPhoto);
     }
 
     @Transactional
     @CacheEvict(cacheNames = "album:photo:list", allEntries = true)
-    public void updatePhoto(Long photoId, UserInfo user, PhotoUpdateRequest request) {
-        if (user == null || user.getId() == null) {
+    public void updatePhoto(Long photoId, UserInfo userInfo, PhotoUpdateRequest request) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         AlbumPhoto albumPhoto = albumPhotoRepository.findById(photoId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         Album album = albumRepository.findById(albumPhoto.getAlbumId()).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         // 수정 권한: 업로더 또는 앨범 소유자
-        if (!user.getId().equals(albumPhoto.getUploadedBy()) && !user.getId().equals(album.getCreatedBy())) {
+        if (!userInfo.getId().equals(albumPhoto.getUploadedBy()) && !userInfo.getId().equals(album.getCreatedBy())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         if (request.getCaption() != null) {
@@ -148,13 +148,13 @@ public class AlbumService {
 
     @Transactional
     @CacheEvict(cacheNames = "album:photo:list", allEntries = true)
-    public void deletePhoto(Long photoId, UserInfo user) {
-        if (user == null || user.getId() == null) {
+    public void deletePhoto(Long photoId, UserInfo userInfo) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         AlbumPhoto albumPhoto = albumPhotoRepository.findById(photoId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         Album album = albumRepository.findById(albumPhoto.getAlbumId()).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(albumPhoto.getUploadedBy()) && !user.getId().equals(album.getCreatedBy())) {
+        if (!userInfo.getId().equals(albumPhoto.getUploadedBy()) && !userInfo.getId().equals(album.getCreatedBy())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         albumPhotoRepository.delete(albumPhoto);

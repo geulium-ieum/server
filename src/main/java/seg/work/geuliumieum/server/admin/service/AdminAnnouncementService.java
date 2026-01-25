@@ -22,22 +22,22 @@ public class AdminAnnouncementService {
 
     private final AnnouncementRepository announcementRepository;
 
-    private void ensureAdmin(UserInfo user) {
-        if (user == null || user.getRole() == null) {
+    private void ensureAdmin(UserInfo userInfo) {
+        if (userInfo == null || userInfo.getRole() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
-        if (!(user.getRole() == UserRole.ADMIN || user.getRole() == UserRole.SUPER_ADMIN)) {
+        if (!(userInfo.getRole() == UserRole.ADMIN || userInfo.getRole() == UserRole.SUPER_ADMIN)) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
     }
 
     @Transactional
-    public AdminAnnouncementResponse create(UserInfo user, AnnouncementCreateRequest request) {
-        ensureAdmin(user);
+    public AdminAnnouncementResponse create(UserInfo userInfo, AnnouncementCreateRequest request) {
+        ensureAdmin(userInfo);
         Announcement announcement = new Announcement();
         announcement.setTitle(request.getTitle());
         announcement.setContent(request.getContent());
-        announcement.setAuthorId(user.getId());
+        announcement.setAuthorId(userInfo.getId());
         announcement.setIsPinned(Boolean.TRUE.equals(request.getIsPinned()));
         announcement.setIsPublished(false);
         announcement.setPublishedAt(null);
@@ -50,8 +50,8 @@ public class AdminAnnouncementService {
         @CacheEvict(cacheNames = "announcement:list", allEntries = true),
         @CacheEvict(cacheNames = "announcement:detail", key = "#id")
     })
-    public void update(UserInfo user, Long id, AnnouncementUpdateRequest request) {
-        ensureAdmin(user);
+    public void update(UserInfo userInfo, Long id, AnnouncementUpdateRequest request) {
+        ensureAdmin(userInfo);
         Announcement announcement = announcementRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         if (request.getTitle() != null) {
             announcement.setTitle(request.getTitle());
@@ -70,8 +70,8 @@ public class AdminAnnouncementService {
         @CacheEvict(cacheNames = "announcement:list", allEntries = true),
         @CacheEvict(cacheNames = "announcement:detail", key = "#id")
     })
-    public void delete(UserInfo user, Long id) {
-        ensureAdmin(user);
+    public void delete(UserInfo userInfo, Long id) {
+        ensureAdmin(userInfo);
         Announcement announcement = announcementRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         announcementRepository.delete(announcement);
     }
@@ -81,8 +81,8 @@ public class AdminAnnouncementService {
         @CacheEvict(cacheNames = "announcement:list", allEntries = true),
         @CacheEvict(cacheNames = "announcement:detail", key = "#id")
     })
-    public void publish(UserInfo user, Long id) {
-        ensureAdmin(user);
+    public void publish(UserInfo userInfo, Long id) {
+        ensureAdmin(userInfo);
         Announcement announcement = announcementRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         announcement.setIsPublished(true);
         announcement.setPublishedAt(OffsetDateTime.now());

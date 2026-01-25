@@ -31,32 +31,32 @@ public class TributeService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Cacheable(cacheNames = "tribute:list", key = "#memorialId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
-    public Slice<TributeResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo user) {
-        memorialService.checkAccess(user, memorialId);
+    public Slice<TributeResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo userInfo) {
+        memorialService.checkAccess(userInfo, memorialId);
         return tributeRepository.findByMemorialId(memorialId, pageable).map(TributeResponse::from);
     }
 
     @Transactional
     @CacheEvict(cacheNames = "tribute:list", key = "#memorialId")
-    public TributeResponse create(Long memorialId, UserInfo user, TributeRequest request) {
-        if (user == null || user.getId() == null) {
+    public TributeResponse create(Long memorialId, UserInfo userInfo, TributeRequest request) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         Memorial memorial = memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         Tribute tribute = new Tribute();
         tribute.setMemorialId(memorialId);
-        tribute.setUserId(user.getId());
+        tribute.setUserId(userInfo.getId());
         tribute.setContent(request.getContent());
         tribute.setIsPublic(Boolean.TRUE.equals(request.getIsPublic()));
         tributeRepository.save(tribute);
 
         // 추모관 생성자에게 알림 발송
-        if (memorial.getCreatedBy() != null && !memorial.getCreatedBy().equals(user.getId())) {
+        if (memorial.getCreatedBy() != null && !memorial.getCreatedBy().equals(userInfo.getId())) {
             eventPublisher.publishEvent(NotificationEvent.builder()
                 .userId(memorial.getCreatedBy())
                 .type("TRIBUTE")
                 .title("새로운 헌화")
-                .message(user.getName() + "님이 " + memorial.getDeceasedName() + "님에게 헌화하셨습니다.")
+                .message(userInfo.getName() + "님이 " + memorial.getDeceasedName() + "님에게 헌화하셨습니다.")
                 .relatedType("MEMORIAL")
                 .relatedId(memorialId)
                 .build());
@@ -67,12 +67,12 @@ public class TributeService {
 
     @Transactional
     @CacheEvict(cacheNames = "tribute:list", allEntries = true)
-    public void update(Long tributeId, UserInfo user, TributeRequest request) {
-        if (user == null || user.getId() == null) {
+    public void update(Long tributeId, UserInfo userInfo, TributeRequest request) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         Tribute tribute = tributeRepository.findById(tributeId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(tribute.getUserId())) {
+        if (!userInfo.getId().equals(tribute.getUserId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         if (request.getContent() != null) {
@@ -86,12 +86,12 @@ public class TributeService {
 
     @Transactional
     @CacheEvict(cacheNames = "tribute:list", allEntries = true)
-    public void delete(Long tributeId, UserInfo user) {
-        if (user == null || user.getId() == null) {
+    public void delete(Long tributeId, UserInfo userInfo) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         Tribute tribute = tributeRepository.findById(tributeId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!user.getId().equals(tribute.getUserId())) {
+        if (!userInfo.getId().equals(tribute.getUserId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         tributeRepository.delete(tribute);

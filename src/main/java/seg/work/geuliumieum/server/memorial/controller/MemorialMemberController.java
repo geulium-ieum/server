@@ -32,28 +32,28 @@ public class MemorialMemberController {
 
     @Operation(summary = "추모관 멤버 목록", description = "추모관 멤버 목록을 조회합니다(소유자만).")
     @GetMapping("/{id}/member/list")
-    public ResponseEntity<Slice<MemorialMemberResponse>> members(UserInfo user, @PathVariable("id") Long memorialId, @ParameterObject Pageable pageable) {
-        return ResponseEntity.ok(memorialMemberService.list(memorialId, pageable, user));
+    public ResponseEntity<Slice<MemorialMemberResponse>> members(UserInfo userInfo, @PathVariable("id") Long memorialId, @ParameterObject Pageable pageable) {
+        return ResponseEntity.ok(memorialMemberService.list(memorialId, pageable, userInfo));
     }
 
     @Operation(summary = "멤버 추가", description = "추모관에 멤버를 추가합니다(소유자만).")
     @PostMapping("/{id}/member")
-    public ResponseEntity<Void> addMember(UserInfo user, @PathVariable("id") Long memorialId, @Valid @RequestBody MemberAddRequest request) {
-        memorialMemberService.add(memorialId, user, request);
+    public ResponseEntity<Void> addMember(UserInfo userInfo, @PathVariable("id") Long memorialId, @Valid @RequestBody MemberAddRequest request) {
+        memorialMemberService.add(memorialId, userInfo, request);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "멤버 역할 변경", description = "추모관 멤버의 역할을 변경합니다(소유자만).")
     @PutMapping("/{id}/member/{userId}")
-    public ResponseEntity<Void> changeRole(UserInfo user, @PathVariable("id") Long memorialId, @PathVariable Long userId, @Valid @RequestBody MemberRoleUpdateRequest request) {
-        memorialMemberService.changeRole(memorialId, userId, user, request);
+    public ResponseEntity<Void> changeRole(UserInfo userInfo, @PathVariable("id") Long memorialId, @PathVariable Long userId, @Valid @RequestBody MemberRoleUpdateRequest request) {
+        memorialMemberService.changeRole(memorialId, userId, userInfo, request);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "멤버 제거", description = "추모관에서 특정 멤버를 제거합니다(소유자만).")
     @DeleteMapping("/{id}/member/{userId}")
-    public ResponseEntity<Void> removeMember(UserInfo user, @PathVariable("id") Long memorialId, @PathVariable Long userId) {
-        memorialMemberService.remove(memorialId, userId, user);
+    public ResponseEntity<Void> removeMember(UserInfo userInfo, @PathVariable("id") Long memorialId, @PathVariable Long userId) {
+        memorialMemberService.remove(memorialId, userId, userInfo);
         return ResponseEntity.ok().build();
     }
 }

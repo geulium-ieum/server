@@ -10,7 +10,7 @@ public enum ErrorCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청"),
     VALIDATION_FAILED(HttpStatus.BAD_REQUEST, "유효성 검사 실패"),
     NOT_FOUND(HttpStatus.NOT_FOUND, "리소스를 찾을 수 없습니다"),
-    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증이 필요합니다"),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다"),
     FORBIDDEN(HttpStatus.FORBIDDEN, "접근이 거부되었습니다"),
 
     // Auth/JWT

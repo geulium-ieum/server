@@ -29,21 +29,21 @@ public class OfferingService {
     private final MemorialRepository memorialRepository;
     private final MemorialService memorialService;
 
-    public Slice<OfferingResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo user) {
-        memorialService.checkAccess(user, memorialId);
+    public Slice<OfferingResponse> listByMemorial(Long memorialId, @ParameterObject Pageable pageable, UserInfo userInfo) {
+        memorialService.checkAccess(userInfo, memorialId);
         return offeringRepository.findByMemorialId(memorialId, pageable).map(OfferingResponse::from);
     }
 
     @Transactional
     @CacheEvict(cacheNames = "offering:stats", key = "#memorialId")
-    public OfferingResponse create(Long memorialId, UserInfo user, OfferingRequest request) {
-        if (user == null || user.getId() == null) {
+    public OfferingResponse create(Long memorialId, UserInfo userInfo, OfferingRequest request) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         Offering offering = new Offering();
         offering.setMemorialId(memorialId);
-        offering.setUserId(user.getId());
+        offering.setUserId(userInfo.getId());
         offering.setOfferingType(request.getOfferingType());
         offering.setMessage(request.getMessage());
         offeringRepository.save(offering);

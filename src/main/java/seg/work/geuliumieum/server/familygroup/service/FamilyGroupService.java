@@ -41,15 +41,15 @@ public class FamilyGroupService {
     private final FamilyGroupMemorialRepository familyGroupMemorialRepository;
     private final MemorialRepository memorialRepository;
 
-    @Cacheable(cacheNames = "family:my-groups", key = "#user.id + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
-    public Slice<FamilyGroupResponse> myGroups(UserInfo user, @ParameterObject Pageable pageable) {
-        if (user == null || user.getId() == null) {
+    @Cacheable(cacheNames = "family:my-groups", key = "#userInfo.id + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
+    public Slice<FamilyGroupResponse> myGroups(UserInfo userInfo, @ParameterObject Pageable pageable) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         // 소유 그룹
-        Slice<FamilyGroup> own = familyGroupRepository.findByOwnerId(user.getId(), pageable);
+        Slice<FamilyGroup> own = familyGroupRepository.findByOwnerId(userInfo.getId(), pageable);
         // 멤버 그룹
-        Slice<FamilyGroupMember> memberSlice = familyGroupMemberRepository.findByUserId(user.getId(), pageable);
+        Slice<FamilyGroupMember> memberSlice = familyGroupMemberRepository.findByUserId(userInfo.getId(), pageable);
         List<Long> groupIds = memberSlice.getContent().stream().map(FamilyGroupMember::getGroupId).toList();
         // 소유 + 멤버 합집합으로 간단히 구성 (페이지네이션 단순화)
         List<FamilyGroupResponse> content = own.getContent().stream()
@@ -66,14 +66,14 @@ public class FamilyGroupService {
     }
 
     @Cacheable(cacheNames = "family:detail", key = "#id")
-    public FamilyGroupResponse get(UserInfo user, Long id) {
-        if (user == null || user.getId() == null) {
+    public FamilyGroupResponse get(UserInfo userInfo, Long id) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         FamilyGroup familyGroup = familyGroupRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         // 접근: 소유자 또는 멤버만 허용
-        if (!Objects.equals(familyGroup.getOwnerId(), user.getId())) {
-            boolean member = familyGroupMemberRepository.existsByGroupIdAndUserId(id, user.getId());
+        if (!Objects.equals(familyGroup.getOwnerId(), userInfo.getId())) {
+            boolean member = familyGroupMemberRepository.existsByGroupIdAndUserId(id, userInfo.getId());
             if (!member) {
                 throw new ApiException(ErrorCode.FORBIDDEN);
             }
@@ -83,14 +83,14 @@ public class FamilyGroupService {
 
     @Transactional
     @CacheEvict(cacheNames = "family:my-groups", allEntries = true)
-    public void create(UserInfo user, FamilyGroupCreateRequest request) {
-        if (user == null || user.getId() == null) {
+    public void create(UserInfo userInfo, FamilyGroupCreateRequest request) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         FamilyGroup familyGroup = new FamilyGroup();
         familyGroup.setName(request.getName());
         familyGroup.setDescription(request.getDescription());
-        familyGroup.setOwnerId(user.getId());
+        familyGroup.setOwnerId(userInfo.getId());
         familyGroupRepository.save(familyGroup);
     }
 
@@ -99,12 +99,12 @@ public class FamilyGroupService {
         @CacheEvict(cacheNames = "family:detail", key = "#id"),
         @CacheEvict(cacheNames = "family:my-groups", allEntries = true)
     })
-    public void update(UserInfo user, Long id, FamilyGroupUpdateRequest request) {
-        if (user == null || user.getId() == null) {
+    public void update(UserInfo userInfo, Long id, FamilyGroupUpdateRequest request) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         FamilyGroup g = familyGroupRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!Objects.equals(g.getOwnerId(), user.getId())) {
+        if (!Objects.equals(g.getOwnerId(), userInfo.getId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         if (request.getName() != null) {
@@ -121,25 +121,25 @@ public class FamilyGroupService {
         @CacheEvict(cacheNames = "family:detail", key = "#id"),
         @CacheEvict(cacheNames = "family:my-groups", allEntries = true)
     })
-    public void delete(UserInfo user, Long id) {
-        if (user == null || user.getId() == null) {
+    public void delete(UserInfo userInfo, Long id) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         FamilyGroup familyGroup = familyGroupRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!Objects.equals(familyGroup.getOwnerId(), user.getId())) {
+        if (!Objects.equals(familyGroup.getOwnerId(), userInfo.getId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         familyGroupRepository.delete(familyGroup);
     }
 
-    public Slice<FamilyGroupMemberResponse> members(UserInfo user, Long groupId, @ParameterObject Pageable pageable) {
-        if (user == null || user.getId() == null) {
+    public Slice<FamilyGroupMemberResponse> members(UserInfo userInfo, Long groupId, @ParameterObject Pageable pageable) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         FamilyGroup familyGroup = familyGroupRepository.findById(groupId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         // 접근: 소유자 또는 멤버만
-        if (!Objects.equals(familyGroup.getOwnerId(), user.getId()) &&
-            !familyGroupMemberRepository.existsByGroupIdAndUserId(groupId, user.getId())) {
+        if (!Objects.equals(familyGroup.getOwnerId(), userInfo.getId()) &&
+            !familyGroupMemberRepository.existsByGroupIdAndUserId(groupId, userInfo.getId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         return familyGroupMemberRepository.findByGroupId(groupId, pageable).map(FamilyGroupMemberResponse::from);
@@ -147,13 +147,13 @@ public class FamilyGroupService {
 
     @Transactional
     @CacheEvict(cacheNames = "memorial:access", allEntries = true)
-    public void invite(UserInfo user, Long groupId, InviteRequest request) {
-        if (user == null || user.getId() == null) {
+    public void invite(UserInfo userInfo, Long groupId, InviteRequest request) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         FamilyGroup familyGroup = familyGroupRepository.findById(groupId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         // 초대는 소유자만 허용 (간단 정책)
-        if (!Objects.equals(familyGroup.getOwnerId(), user.getId())) {
+        if (!Objects.equals(familyGroup.getOwnerId(), userInfo.getId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         if (familyGroupMemberRepository.existsByGroupIdAndUserId(groupId, request.getUserId())) {
@@ -168,29 +168,29 @@ public class FamilyGroupService {
 
     @Transactional
     @CacheEvict(cacheNames = "memorial:access", allEntries = true)
-    public void join(UserInfo user, Long groupId) {
-        if (user == null || user.getId() == null) {
+    public void join(UserInfo userInfo, Long groupId) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         familyGroupRepository.findById(groupId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (familyGroupMemberRepository.existsByGroupIdAndUserId(groupId, user.getId())) {
+        if (familyGroupMemberRepository.existsByGroupIdAndUserId(groupId, userInfo.getId())) {
             return;
         }
         FamilyGroupMember familyGroupMember = new FamilyGroupMember();
         familyGroupMember.setGroupId(groupId);
-        familyGroupMember.setUserId(user.getId());
+        familyGroupMember.setUserId(userInfo.getId());
         familyGroupMember.setRole("member");
         familyGroupMemberRepository.save(familyGroupMember);
     }
 
     @Transactional
     @CacheEvict(cacheNames = "memorial:access", allEntries = true)
-    public void removeMember(UserInfo user, Long groupId, Long targetUserId) {
-        if (user == null || user.getId() == null) {
+    public void removeMember(UserInfo userInfo, Long groupId, Long targetUserId) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         FamilyGroup familyGroup = familyGroupRepository.findById(groupId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!Objects.equals(familyGroup.getOwnerId(), user.getId())) {
+        if (!Objects.equals(familyGroup.getOwnerId(), userInfo.getId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         // 소유자 본인은 제거 불가
@@ -202,12 +202,12 @@ public class FamilyGroupService {
 
     @Transactional
     @CacheEvict(cacheNames = "memorial:access", allEntries = true)
-    public void changeRole(UserInfo user, Long groupId, Long targetUserId, MemberRoleUpdateRequest request) {
-        if (user == null || user.getId() == null) {
+    public void changeRole(UserInfo userInfo, Long groupId, Long targetUserId, MemberRoleUpdateRequest request) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         FamilyGroup familyGroup = familyGroupRepository.findById(groupId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!Objects.equals(familyGroup.getOwnerId(), user.getId())) {
+        if (!Objects.equals(familyGroup.getOwnerId(), userInfo.getId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         FamilyGroupMember familyGroupMember = familyGroupMemberRepository.findByGroupIdAndUserId(groupId, targetUserId)
@@ -216,13 +216,13 @@ public class FamilyGroupService {
         familyGroupMemberRepository.save(familyGroupMember);
     }
 
-    public Slice<MemorialResponse> groupMemorials(UserInfo user, Long groupId, @ParameterObject Pageable pageable) {
-        if (user == null || user.getId() == null) {
+    public Slice<MemorialResponse> groupMemorials(UserInfo userInfo, Long groupId, @ParameterObject Pageable pageable) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         FamilyGroup familyGroup = familyGroupRepository.findById(groupId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!Objects.equals(familyGroup.getOwnerId(), user.getId()) &&
-            !familyGroupMemberRepository.existsByGroupIdAndUserId(groupId, user.getId())) {
+        if (!Objects.equals(familyGroup.getOwnerId(), userInfo.getId()) &&
+            !familyGroupMemberRepository.existsByGroupIdAndUserId(groupId, userInfo.getId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         Slice<FamilyGroupMemorial> linkSlice = familyGroupMemorialRepository.findByGroupId(groupId, pageable);
@@ -237,12 +237,12 @@ public class FamilyGroupService {
 
     @Transactional
     @CacheEvict(cacheNames = "memorial:access", allEntries = true)
-    public void addMemorial(UserInfo user, Long groupId, AddMemorialRequest request) {
-        if (user == null || user.getId() == null) {
+    public void addMemorial(UserInfo userInfo, Long groupId, AddMemorialRequest request) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         FamilyGroup familyGroup = familyGroupRepository.findById(groupId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!Objects.equals(familyGroup.getOwnerId(), user.getId())) {
+        if (!Objects.equals(familyGroup.getOwnerId(), userInfo.getId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         memorialRepository.findById(request.getMemorialId()).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
@@ -257,12 +257,12 @@ public class FamilyGroupService {
 
     @Transactional
     @CacheEvict(cacheNames = "memorial:access", allEntries = true)
-    public void removeMemorial(UserInfo user, Long groupId, Long memorialId) {
-        if (user == null || user.getId() == null) {
+    public void removeMemorial(UserInfo userInfo, Long groupId, Long memorialId) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
         FamilyGroup familyGroup = familyGroupRepository.findById(groupId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
-        if (!Objects.equals(familyGroup.getOwnerId(), user.getId())) {
+        if (!Objects.equals(familyGroup.getOwnerId(), userInfo.getId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         familyGroupMemorialRepository.deleteByGroupIdAndMemorialId(groupId, memorialId);

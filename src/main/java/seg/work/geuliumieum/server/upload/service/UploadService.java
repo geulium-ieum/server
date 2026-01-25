@@ -36,16 +36,16 @@ public class UploadService {
 
     private static final long MAX_IMAGE_SIZE = 10L * 1024 * 1024; // 10MB
 
-    public UploadResponse uploadProfilePhoto(UserInfo user, MultipartFile file) {
-        ensureAuth(user);
+    public UploadResponse uploadProfilePhoto(UserInfo userInfo, MultipartFile file) {
+        ensureAuth(userInfo);
         validateImage(file);
-        String key = buildKey("profile/" + user.getId(), originalExt(file));
+        String key = buildKey("profile/" + userInfo.getId(), originalExt(file));
         putToS3(key, file);
         return new UploadResponse(key, publicUrl(key), file.getSize(), contentType(file));
     }
 
-    public UploadResponse uploadMemorialPhoto(UserInfo user, Long memorialId, MultipartFile file) {
-        ensureAuth(user);
+    public UploadResponse uploadMemorialPhoto(UserInfo userInfo, Long memorialId, MultipartFile file) {
+        ensureAuth(userInfo);
         memorialRepository.findById(memorialId).orElseThrow(() -> new ApiException(ErrorCode.MEMORIAL_NOT_FOUND));
         validateImage(file);
         String key = buildKey("memorial/" + memorialId, originalExt(file));
@@ -53,8 +53,8 @@ public class UploadService {
         return new UploadResponse(key, publicUrl(key), file.getSize(), contentType(file));
     }
 
-    public UploadResponse uploadAlbumPhoto(UserInfo user, Long albumId, MultipartFile file) {
-        ensureAuth(user);
+    public UploadResponse uploadAlbumPhoto(UserInfo userInfo, Long albumId, MultipartFile file) {
+        ensureAuth(userInfo);
         albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         validateImage(file);
         String key = buildKey("album/" + albumId, originalExt(file));
@@ -62,8 +62,8 @@ public class UploadService {
         return new UploadResponse(key, publicUrl(key), file.getSize(), contentType(file));
     }
 
-    public void delete(UserInfo user, String fileId) {
-        ensureAuth(user);
+    public void delete(UserInfo userInfo, String fileId) {
+        ensureAuth(userInfo);
         if (fileId == null || fileId.isBlank()) {
             throw new ApiException(ErrorCode.BAD_REQUEST);
         }
@@ -71,7 +71,7 @@ public class UploadService {
         // 권한 체크: 본인 폴더 내의 파일인지 확인 (profile/{userId}/... , memorial/{memorialId}/... 등)
         // 여기서는 간단히 profile 이미지에 대해서만 소유권을 체크하는 예시를 보여줍니다.
         // 실제로는 DB에 파일 정보를 기록하고 소유자를 확인하는 것이 가장 정확합니다.
-        if (fileId.startsWith("profile/") && !fileId.startsWith("profile/" + user.getId() + "/")) {
+        if (fileId.startsWith("profile/") && !fileId.startsWith("profile/" + userInfo.getId() + "/")) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
 
@@ -86,8 +86,8 @@ public class UploadService {
         }
     }
 
-    private void ensureAuth(UserInfo user) {
-        if (user == null || user.getId() == null) {
+    private void ensureAuth(UserInfo userInfo) {
+        if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
     }
