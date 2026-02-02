@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +37,7 @@ public class AdminAuditLogController {
      * @param pageable   페이지/정렬 정보
      */
     @GetMapping
-    public Page<AdminAuditLogResponse> list(
+    public Slice<AdminAuditLogResponse> list(
         @RequestParam(required = false) AuditAction action,
         @RequestParam(required = false) String targetType,
         @RequestParam(required = false) Long userId,

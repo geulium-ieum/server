@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
@@ -97,8 +96,11 @@ public class MemorialService {
             spec = spec.and((root, q, cb) -> cb.between(root.get("birthDate"), bd, dd));
         }
 
-        Page<Memorial> page = memorialRepository.findAll(spec, pageable);
-        return page.map(MemorialResponse::from);
+        Slice<Memorial> slice = memorialRepository.findBy(spec, query ->
+            query.as(Memorial.class)
+                .slice(pageable)
+        );
+        return slice.map(MemorialResponse::from);
     }
 
     public void checkAccess(UserInfo userInfo, Long id) {

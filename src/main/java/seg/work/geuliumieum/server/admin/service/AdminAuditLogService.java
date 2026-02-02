@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +22,14 @@ public class AdminAuditLogService {
     private final AuditLogRepository auditLogRepository;
 
     @Transactional(readOnly = true)
-    public Page<AdminAuditLogResponse> search(AuditAction action, String targetType, Long userId, LocalDateTime from, LocalDateTime to, Pageable pageable) {
+    public Slice<AdminAuditLogResponse> search(AuditAction action, String targetType, Long userId, LocalDateTime from, LocalDateTime to, Pageable pageable) {
         Specification<AuditLog> spec = buildSpec(action, targetType, userId, from, to);
 
-        return auditLogRepository.findAll(spec, pageable).map(AdminAuditLogResponse::from);
+        Slice<AuditLog> slice = auditLogRepository.findBy(spec, query ->
+            query.as(AuditLog.class)
+                .slice(pageable)
+        );
+        return slice.map(AdminAuditLogResponse::from);
     }
 
     private Specification<AuditLog> buildSpec(AuditAction action, String targetType, Long userId, LocalDateTime from, LocalDateTime to) {
