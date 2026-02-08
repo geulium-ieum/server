@@ -1,5 +1,7 @@
 package seg.work.geuliumieum.server.familygroup.dto.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.OffsetDateTime;
 import lombok.Builder;
@@ -11,6 +13,7 @@ import seg.work.geuliumieum.server.common.entity.FamilyGroupMember;
 @Schema(name = "FamilyGroupMemberResponse", description = "가족 그룹 멤버 응답")
 public class FamilyGroupMemberResponse {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "멤버 레코드 ID")
     private Long id;
     @Schema(description = "그룹 ID")

@@ -1,5 +1,7 @@
 package seg.work.geuliumieum.server.notification.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -11,6 +13,7 @@ import seg.work.geuliumieum.server.common.entity.Notification;
 @Schema(name = "NotificationResponse", description = "알림 응답")
 public class NotificationResponse {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "알림 ID")
     private Long id;
     @Schema(description = "사용자 ID")

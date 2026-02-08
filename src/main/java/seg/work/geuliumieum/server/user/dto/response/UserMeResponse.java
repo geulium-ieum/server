@@ -1,6 +1,8 @@
 package seg.work.geuliumieum.server.user.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
@@ -18,6 +20,7 @@ import seg.work.geuliumieum.server.config.security.UserRole;
 @Schema(name = "UserMeResponse", description = "현재 사용자 프로필 응답")
 public class UserMeResponse {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "사용자 ID", example = "1")
     private Long id;
 

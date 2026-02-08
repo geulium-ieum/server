@@ -1,5 +1,7 @@
 package seg.work.geuliumieum.server.tribute.dto.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -15,6 +17,7 @@ import seg.work.geuliumieum.server.common.entity.Tribute;
 @Schema(name = "TributeResponse", description = "추모글 응답")
 public class TributeResponse {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "추모글 ID")
     private Long id;
     @Schema(description = "추모관 ID")

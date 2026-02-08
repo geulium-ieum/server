@@ -1,5 +1,7 @@
 package seg.work.geuliumieum.server.memorial.dto.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,6 +20,7 @@ import seg.work.geuliumieum.server.memorial.constant.VISIBILITY;
 @Schema(name = "MemorialResponse", description = "추모관 조회 응답")
 public class MemorialResponse {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "추모관 ID", example = "1001")
     private Long id;
     @Schema(description = "고인명", example = "홍길동")

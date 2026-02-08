@@ -1,5 +1,7 @@
 package seg.work.geuliumieum.server.album.dto.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +16,7 @@ import seg.work.geuliumieum.server.common.entity.AlbumPhoto;
 @Schema(name = "PhotoResponse", description = "앨범 사진 응답")
 public class PhotoResponse {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "사진 ID")
     private Long id;
     @Schema(description = "앨범 ID")

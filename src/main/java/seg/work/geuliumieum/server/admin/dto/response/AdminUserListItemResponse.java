@@ -1,5 +1,7 @@
 package seg.work.geuliumieum.server.admin.dto.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -13,6 +15,7 @@ import seg.work.geuliumieum.server.config.security.UserRole;
 @Schema(name = "AdminUserListItemResponse", description = "관리자: 사용자 목록 아이템")
 public class AdminUserListItemResponse {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
     private String email;
     private String name;

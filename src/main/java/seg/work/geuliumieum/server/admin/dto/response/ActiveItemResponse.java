@@ -1,5 +1,7 @@
 package seg.work.geuliumieum.server.admin.dto.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +13,7 @@ import lombok.Data;
 @Schema(name = "ActiveItemResponse", description = "활동 상위 항목 응답 (ID/건수)")
 public class ActiveItemResponse {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "리소스 ID")
     private Long id;
 

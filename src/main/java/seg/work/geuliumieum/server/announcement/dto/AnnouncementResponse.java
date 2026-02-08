@@ -1,5 +1,7 @@
 package seg.work.geuliumieum.server.announcement.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -16,6 +18,7 @@ import seg.work.geuliumieum.server.common.entity.Announcement;
 @Schema(name = "AnnouncementResponse", description = "공지사항 응답")
 public class AnnouncementResponse {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "ID")
     private Long id;
     @Schema(description = "제목")

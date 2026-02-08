@@ -1,5 +1,7 @@
 package seg.work.geuliumieum.server.admin.dto.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.time.LocalDateTime;
 import java.util.Map;
 import lombok.Builder;
@@ -10,6 +12,7 @@ import seg.work.geuliumieum.server.common.entity.AuditLog;
 @Builder
 public class AdminAuditLogResponse {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
     private LocalDateTime createdAt;
     private String action;

@@ -1,5 +1,7 @@
 package seg.work.geuliumieum.server.reminder.dto.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +15,7 @@ import seg.work.geuliumieum.server.reminder.constant.RepeatRule;
 @Schema(name = "ReminderResponse", description = "기일 알림 응답")
 public class ReminderResponse {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "ID")
     private Long id;
     @Schema(description = "추모관 ID")
