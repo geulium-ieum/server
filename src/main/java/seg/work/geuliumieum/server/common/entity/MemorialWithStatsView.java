@@ -1,5 +1,7 @@
 package seg.work.geuliumieum.server.common.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -23,6 +25,7 @@ public class MemorialWithStatsView {
 
     @Id
     @Column(name = "memorial_id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long memorialId;
 
     @Column(name = "deceased_name")

@@ -20,14 +20,17 @@ public class AlbumResponse {
     @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "앨범 ID")
     private Long id;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "추모관 ID")
     private Long memorialId;
     @Schema(description = "제목")
     private String title;
     @Schema(description = "설명")
     private String description;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "생성자 ID")
     private Long createdBy;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "수정자 ID")
     private Long updatedBy;
     @Schema(description = "생성 시각")

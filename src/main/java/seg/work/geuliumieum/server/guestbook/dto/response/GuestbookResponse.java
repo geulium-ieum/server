@@ -19,8 +19,10 @@ public class GuestbookResponse {
     @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "ID")
     private Long id;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "추모관 ID")
     private Long memorialId;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "작성자 사용자 ID(비회원일 수 있음)")
     private Long userId;
     @Schema(description = "작성자 이름")

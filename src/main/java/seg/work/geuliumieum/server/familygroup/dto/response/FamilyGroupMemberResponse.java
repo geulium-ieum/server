@@ -16,8 +16,10 @@ public class FamilyGroupMemberResponse {
     @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "멤버 레코드 ID")
     private Long id;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "그룹 ID")
     private Long groupId;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "사용자 ID")
     private Long userId;
     @Schema(description = "역할(member|admin)")

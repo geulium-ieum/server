@@ -17,7 +17,9 @@ public class AdminAuditLogResponse {
     private LocalDateTime createdAt;
     private String action;
     private String targetType;
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long targetId;
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
     private String ipAddress;
     private String userAgent;

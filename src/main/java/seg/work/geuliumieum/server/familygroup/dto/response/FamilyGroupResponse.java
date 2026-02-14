@@ -24,6 +24,7 @@ public class FamilyGroupResponse {
     private String name;
     @Schema(description = "설명")
     private String description;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "소유자 사용자 ID")
     private Long ownerId;
     @Schema(description = "생성 시각")

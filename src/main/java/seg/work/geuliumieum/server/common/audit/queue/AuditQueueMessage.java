@@ -1,5 +1,7 @@
 package seg.work.geuliumieum.server.common.audit.queue;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.time.Instant;
 import java.util.Map;
 import lombok.AllArgsConstructor;
@@ -16,8 +18,9 @@ public class AuditQueueMessage {
 
     private AuditAction action;
     private String targetType; // 엔티티 단순 클래스명
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long targetId;
-
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
     private String ipAddress;
     private String userAgent;

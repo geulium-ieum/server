@@ -20,8 +20,10 @@ public class TributeResponse {
     @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "추모글 ID")
     private Long id;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "추모관 ID")
     private Long memorialId;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "작성자 ID")
     private Long userId;
     @Schema(description = "내용")

@@ -39,8 +39,10 @@ public class MemorialResponse {
     private VISIBILITY visibility;
     @Schema(description = "상태", example = "PENDING")
     private STATUS status;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "생성자 사용자 ID")
     private Long createdBy;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "수정자 사용자 ID")
     private Long updatedBy;
     @Schema(description = "생성 시각")

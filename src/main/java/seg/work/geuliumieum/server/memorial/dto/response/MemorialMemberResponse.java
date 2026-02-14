@@ -17,9 +17,11 @@ public class MemorialMemberResponse {
     @Schema(description = "멤버 레코드 ID")
     private Long id;
 
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "추모관 ID")
     private Long memorialId;
 
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "사용자 ID")
     private Long userId;
 

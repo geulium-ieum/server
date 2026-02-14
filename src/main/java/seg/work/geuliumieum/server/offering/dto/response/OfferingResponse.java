@@ -15,8 +15,10 @@ public class OfferingResponse {
     @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "ID")
     private Long id;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "추모관 ID")
     private Long memorialId;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "사용자 ID")
     private Long userId;
     @Schema(description = "유형")

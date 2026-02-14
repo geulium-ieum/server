@@ -16,6 +16,7 @@ public class NotificationResponse {
     @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "알림 ID")
     private Long id;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "사용자 ID")
     private Long userId;
     @Schema(description = "알림 유형")
@@ -26,6 +27,7 @@ public class NotificationResponse {
     private String message;
     @Schema(description = "관련 리소스 타입")
     private String relatedType;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "관련 리소스 ID")
     private Long relatedId;
     @Schema(description = "읽음 여부")

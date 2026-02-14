@@ -21,6 +21,7 @@ public class AdminAnnouncementResponse {
     private String title;
     @Schema(description = "내용")
     private String content;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "작성자 ID")
     private Long authorId;
     @Schema(description = "상단 고정 여부")

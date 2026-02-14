@@ -1,5 +1,7 @@
 package seg.work.geuliumieum.server.admin.dto.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +15,7 @@ import seg.work.geuliumieum.server.common.entity.MemorialWithStatsView;
 @AllArgsConstructor
 public class MemorialWithStatsResponse {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long memorialId;
     private String deceasedName;
     private LocalDate birthDate;

@@ -19,12 +19,14 @@ public class PhotoResponse {
     @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "사진 ID")
     private Long id;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "앨범 ID")
     private Long albumId;
     @Schema(description = "사진 URL")
     private String photoUrl;
     @Schema(description = "캡션")
     private String caption;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "업로더 사용자 ID")
     private Long uploadedBy;
 
