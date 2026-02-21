@@ -47,7 +47,6 @@ public class AdminAnnouncementService {
 
     @Transactional
     @Caching(evict = {
-        @CacheEvict(cacheNames = "announcement:list", allEntries = true),
         @CacheEvict(cacheNames = "announcement:detail", key = "#id")
     })
     public void update(UserInfo userInfo, Long id, AnnouncementUpdateRequest request) {
@@ -67,7 +66,6 @@ public class AdminAnnouncementService {
 
     @Transactional
     @Caching(evict = {
-        @CacheEvict(cacheNames = "announcement:list", allEntries = true),
         @CacheEvict(cacheNames = "announcement:detail", key = "#id")
     })
     public void delete(UserInfo userInfo, Long id) {
@@ -78,7 +76,6 @@ public class AdminAnnouncementService {
 
     @Transactional
     @Caching(evict = {
-        @CacheEvict(cacheNames = "announcement:list", allEntries = true),
         @CacheEvict(cacheNames = "announcement:detail", key = "#id")
     })
     public void publish(UserInfo userInfo, Long id) {

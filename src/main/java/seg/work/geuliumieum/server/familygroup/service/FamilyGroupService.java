@@ -41,7 +41,6 @@ public class FamilyGroupService {
     private final FamilyGroupMemorialRepository familyGroupMemorialRepository;
     private final MemorialRepository memorialRepository;
 
-    @Cacheable(cacheNames = "family:my-groups", key = "#userInfo.id + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Slice<FamilyGroupResponse> myGroups(UserInfo userInfo, @ParameterObject Pageable pageable) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -82,7 +81,6 @@ public class FamilyGroupService {
     }
 
     @Transactional
-    @CacheEvict(cacheNames = "family:my-groups", allEntries = true)
     public void create(UserInfo userInfo, FamilyGroupCreateRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -97,7 +95,6 @@ public class FamilyGroupService {
     @Transactional
     @Caching(evict = {
         @CacheEvict(cacheNames = "family:detail", key = "#id"),
-        @CacheEvict(cacheNames = "family:my-groups", allEntries = true)
     })
     public void update(UserInfo userInfo, Long id, FamilyGroupUpdateRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
@@ -119,7 +116,6 @@ public class FamilyGroupService {
     @Transactional
     @Caching(evict = {
         @CacheEvict(cacheNames = "family:detail", key = "#id"),
-        @CacheEvict(cacheNames = "family:my-groups", allEntries = true)
     })
     public void delete(UserInfo userInfo, Long id) {
         if (userInfo == null || userInfo.getId() == null) {

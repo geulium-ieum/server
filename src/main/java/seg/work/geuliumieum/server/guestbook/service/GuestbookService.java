@@ -31,14 +31,12 @@ public class GuestbookService {
     private final MemorialService memorialService;
     private final ApplicationEventPublisher eventPublisher;
 
-    @Cacheable(cacheNames = "guestbook:list", key = "#memorialId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Slice<GuestbookResponse> listByMemorial(UserInfo userInfo, Long memorialId, @ParameterObject Pageable pageable) {
         memorialService.checkAccess(userInfo, memorialId);
         return guestbookEntryRepository.findByMemorialIdAndIsApprovedTrue(memorialId, pageable).map(GuestbookResponse::from);
     }
 
     @Transactional
-    @CacheEvict(cacheNames = "guestbook:list", key = "#memorialId")
     public GuestbookResponse create(UserInfo userInfo, Long memorialId, GuestbookRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -68,7 +66,6 @@ public class GuestbookService {
     }
 
     @Transactional
-    @CacheEvict(cacheNames = "guestbook:list", allEntries = true)
     public void update(UserInfo userInfo, Long entryId, GuestbookRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -88,7 +85,6 @@ public class GuestbookService {
     }
 
     @Transactional
-    @CacheEvict(cacheNames = "guestbook:list", allEntries = true)
     public void delete(UserInfo userInfo, Long entryId) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -101,7 +97,6 @@ public class GuestbookService {
     }
 
     @Transactional
-    @CacheEvict(cacheNames = "guestbook:list", allEntries = true)
     public void approve(UserInfo userInfo, Long entryId) {
         if (userInfo == null || userInfo.getRole() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);

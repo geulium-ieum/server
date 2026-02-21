@@ -18,14 +18,12 @@ public class AnnouncementService {
 
     private final AnnouncementRepository announcementRepository;
 
-    @Cacheable(cacheNames = "announcement:list", key = "#pageable.pageNumber + ':' + #pageable.pageSize")
     public Slice<AnnouncementResponse> list(@ParameterObject Pageable pageable) {
         return announcementRepository
             .findByIsPublishedTrueOrderByIsPinnedDescCreatedAtDesc(pageable)
             .map(AnnouncementResponse::from);
     }
 
-    @Cacheable(cacheNames = "announcement:list", key = "'pinned:' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Slice<AnnouncementResponse> pinned(@ParameterObject Pageable pageable) {
         return announcementRepository
             .findByIsPublishedTrueAndIsPinnedTrueOrderByCreatedAtDesc(pageable)

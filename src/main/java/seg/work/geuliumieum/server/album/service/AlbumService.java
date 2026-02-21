@@ -36,7 +36,6 @@ public class AlbumService {
     private final MemorialService memorialService;
     private final UploadService uploadService;
 
-    @Cacheable(cacheNames = "album:list", key = "#memorialId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Slice<AlbumResponse> listByMemorial(UserInfo userInfo, Long memorialId, @ParameterObject Pageable pageable) {
         memorialService.checkAccess(userInfo, memorialId);
         return albumRepository.findByMemorialId(memorialId, pageable).map(AlbumResponse::from);
@@ -50,7 +49,6 @@ public class AlbumService {
     }
 
     @Transactional
-    @CacheEvict(cacheNames = "album:list", key = "#memorialId")
     public AlbumResponse createAlbum(UserInfo userInfo, Long memorialId, AlbumCreateRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -68,7 +66,6 @@ public class AlbumService {
     @Transactional
     @Caching(evict = {
         @CacheEvict(cacheNames = "album:detail", key = "#albumId"),
-        @CacheEvict(cacheNames = "album:list", allEntries = true)
     })
     public void updateAlbum(UserInfo userInfo, Long albumId, AlbumUpdateRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
@@ -90,7 +87,6 @@ public class AlbumService {
     @Transactional
     @Caching(evict = {
         @CacheEvict(cacheNames = "album:detail", key = "#albumId"),
-        @CacheEvict(cacheNames = "album:list", allEntries = true)
     })
     public void deleteAlbum(UserInfo userInfo, Long albumId) {
         if (userInfo == null || userInfo.getId() == null) {
@@ -103,7 +99,6 @@ public class AlbumService {
         albumRepository.delete(album);
     }
 
-    @Cacheable(cacheNames = "album:photo:list", key = "#albumId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Slice<PhotoResponse> listPhotos(UserInfo userInfo, Long albumId, @ParameterObject Pageable pageable) {
         Album album = albumRepository.findById(albumId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         memorialService.checkAccess(userInfo, album.getMemorialId());
@@ -111,7 +106,6 @@ public class AlbumService {
     }
 
     @Transactional
-    @CacheEvict(cacheNames = "album:photo:list", key = "#albumId")
     public PhotoResponse createPhoto(UserInfo userInfo, Long albumId, PhotoCreateRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -134,7 +128,6 @@ public class AlbumService {
     }
 
     @Transactional
-    @CacheEvict(cacheNames = "album:photo:list", allEntries = true)
     public void updatePhoto(UserInfo userInfo, Long photoId, PhotoUpdateRequest request) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
@@ -152,7 +145,6 @@ public class AlbumService {
     }
 
     @Transactional
-    @CacheEvict(cacheNames = "album:photo:list", allEntries = true)
     public void deletePhoto(UserInfo userInfo, Long photoId) {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
