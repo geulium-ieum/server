@@ -333,7 +333,7 @@ public class AuthService {
         RedisUtil.delete(RT_KEY_PREFIX + user.getId());
 
         // 액세스 토큰 블랙리스트(Authorization 헤더가 제공된 경우)
-        if (StringUtils.hasText(userInfo.getToken())) {
+        if (userInfo == null || StringUtils.hasText(userInfo.getToken())) {
             try {
                 Claims ac = jwtTokenProvider.parseClaims(userInfo.getToken());
                 long ttlMs = ttlMsFromClaims(ac);
