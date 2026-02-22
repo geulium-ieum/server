@@ -1,6 +1,7 @@
 package seg.work.geuliumieum.server.common.repository;
 
 import java.util.Collection;
+import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import seg.work.geuliumieum.server.common.entity.FamilyGroupMember;
@@ -15,7 +16,7 @@ public interface FamilyGroupMemberRepository extends BaseRepository<FamilyGroupM
 
     void deleteByGroupIdAndUserId(Long groupId, Long userId);
 
-    Slice<FamilyGroupMember> findByUserId(Long userId, Pageable pageable);
+    List<FamilyGroupMember> findByUserId(Long userId);
 
     java.util.Optional<FamilyGroupMember> findByGroupIdAndUserId(Long groupId, Long userId);
 }

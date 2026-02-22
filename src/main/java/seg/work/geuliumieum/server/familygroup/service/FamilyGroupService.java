@@ -48,8 +48,8 @@ public class FamilyGroupService {
         // 소유 그룹
         Slice<FamilyGroup> own = familyGroupRepository.findByOwnerId(userInfo.getId(), pageable);
         // 멤버 그룹
-        Slice<FamilyGroupMember> memberSlice = familyGroupMemberRepository.findByUserId(userInfo.getId(), pageable);
-        List<Long> groupIds = memberSlice.getContent().stream().map(FamilyGroupMember::getGroupId).toList();
+        List<FamilyGroupMember> memberSlice = familyGroupMemberRepository.findByUserId(userInfo.getId());
+        List<Long> groupIds = memberSlice.stream().map(FamilyGroupMember::getGroupId).toList();
         // 소유 + 멤버 합집합으로 간단히 구성 (페이지네이션 단순화)
         List<FamilyGroupResponse> content = own.getContent().stream()
             .map(FamilyGroupResponse::from)
@@ -60,8 +60,7 @@ public class FamilyGroupService {
                 familyGroupRepository.findById(gid).ifPresent(g -> content.add(FamilyGroupResponse.from(g)));
             }
         }
-        boolean hasNext = own.hasNext() || memberSlice.hasNext();
-        return new SliceImpl<>(content, pageable, hasNext);
+        return new SliceImpl<>(content, pageable, own.hasNext());
     }
 
     @Cacheable(cacheNames = "family:detail", key = "#id")
