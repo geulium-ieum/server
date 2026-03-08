@@ -24,15 +24,15 @@ public class AdminUserListItemResponse {
     private OffsetDateTime lastLoginAt;
     private LocalDateTime createdAt;
 
-    public static AdminUserListItemResponse from(User u) {
+    public static AdminUserListItemResponse from(User user) {
         return AdminUserListItemResponse.builder()
-            .id(u.getId())
-            .email(u.getEmail())
-            .name(u.getName())
-            .role(u.getRole())
-            .isActive(u.getIsActive())
-            .lastLoginAt(u.getLastLoginAt())
-            .createdAt(u.getCreatedAt())
+            .id(user.getId())
+            .email(user.getEmail())
+            .name(user.getName())
+            .role(user.getRole())
+            .isActive(user.getIsActive())
+            .lastLoginAt(user.getLastLoginAt())
+            .createdAt(user.getCreatedAt())
             .build();
     }
 }

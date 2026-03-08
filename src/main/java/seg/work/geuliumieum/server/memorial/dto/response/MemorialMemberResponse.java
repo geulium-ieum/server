@@ -34,14 +34,14 @@ public class MemorialMemberResponse {
     @Schema(description = "가입 시각")
     private OffsetDateTime joinedAt;
 
-    public static MemorialMemberResponse from(MemorialMember e) {
+    public static MemorialMemberResponse from(MemorialMember memorialMember) {
         return MemorialMemberResponse.builder()
-            .id(e.getId())
-            .memorialId(e.getMemorialId())
-            .userId(e.getUserId())
-            .relationship(e.getRelationship())
-            .role(e.getRole())
-            .joinedAt(e.getJoinedAt())
+            .id(memorialMember.getId())
+            .memorialId(memorialMember.getMemorialId())
+            .userId(memorialMember.getUserId())
+            .relationship(memorialMember.getRelationship())
+            .role(memorialMember.getRole())
+            .joinedAt(memorialMember.getJoinedAt())
             .build();
     }
 }

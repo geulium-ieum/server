@@ -27,13 +27,13 @@ public class FamilyGroupMemberResponse {
     @Schema(description = "가입 시각")
     private OffsetDateTime joinedAt;
 
-    public static FamilyGroupMemberResponse from(FamilyGroupMember m) {
+    public static FamilyGroupMemberResponse from(FamilyGroupMember familyGroupMember) {
         return FamilyGroupMemberResponse.builder()
-            .id(m.getId())
-            .groupId(m.getGroupId())
-            .userId(m.getUserId())
-            .role(m.getRole())
-            .joinedAt(m.getJoinedAt())
+            .id(familyGroupMember.getId())
+            .groupId(familyGroupMember.getGroupId())
+            .userId(familyGroupMember.getUserId())
+            .role(familyGroupMember.getRole())
+            .joinedAt(familyGroupMember.getJoinedAt())
             .build();
     }
 }

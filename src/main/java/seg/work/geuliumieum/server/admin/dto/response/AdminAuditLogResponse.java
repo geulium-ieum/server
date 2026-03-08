@@ -25,17 +25,17 @@ public class AdminAuditLogResponse {
     private String userAgent;
     private Map<String, Object> details;
 
-    public static AdminAuditLogResponse from(AuditLog e) {
+    public static AdminAuditLogResponse from(AuditLog auditLog) {
         return AdminAuditLogResponse.builder()
-            .id(e.getId())
-            .createdAt(e.getCreatedAt())
-            .action(e.getAction())
-            .targetType(e.getTargetType())
-            .targetId(e.getTargetId())
-            .userId(e.getUserId())
-            .ipAddress(e.getIpAddress() == null ? null : e.getIpAddress().getHostAddress())
-            .userAgent(e.getUserAgent())
-            .details(e.getDetails())
+            .id(auditLog.getId())
+            .createdAt(auditLog.getCreatedAt())
+            .action(auditLog.getAction())
+            .targetType(auditLog.getTargetType())
+            .targetId(auditLog.getTargetId())
+            .userId(auditLog.getUserId())
+            .ipAddress(auditLog.getIpAddress() == null ? null : auditLog.getIpAddress().getHostAddress())
+            .userAgent(auditLog.getUserAgent())
+            .details(auditLog.getDetails())
             .build();
     }
 }

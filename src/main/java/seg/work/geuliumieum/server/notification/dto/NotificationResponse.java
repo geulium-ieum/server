@@ -35,17 +35,17 @@ public class NotificationResponse {
     @Schema(description = "생성 시각")
     private LocalDateTime createdAt;
 
-    public static NotificationResponse from(Notification n) {
+    public static NotificationResponse from(Notification notification) {
         return NotificationResponse.builder()
-            .id(n.getId())
-            .userId(n.getUserId())
-            .type(n.getType())
-            .title(n.getTitle())
-            .message(n.getMessage())
-            .relatedType(n.getRelatedType())
-            .relatedId(n.getRelatedId())
-            .isRead(n.getIsRead())
-            .createdAt(n.getCreatedAt())
+            .id(notification.getId())
+            .userId(notification.getUserId())
+            .type(notification.getType())
+            .title(notification.getTitle())
+            .message(notification.getMessage())
+            .relatedType(notification.getRelatedType())
+            .relatedId(notification.getRelatedId())
+            .isRead(notification.getIsRead())
+            .createdAt(notification.getCreatedAt())
             .build();
     }
 }

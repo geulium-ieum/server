@@ -32,14 +32,14 @@ public class FamilyGroupResponse {
     @Schema(description = "수정 시각")
     private LocalDateTime updatedAt;
 
-    public static FamilyGroupResponse from(FamilyGroup e) {
+    public static FamilyGroupResponse from(FamilyGroup familyGroup) {
         return FamilyGroupResponse.builder()
-            .id(e.getId())
-            .name(e.getName())
-            .description(e.getDescription())
-            .ownerId(e.getOwnerId())
-            .createdAt(e.getCreatedAt())
-            .updatedAt(e.getUpdatedAt())
+            .id(familyGroup.getId())
+            .name(familyGroup.getName())
+            .description(familyGroup.getDescription())
+            .ownerId(familyGroup.getOwnerId())
+            .createdAt(familyGroup.getCreatedAt())
+            .updatedAt(familyGroup.getUpdatedAt())
             .build();
     }
 }

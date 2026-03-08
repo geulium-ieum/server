@@ -26,13 +26,13 @@ public class OfferingResponse {
     @Schema(description = "메시지")
     private String message;
 
-    public static OfferingResponse from(Offering o) {
+    public static OfferingResponse from(Offering offering) {
         return OfferingResponse.builder()
-            .id(o.getId())
-            .memorialId(o.getMemorialId())
-            .userId(o.getUserId())
-            .offeringType(o.getOfferingType())
-            .message(o.getMessage())
+            .id(offering.getId())
+            .memorialId(offering.getMemorialId())
+            .userId(offering.getUserId())
+            .offeringType(offering.getOfferingType())
+            .message(offering.getMessage())
             .build();
     }
 }

@@ -32,14 +32,14 @@ public class GuestbookResponse {
     @Schema(description = "승인 여부")
     private Boolean isApproved;
 
-    public static GuestbookResponse from(GuestbookEntry e) {
+    public static GuestbookResponse from(GuestbookEntry guestbookEntry) {
         return GuestbookResponse.builder()
-            .id(e.getId())
-            .memorialId(e.getMemorialId())
-            .userId(e.getUserId())
-            .authorName(e.getAuthorName())
-            .content(e.getContent())
-            .isApproved(e.getIsApproved())
+            .id(guestbookEntry.getId())
+            .memorialId(guestbookEntry.getMemorialId())
+            .userId(guestbookEntry.getUserId())
+            .authorName(guestbookEntry.getAuthorName())
+            .content(guestbookEntry.getContent())
+            .isApproved(guestbookEntry.getIsApproved())
             .build();
     }
 }

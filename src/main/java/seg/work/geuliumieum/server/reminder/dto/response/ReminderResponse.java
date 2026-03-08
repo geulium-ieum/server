@@ -44,19 +44,19 @@ public class ReminderResponse {
     @Schema(description = "다음 알림 발생일(기준일-사전일수)")
     private LocalDate nextOccurrence;
 
-    public static ReminderResponse from(Reminder r) {
+    public static ReminderResponse from(Reminder reminder) {
         return ReminderResponse.builder()
-            .id(r.getId())
-            .memorialId(r.getMemorialId())
-            .userId(r.getUserId())
-            .title(r.getTitle())
-            .reminderDate(r.getReminderDate())
-            .repeatRule(r.getRepeatRule())
-            .daysBefore(r.getDaysBefore())
-            .isActive(r.getIsActive())
-            .channel(r.getChannel())
-            .createdAt(r.getCreatedAt())
-            .updatedAt(r.getUpdatedAt())
+            .id(reminder.getId())
+            .memorialId(reminder.getMemorialId())
+            .userId(reminder.getUserId())
+            .title(reminder.getTitle())
+            .reminderDate(reminder.getReminderDate())
+            .repeatRule(reminder.getRepeatRule())
+            .daysBefore(reminder.getDaysBefore())
+            .isActive(reminder.getIsActive())
+            .channel(reminder.getChannel())
+            .createdAt(reminder.getCreatedAt())
+            .updatedAt(reminder.getUpdatedAt())
             .build();
     }
 }

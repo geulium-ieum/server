@@ -35,15 +35,15 @@ public class TributeResponse {
     @Schema(description = "수정 시각")
     private LocalDateTime updatedAt;
 
-    public static TributeResponse from(Tribute t) {
+    public static TributeResponse from(Tribute tribute) {
         return TributeResponse.builder()
-            .id(t.getId())
-            .memorialId(t.getMemorialId())
-            .userId(t.getUserId())
-            .content(t.getContent())
-            .isPublic(t.getIsPublic())
-            .createdAt(t.getCreatedAt())
-            .updatedAt(t.getUpdatedAt())
+            .id(tribute.getId())
+            .memorialId(tribute.getMemorialId())
+            .userId(tribute.getUserId())
+            .content(tribute.getContent())
+            .isPublic(tribute.getIsPublic())
+            .createdAt(tribute.getCreatedAt())
+            .updatedAt(tribute.getUpdatedAt())
             .build();
     }
 }

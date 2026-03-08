@@ -38,16 +38,16 @@ public class AlbumResponse {
     @Schema(description = "수정 시각")
     private LocalDateTime updatedAt;
 
-    public static AlbumResponse from(Album a) {
+    public static AlbumResponse from(Album album) {
         return AlbumResponse.builder()
-            .id(a.getId())
-            .memorialId(a.getMemorialId())
-            .title(a.getTitle())
-            .description(a.getDescription())
-            .createdBy(a.getCreatedBy())
-            .updatedBy(a.getUpdatedBy())
-            .createdAt(a.getCreatedAt())
-            .updatedAt(a.getUpdatedAt())
+            .id(album.getId())
+            .memorialId(album.getMemorialId())
+            .title(album.getTitle())
+            .description(album.getDescription())
+            .createdBy(album.getCreatedBy())
+            .updatedBy(album.getUpdatedBy())
+            .createdAt(album.getCreatedAt())
+            .updatedAt(album.getUpdatedAt())
             .build();
     }
 }

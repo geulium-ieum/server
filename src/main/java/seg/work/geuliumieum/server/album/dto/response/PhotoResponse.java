@@ -30,13 +30,13 @@ public class PhotoResponse {
     @Schema(description = "업로더 사용자 ID")
     private Long uploadedBy;
 
-    public static PhotoResponse from(AlbumPhoto p) {
+    public static PhotoResponse from(AlbumPhoto albumPhoto) {
         return PhotoResponse.builder()
-            .id(p.getId())
-            .albumId(p.getAlbumId())
-            .photoUrl(p.getPhotoUrl())
-            .caption(p.getCaption())
-            .uploadedBy(p.getUploadedBy())
+            .id(albumPhoto.getId())
+            .albumId(albumPhoto.getAlbumId())
+            .photoUrl(albumPhoto.getPhotoUrl())
+            .caption(albumPhoto.getCaption())
+            .uploadedBy(albumPhoto.getUploadedBy())
             .build();
     }
 }

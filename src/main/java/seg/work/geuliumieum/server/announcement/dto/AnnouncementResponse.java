@@ -39,17 +39,17 @@ public class AnnouncementResponse {
     @Schema(description = "수정 시각")
     private LocalDateTime updatedAt;
 
-    public static AnnouncementResponse from(Announcement a) {
+    public static AnnouncementResponse from(Announcement announcement) {
         return AnnouncementResponse.builder()
-            .id(a.getId())
-            .title(a.getTitle())
-            .content(a.getContent())
-            .authorId(a.getAuthorId())
-            .isPinned(a.getIsPinned())
-            .isPublished(a.getIsPublished())
-            .publishedAt(a.getPublishedAt())
-            .createdAt(a.getCreatedAt())
-            .updatedAt(a.getUpdatedAt())
+            .id(announcement.getId())
+            .title(announcement.getTitle())
+            .content(announcement.getContent())
+            .authorId(announcement.getAuthorId())
+            .isPinned(announcement.getIsPinned())
+            .isPublished(announcement.getIsPublished())
+            .publishedAt(announcement.getPublishedAt())
+            .createdAt(announcement.getCreatedAt())
+            .updatedAt(announcement.getUpdatedAt())
             .build();
     }
 }
