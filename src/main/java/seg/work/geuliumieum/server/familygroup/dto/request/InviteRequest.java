@@ -11,8 +11,8 @@ import lombok.Setter;
 public class InviteRequest {
 
     @NotNull
-    @Schema(description = "초대할 사용자 ID", example = "123")
-    private Long userId;
+    @Schema(description = "초대할 사용자 이메일", example = "user@example.com")
+    private String email;
 
     @Schema(description = "역할(member|admin)", example = "member")
     private String role = "member";

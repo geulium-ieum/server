@@ -17,12 +17,14 @@ import seg.work.geuliumieum.server.common.dto.UserInfo;
 import seg.work.geuliumieum.server.common.entity.FamilyGroup;
 import seg.work.geuliumieum.server.common.entity.FamilyGroupMember;
 import seg.work.geuliumieum.server.common.entity.FamilyGroupMemorial;
+import seg.work.geuliumieum.server.common.entity.User;
 import seg.work.geuliumieum.server.common.exception.ApiException;
 import seg.work.geuliumieum.server.common.exception.ErrorCode;
 import seg.work.geuliumieum.server.common.repository.FamilyGroupMemberRepository;
 import seg.work.geuliumieum.server.common.repository.FamilyGroupMemorialRepository;
 import seg.work.geuliumieum.server.common.repository.FamilyGroupRepository;
 import seg.work.geuliumieum.server.common.repository.MemorialRepository;
+import seg.work.geuliumieum.server.common.repository.UserRepository;
 import seg.work.geuliumieum.server.familygroup.dto.request.AddMemorialRequest;
 import seg.work.geuliumieum.server.familygroup.dto.request.FamilyGroupCreateRequest;
 import seg.work.geuliumieum.server.familygroup.dto.request.FamilyGroupUpdateRequest;
@@ -40,6 +42,7 @@ public class FamilyGroupService {
     private final FamilyGroupMemberRepository familyGroupMemberRepository;
     private final FamilyGroupMemorialRepository familyGroupMemorialRepository;
     private final MemorialRepository memorialRepository;
+    private final UserRepository userRepository;
 
     public Slice<FamilyGroupResponse> myGroups(UserInfo userInfo, @ParameterObject Pageable pageable) {
         if (userInfo == null || userInfo.getId() == null) {
@@ -146,17 +149,20 @@ public class FamilyGroupService {
         if (userInfo == null || userInfo.getId() == null) {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
+
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+
         FamilyGroup familyGroup = familyGroupRepository.findById(groupId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         // 초대는 소유자만 허용 (간단 정책)
         if (!Objects.equals(familyGroup.getOwnerId(), userInfo.getId())) {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
-        if (familyGroupMemberRepository.existsByGroupIdAndUserId(groupId, request.getUserId())) {
+        if (familyGroupMemberRepository.existsByGroupIdAndUserId(groupId, user.getId())) {
             return; // 이미 멤버면 무시
         }
         FamilyGroupMember familyGroupMember = new FamilyGroupMember();
         familyGroupMember.setGroupId(groupId);
-        familyGroupMember.setUserId(request.getUserId());
+        familyGroupMember.setUserId(user.getId());
         familyGroupMember.setRole(request.getRole() == null ? "member" : request.getRole());
         familyGroupMemberRepository.save(familyGroupMember);
     }
