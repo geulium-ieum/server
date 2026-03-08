@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import seg.work.geuliumieum.server.common.entity.Reminder;
+import seg.work.geuliumieum.server.common.repository.AuditLogRepository;
 import seg.work.geuliumieum.server.common.repository.NotificationRepository;
 import seg.work.geuliumieum.server.common.repository.ReminderRepository;
 import seg.work.geuliumieum.server.notification.service.NotificationService;
@@ -23,6 +24,7 @@ public class ScheduledTasks {
     private final ReminderRepository reminderRepository;
     private final NotificationService notificationService;
     private final NotificationRepository notificationRepository;
+    private final AuditLogRepository auditLogRepository;
 
     // 매일 오전 9시: 기일 알림(INAPP) 발송
     @Scheduled(cron = "0 0 9 * * *")
@@ -60,18 +62,12 @@ public class ScheduledTasks {
         log.info("[Scheduler] cleanupOldNotifications: {} rows deleted (cutoff={})", deleted, cutoff);
     }
 
-    // 매월 1일 02:00: 감사 로그 아카이브 (스키마 미정 → 일단 로그)
+    // 매월 1일 02:00: 감사 로그 아카이브 (1년 지난 로그 삭제)
     @Scheduled(cron = "0 0 2 1 * *")
     public void archiveAuditLogs() {
-        // 스키마/전략 확정 전이므로 가벼운 로그만 남깁니다.
-        log.info("[Scheduler] archiveAuditLogs: not implemented (placeholder)");
-    }
-
-    // 매일 자정: 일일 리포트 로그
-    @Scheduled(cron = "0 0 0 * * *")
-    public void generateDailyReport() {
-        // 리포트 저장소가 없으므로 간단한 로그만 남깁니다.
-        log.info("[Scheduler] generateDailyReport: snapshot logged");
+        LocalDateTime cutoff = LocalDateTime.now().minusYears(1);
+        int deleted = auditLogRepository.deleteOldLogs(cutoff);
+        log.info("[Scheduler] archiveAuditLogs: {} audit logs deleted (cutoff={})", deleted, cutoff);
     }
 
     private LocalDate nextOccurrenceDate(Reminder reminder, LocalDate today) {
