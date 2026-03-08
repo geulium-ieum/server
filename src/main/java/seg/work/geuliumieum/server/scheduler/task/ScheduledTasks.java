@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import seg.work.geuliumieum.server.common.entity.Reminder;
 import seg.work.geuliumieum.server.common.repository.NotificationRepository;
 import seg.work.geuliumieum.server.common.repository.ReminderRepository;
@@ -51,6 +52,7 @@ public class ScheduledTasks {
     }
 
     // 매주 일요일 03:00: 90일 지난 읽은 알림 삭제
+    @Transactional
     @Scheduled(cron = "0 0 3 * * SUN")
     public void cleanupOldNotifications() {
         LocalDateTime cutoff = LocalDateTime.now().minusDays(90);
