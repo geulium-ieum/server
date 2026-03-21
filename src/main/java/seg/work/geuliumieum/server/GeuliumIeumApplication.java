@@ -1,5 +1,7 @@
 package seg.work.geuliumieum.server;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.servers.Server;
 import java.util.TimeZone;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,6 +15,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @SpringBootApplication
 @EnableSpringDataWebSupport(pageSerializationMode = PageSerializationMode.VIA_DTO)
+@OpenAPIDefinition(
+    servers = {
+        @Server(url = "https://geulium-ieum-api-dev.seoeungi.work", description = "Default Server url"),
+        @Server(url = "http://geulium-ieum-api-dev.seoeungi.work", description = "Default Server url"),
+    }
+)
 @EnableJpaRepositories(basePackages = "seg.work.geuliumieum.server.common.repository")
 public class GeuliumIeumApplication {
 

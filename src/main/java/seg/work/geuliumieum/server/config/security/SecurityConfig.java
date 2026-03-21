@@ -72,7 +72,13 @@ public class SecurityConfig {
 
         config.setAllowCredentials(true);
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        config.setAllowedOriginPatterns(List.of("http://localhost:*", "https://*.vercel.app"));
+        config.setAllowedOriginPatterns(List.of(
+            "http://localhost:*",
+            "https://*.vercel.app",
+            "https://geulium-ieum-api-dev.seoeungi.work",
+            "http://geulium-ieum-api-dev.seoeungi.work"
+
+        ));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("Authorization", "Content-Type"));
         config.setMaxAge(3600L);
