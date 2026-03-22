@@ -21,6 +21,9 @@ public class MailClient {
     @Value("${hermes.sendTemplateUrl}")
     private String sendTemplateUrl;
 
+    @Value("${hermes.familyGroupJoinUrl}")
+    private String familyGroupJoinUrl;
+
     @Value("${hermes.groupKey}")
     private String groupKey;
 
@@ -65,6 +68,27 @@ public class MailClient {
             restTemplate.postForEntity(sendTemplateUrl, new HttpEntity<>(body, headers), Void.class);
         } catch (Exception e) {
             log.warn("Failed to send password reset email to {}: {}", to, e.getMessage());
+        }
+    }
+
+    public void sendInvitationEmail(String to, String inviterName, String groupName, Long familyGroupId) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("groupKey", groupKey);
+        body.put("to", to);
+        body.put("templateName", "invitation");
+        Map<String, Object> vars = new HashMap<>();
+        vars.put("inviter_name", inviterName);
+        vars.put("group_name", groupName);
+        vars.put("invite_url", familyGroupJoinUrl + familyGroupId);
+        vars.put("company", "그리움 이음");
+        body.put("variables", vars);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            restTemplate.postForEntity(sendTemplateUrl, new HttpEntity<>(body, headers), Void.class);
+        } catch (Exception e) {
+            log.warn("Failed to send invitation email to {}: {}", to, e.getMessage());
         }
     }
 }

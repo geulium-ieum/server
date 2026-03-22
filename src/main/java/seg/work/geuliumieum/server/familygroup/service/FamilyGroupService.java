@@ -1,5 +1,6 @@
 package seg.work.geuliumieum.server.familygroup.service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import seg.work.geuliumieum.server.common.entity.FamilyGroupMemorial;
 import seg.work.geuliumieum.server.common.entity.User;
 import seg.work.geuliumieum.server.common.exception.ApiException;
 import seg.work.geuliumieum.server.common.exception.ErrorCode;
+import seg.work.geuliumieum.server.common.mail.MailClient;
 import seg.work.geuliumieum.server.common.repository.FamilyGroupMemberRepository;
 import seg.work.geuliumieum.server.common.repository.FamilyGroupMemorialRepository;
 import seg.work.geuliumieum.server.common.repository.FamilyGroupRepository;
@@ -33,6 +35,7 @@ import seg.work.geuliumieum.server.familygroup.dto.request.MemberRoleUpdateReque
 import seg.work.geuliumieum.server.familygroup.dto.response.FamilyGroupMemberResponse;
 import seg.work.geuliumieum.server.familygroup.dto.response.FamilyGroupResponse;
 import seg.work.geuliumieum.server.memorial.dto.response.MemorialResponse;
+import seg.work.geuliumieum.server.util.RedisUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +46,9 @@ public class FamilyGroupService {
     private final FamilyGroupMemorialRepository familyGroupMemorialRepository;
     private final MemorialRepository memorialRepository;
     private final UserRepository userRepository;
+    private final MailClient mailClient;
+
+    private static final String INVITE_KEY_PREFIX = "family:invite:";
 
     public Slice<FamilyGroupResponse> myGroups(UserInfo userInfo, @ParameterObject Pageable pageable) {
         if (userInfo == null || userInfo.getId() == null) {
@@ -160,11 +166,14 @@ public class FamilyGroupService {
         if (familyGroupMemberRepository.existsByGroupIdAndUserId(groupId, user.getId())) {
             return; // 이미 멤버면 무시
         }
-        FamilyGroupMember familyGroupMember = new FamilyGroupMember();
-        familyGroupMember.setGroupId(groupId);
-        familyGroupMember.setUserId(user.getId());
-        familyGroupMember.setRole(request.getRole() == null ? "member" : request.getRole());
-        familyGroupMemberRepository.save(familyGroupMember);
+        Long joinUserId = RedisUtil.getLongValue(INVITE_KEY_PREFIX + groupId);
+        if (joinUserId != null && Objects.equals(joinUserId, userInfo.getId())) {
+            throw new ApiException(ErrorCode.ALREADY_INVITATION);
+        } else {
+            // 알림 및 이메일 발송
+            RedisUtil.setWithExpiryMin(INVITE_KEY_PREFIX + groupId, user.getId(), 5);
+            mailClient.sendInvitationEmail(user.getEmail(), user.getName(), familyGroup.getName(), groupId);
+        }
     }
 
     @Transactional
@@ -177,11 +186,20 @@ public class FamilyGroupService {
         if (familyGroupMemberRepository.existsByGroupIdAndUserId(groupId, userInfo.getId())) {
             return;
         }
-        FamilyGroupMember familyGroupMember = new FamilyGroupMember();
-        familyGroupMember.setGroupId(groupId);
-        familyGroupMember.setUserId(userInfo.getId());
-        familyGroupMember.setRole("member");
-        familyGroupMemberRepository.save(familyGroupMember);
+
+        Long joinUserId = RedisUtil.getLongValue(INVITE_KEY_PREFIX + groupId);
+        if (joinUserId == null) {
+            throw new ApiException(ErrorCode.EXPIRED_INVITATION);
+        } else if (Objects.equals(userInfo.getId(), joinUserId)) {
+            throw new ApiException(ErrorCode.INVALID_INVITATION);
+        } else {
+            FamilyGroupMember familyGroupMember = new FamilyGroupMember();
+            familyGroupMember.setGroupId(groupId);
+            familyGroupMember.setUserId(userInfo.getId());
+            familyGroupMember.setRole("member");
+            familyGroupMember.setJoinedAt(OffsetDateTime.now());
+            familyGroupMemberRepository.save(familyGroupMember);
+        }
     }
 
     @Transactional

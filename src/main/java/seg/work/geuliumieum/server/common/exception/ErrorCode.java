@@ -42,6 +42,11 @@ public enum ErrorCode {
     PASSWORD_RESET_RESEND_COOLDOWN(HttpStatus.TOO_MANY_REQUESTS, "재설정 코드를 다시 요청하기 전에 잠시 기다려주세요"),
     PASSWORD_POLICY_VIOLATION(HttpStatus.BAD_REQUEST, "비밀번호 정책을 만족하지 않습니다"),
 
+    // Family Group
+    ALREADY_INVITATION(HttpStatus.BAD_REQUEST, "이미 초대된 사용자입니다. 초대장은 최대 5분동안 유효하므로 5분 후 재시도해주세요"),
+    EXPIRED_INVITATION(HttpStatus.BAD_REQUEST, "만료된 초대입니다"),
+    INVALID_INVITATION(HttpStatus.BAD_REQUEST, "유효하지 않은 초대입니다"),
+
     // User
     ALREADY_REGISTERED_EMAIL(HttpStatus.BAD_REQUEST, "이미 등록된 이메일입니다"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다"),
