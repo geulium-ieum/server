@@ -171,7 +171,7 @@ public class FamilyGroupService {
             throw new ApiException(ErrorCode.ALREADY_INVITATION);
         } else {
             // 알림 및 이메일 발송
-            RedisUtil.setWithExpiryMin(INVITE_KEY_PREFIX + groupId, user.getId(), 5);
+            RedisUtil.setWithExpiryMin(INVITE_KEY_PREFIX + groupId, user.getId() + "", 5);
             mailClient.sendInvitationEmail(user.getEmail(), user.getName(), familyGroup.getName(), groupId);
         }
     }
