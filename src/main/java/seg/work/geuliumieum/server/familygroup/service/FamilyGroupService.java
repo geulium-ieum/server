@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -37,6 +38,7 @@ import seg.work.geuliumieum.server.familygroup.dto.response.FamilyGroupResponse;
 import seg.work.geuliumieum.server.memorial.dto.response.MemorialResponse;
 import seg.work.geuliumieum.server.util.RedisUtil;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FamilyGroupService {
@@ -190,7 +192,7 @@ public class FamilyGroupService {
         Long joinUserId = RedisUtil.getLongValue(INVITE_KEY_PREFIX + groupId);
         if (joinUserId == null) {
             throw new ApiException(ErrorCode.EXPIRED_INVITATION);
-        } else if (Objects.equals(userInfo.getId(), joinUserId)) {
+        } else if (!Objects.equals(userInfo.getId(), joinUserId)) {
             throw new ApiException(ErrorCode.INVALID_INVITATION);
         } else {
             FamilyGroupMember familyGroupMember = new FamilyGroupMember();
