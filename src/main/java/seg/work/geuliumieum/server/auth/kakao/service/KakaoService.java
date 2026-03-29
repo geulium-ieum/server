@@ -49,6 +49,7 @@ public class KakaoService {
                 throw new ApiException(ErrorCode.GET_TOKEN_FROM_KAKAO_FAILED);
             }
         } catch (Exception e) {
+            log.error("Kakao access token error", e);
             throw new ApiException(ErrorCode.KAKAO_ACCESS_TOKEN_ERROR);
         }
     }
