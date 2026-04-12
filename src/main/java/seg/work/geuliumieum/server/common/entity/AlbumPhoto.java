@@ -1,5 +1,7 @@
 package seg.work.geuliumieum.server.common.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -20,6 +22,7 @@ public class AlbumPhoto extends BaseEntity {
 
     @NotNull
     @Column(name = "album_id", nullable = false)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long albumId;
 
     @NotNull
