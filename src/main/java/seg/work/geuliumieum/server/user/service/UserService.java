@@ -52,12 +52,18 @@ public class UserService {
         }
 
         User user = userRepository.findById(userId).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+        if (user.getDeletedAt() != null) {
+            throw new ApiException(ErrorCode.USER_DELETED);
+        }
         return UserMeResponse.from(user);
     }
 
     @Cacheable(cacheNames = "user:profile", key = "#id", unless = "#result == null")
     public UserMeResponse getUserProfile(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+        if (user.getDeletedAt() != null) {
+            throw new ApiException(ErrorCode.USER_DELETED);
+        }
         return UserMeResponse.from(user);
     }
 
@@ -99,7 +105,18 @@ public class UserService {
             throw new ApiException(ErrorCode.FORBIDDEN);
         }
         User user = userRepository.findById(id).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
-        userRepository.delete(user);
+        if (user.getDeletedAt() != null) {
+            throw new ApiException(ErrorCode.ALREADY_WITHDRAWN);
+        }
+
+        // 소프트 딜리트 처리
+        user.setIsActive(false);
+        user.setDeletedAt(java.time.LocalDateTime.now());
+
+        // 중복 가입 허용을 위한 이메일 변조 (Unique Constraint 우회)
+        user.setEmail(user.getEmail() + "#" + java.util.UUID.randomUUID().toString().substring(0, 8));
+
+        userRepository.save(user);
     }
 
     @Transactional

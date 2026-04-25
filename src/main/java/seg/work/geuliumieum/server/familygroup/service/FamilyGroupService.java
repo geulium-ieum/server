@@ -158,7 +158,7 @@ public class FamilyGroupService {
             throw new ApiException(ErrorCode.UNAUTHORIZED);
         }
 
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findByEmailAndDeletedAtIsNull(request.getEmail()).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
 
         FamilyGroup familyGroup = familyGroupRepository.findById(groupId).orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND));
         // 초대는 소유자만 허용 (간단 정책)

@@ -78,7 +78,7 @@ public class AuthService {
 
     public MessageResponse register(RegisterRequest request) {
         String email = request.getEmail().trim().toLowerCase();
-        if (userRepository.findByEmail(email).isPresent()) {
+        if (userRepository.existsByEmailAndDeletedAtIsNull(email)) {
             throw new ApiException(ErrorCode.ALREADY_REGISTERED_EMAIL);
         }
 
@@ -106,7 +106,7 @@ public class AuthService {
 
     public TokenResponse verifyEmail(VerifyEmailRequest request) {
         String email = request.getEmail().trim().toLowerCase();
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findByEmailAndDeletedAtIsNull(email).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
 
         String stored = RedisUtil.getStringValue(EV_CODE_PREFIX + email);
         if (stored == null) {
@@ -145,7 +145,7 @@ public class AuthService {
 
     public void resendVerification(ResendVerificationRequest request) {
         String email = request.getEmail().trim().toLowerCase();
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findByEmailAndDeletedAtIsNull(email).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
         if (Boolean.TRUE.equals(user.getIsActive())) {
             throw new ApiException(ErrorCode.ALREADY_VERIFIED);
         }
@@ -170,7 +170,7 @@ public class AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findByEmailAndDeletedAtIsNull(request.getEmail()).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
         if (user.getIsActive() == null || !user.getIsActive()) {
             throw new ApiException(ErrorCode.USER_NOT_VERIFIED);
         }
@@ -274,7 +274,7 @@ public class AuthService {
     public FindIdResponse findId(FindIdRequest request) {
         String name = request.getName().trim();
         String phone = request.getPhone().trim();
-        Optional<User> opt = userRepository.findByNameAndPhone(name, phone);
+        Optional<User> opt = userRepository.findByNameAndPhoneAndDeletedAtIsNull(name, phone);
         if (opt.isEmpty()) {
             // 존재 여부 비노출 정책: 동일한 형태의 응답 반환
             return new FindIdResponse("*****@*****");
@@ -285,7 +285,7 @@ public class AuthService {
 
     public void requestPasswordReset(PasswordResetRequest request) {
         String email = request.getEmail().trim().toLowerCase();
-        Optional<User> opt = userRepository.findByEmail(email);
+        Optional<User> opt = userRepository.findByEmailAndDeletedAtIsNull(email);
         if (opt.isEmpty()) {
             // 존재하지 않아도 동일 응답(열거 방지)
             return;
@@ -325,7 +325,7 @@ public class AuthService {
             throw new ApiException(ErrorCode.PASSWORD_RESET_CODE_INVALID);
         }
 
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findByEmailAndDeletedAtIsNull(email).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
         user.setPwd(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
 

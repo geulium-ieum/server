@@ -45,7 +45,7 @@ public class KakaoAuthService {
             email = email.trim().toLowerCase();
         }
 
-        Optional<User> optUser = email == null ? Optional.empty() : userRepository.findByEmail(email);
+        Optional<User> optUser = email == null ? Optional.empty() : userRepository.findByEmailAndDeletedAtIsNull(email);
         User user = optUser.orElse(null);
         if (user == null) {
             user = new User();

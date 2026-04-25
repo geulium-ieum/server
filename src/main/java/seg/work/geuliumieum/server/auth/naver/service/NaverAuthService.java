@@ -51,7 +51,7 @@ public class NaverAuthService {
             email = email.trim().toLowerCase();
         }
 
-        Optional<User> opt = email == null ? Optional.empty() : userRepository.findByEmail(email);
+        Optional<User> opt = email == null ? Optional.empty() : userRepository.findByEmailAndDeletedAtIsNull(email);
         User user = opt.orElse(null);
         if (user == null) {
             user = new User();

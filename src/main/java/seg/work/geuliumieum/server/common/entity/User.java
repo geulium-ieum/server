@@ -71,6 +71,10 @@ public class User extends BaseEntity {
     @Column(name = "last_login_at")
     private OffsetDateTime lastLoginAt;
 
+    @Column(name = "deleted_at")
+    @Comment("탈퇴 일시")
+    private LocalDateTime deletedAt;
+
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

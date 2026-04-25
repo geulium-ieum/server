@@ -7,9 +7,13 @@ import seg.work.geuliumieum.server.common.entity.User;
 
 public interface UserRepository extends BaseRepository<User> {
 
-    Optional<User> findByEmail(String email);
+    boolean existsByEmailAndDeletedAtIsNull(String email);
 
-    Optional<User> findByNameAndPhone(String name, String phone);
+    Optional<User> findByEmailAndDeletedAtIsNull(String email);
+
+    Optional<User> findByNameAndPhoneAndDeletedAtIsNull(String name, String phone);
 
     Slice<User> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
+    Slice<User> findAllByDeletedAtIsNullOrderByCreatedAtDesc(Pageable pageable);
 }
