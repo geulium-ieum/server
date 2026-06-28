@@ -1,4 +1,4 @@
-package seg.work.geuliumieum.server.announcement.dto;
+package seg.work.geuliumieum.server.announcement.dto.response;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -39,17 +39,20 @@ public class AnnouncementResponse {
     @Schema(description = "수정 시각")
     private LocalDateTime updatedAt;
 
-    public static AnnouncementResponse from(Announcement announcement) {
-        return AnnouncementResponse.builder()
-            .id(announcement.getId())
-            .title(announcement.getTitle())
-            .content(announcement.getContent())
-            .authorId(announcement.getAuthorId())
-            .isPinned(announcement.getIsPinned())
-            .isPublished(announcement.getIsPublished())
-            .publishedAt(announcement.getPublishedAt())
-            .createdAt(announcement.getCreatedAt())
-            .updatedAt(announcement.getUpdatedAt())
-            .build();
+    @Schema(description = "작성자 이름")
+    private String authorName;
+
+    public AnnouncementResponse(Announcement announcement, String authorName) {
+        this.id = announcement.getId();
+        this.title = announcement.getTitle();
+        this.content = announcement.getContent();
+        this.authorId = announcement.getAuthorId();
+        this.isPinned = announcement.getIsPinned();
+        this.isPublished = announcement.getIsPublished();
+        this.publishedAt = announcement.getPublishedAt();
+        this.createdAt = announcement.getCreatedAt();
+        this.updatedAt = announcement.getUpdatedAt();
+
+        this.authorName = authorName;
     }
 }

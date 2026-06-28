@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import seg.work.geuliumieum.server.admin.dto.response.AdminAnnouncementResponse;
 import seg.work.geuliumieum.server.admin.service.AdminAnnouncementService;
-import seg.work.geuliumieum.server.announcement.dto.AnnouncementCreateRequest;
-import seg.work.geuliumieum.server.announcement.dto.AnnouncementUpdateRequest;
+import seg.work.geuliumieum.server.announcement.dto.request.AnnouncementCreateRequest;
+import seg.work.geuliumieum.server.announcement.dto.request.AnnouncementUpdateRequest;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
 
 @RestController

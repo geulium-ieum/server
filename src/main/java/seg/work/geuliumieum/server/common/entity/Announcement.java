@@ -3,6 +3,7 @@ package seg.work.geuliumieum.server.common.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serial;
 import java.time.LocalDateTime;
