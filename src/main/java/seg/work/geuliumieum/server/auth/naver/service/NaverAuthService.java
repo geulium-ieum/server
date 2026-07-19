@@ -1,5 +1,6 @@
 package seg.work.geuliumieum.server.auth.naver.service;
 
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -82,7 +83,7 @@ public class NaverAuthService {
         if (user.getProviderId() == null) {
             user.setProviderId(naverId);
         }
-        user.setLastLoginAt(java.time.OffsetDateTime.now());
+        user.setLastLoginAt(OffsetDateTime.now());
         user = userRepository.save(user);
 
         Map<String, Object> claims = defaultClaims(user);

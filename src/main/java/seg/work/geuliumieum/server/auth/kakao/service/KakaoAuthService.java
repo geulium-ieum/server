@@ -1,5 +1,6 @@
 package seg.work.geuliumieum.server.auth.kakao.service;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +72,7 @@ public class KakaoAuthService {
         if (user.getIsActive() == null || !user.getIsActive()) {
             user.setIsActive(true);
         }
-        user.setLastLoginAt(java.time.OffsetDateTime.now());
+        user.setLastLoginAt(OffsetDateTime.now());
         user = userRepository.save(user);
 
         java.util.Map<String, Object> claims = defaultClaims(user);

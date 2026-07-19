@@ -2,6 +2,7 @@ package seg.work.geuliumieum.server.auth.service;
 
 import io.jsonwebtoken.Claims;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -173,6 +174,8 @@ public class AuthService {
         User user = userRepository.findByEmailAndDeletedAtIsNull(request.getEmail()).orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
         if (user.getIsActive() == null || !user.getIsActive()) {
             throw new ApiException(ErrorCode.USER_NOT_VERIFIED);
+        } else {
+            user.setLastLoginAt(OffsetDateTime.now());
         }
 
         Map<String, Object> claims = defaultClaims(user);
