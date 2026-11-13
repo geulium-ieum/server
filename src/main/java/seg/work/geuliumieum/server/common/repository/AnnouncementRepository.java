@@ -25,6 +25,15 @@ public interface AnnouncementRepository extends BaseRepository<Announcement> {
       FROM Announcement a
       JOIN User u ON a.authorId = u.id
       WHERE a.isPublished = true
+    """)
+    Slice<AnnouncementResponse> findPublished(Pageable pageable);
+
+    @Query("""
+      SELECT
+          new seg.work.geuliumieum.server.announcement.dto.response.AnnouncementResponse(a, u.name)
+      FROM Announcement a
+      JOIN User u ON a.authorId = u.id
+      WHERE a.isPublished = true
         AND a.isPinned = true
       ORDER BY a.createdAt DESC
     """)

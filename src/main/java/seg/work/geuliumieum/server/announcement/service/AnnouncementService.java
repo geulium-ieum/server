@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import seg.work.geuliumieum.server.announcement.dto.response.AnnouncementResponse;
 import seg.work.geuliumieum.server.common.exception.ApiException;
@@ -17,7 +18,12 @@ public class AnnouncementService {
     private final AnnouncementRepository announcementRepository;
 
     public Slice<AnnouncementResponse> list(@ParameterObject Pageable pageable) {
-        return announcementRepository.findByIsPublishedTrueOrderByIsPinnedDescCreatedAtDesc(pageable);
+        Sort sort = pageable.getSort();
+        if (sort.isUnsorted()) {
+            return announcementRepository.findByIsPublishedTrueOrderByIsPinnedDescCreatedAtDesc(pageable);
+        } else {
+            return announcementRepository.findPublished(pageable);
+        }
     }
 
     public Slice<AnnouncementResponse> pinned(@ParameterObject Pageable pageable) {
