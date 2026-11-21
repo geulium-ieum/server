@@ -1,7 +1,6 @@
 package seg.work.geuliumieum.server.auth.naver.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,6 @@ import seg.work.geuliumieum.server.auth.naver.dto.NaverUserInfo;
 import seg.work.geuliumieum.server.common.exception.ApiException;
 import seg.work.geuliumieum.server.common.exception.ErrorCode;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NaverService {

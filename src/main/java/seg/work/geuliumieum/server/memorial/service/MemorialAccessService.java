@@ -3,7 +3,6 @@ package seg.work.geuliumieum.server.memorial.service;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import seg.work.geuliumieum.server.common.dto.UserInfo;
@@ -19,7 +18,6 @@ import seg.work.geuliumieum.server.config.security.UserRole;
 import seg.work.geuliumieum.server.memorial.constant.VISIBILITY;
 import seg.work.geuliumieum.server.memorial.dto.response.AccessResponse;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemorialAccessService {

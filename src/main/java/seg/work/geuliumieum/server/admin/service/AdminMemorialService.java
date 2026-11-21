@@ -3,7 +3,6 @@ package seg.work.geuliumieum.server.admin.service;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -20,7 +19,6 @@ import seg.work.geuliumieum.server.config.security.UserRole;
 import seg.work.geuliumieum.server.memorial.constant.STATUS;
 import seg.work.geuliumieum.server.memorial.dto.response.MemorialResponse;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AdminMemorialService {

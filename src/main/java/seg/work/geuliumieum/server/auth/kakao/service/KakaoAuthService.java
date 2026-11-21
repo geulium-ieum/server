@@ -3,7 +3,6 @@ package seg.work.geuliumieum.server.auth.kakao.service;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +17,6 @@ import seg.work.geuliumieum.server.config.security.UserRole;
 import seg.work.geuliumieum.server.config.security.jwt.JwtTokenProvider;
 import seg.work.geuliumieum.server.util.RedisUtil;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class KakaoAuthService {

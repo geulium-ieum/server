@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +20,6 @@ import seg.work.geuliumieum.server.config.security.UserRole;
 import seg.work.geuliumieum.server.config.security.jwt.JwtTokenProvider;
 import seg.work.geuliumieum.server.util.RedisUtil;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NaverAuthService {

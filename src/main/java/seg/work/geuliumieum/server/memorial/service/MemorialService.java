@@ -3,7 +3,6 @@ package seg.work.geuliumieum.server.memorial.service;
 import java.time.LocalDate;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +21,6 @@ import seg.work.geuliumieum.server.memorial.dto.response.AccessResponse;
 import seg.work.geuliumieum.server.memorial.dto.response.MemorialResponse;
 import seg.work.geuliumieum.server.upload.service.UploadService;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemorialService {
