@@ -160,7 +160,7 @@ hermes:
 ---
 
 server:
-  port: 8036
+  port: 8080
 
 spring:
   application:
