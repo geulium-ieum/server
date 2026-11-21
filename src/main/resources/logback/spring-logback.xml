@@ -26,11 +26,9 @@
     </springProfile>
 
     <springProfile name="main">
-        <include resource="logback/loki/loki.xml" />
 
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="LOKI"/>
         </root>
         <logger name="jdbc.sqltiming" level="INFO"/>
         <logger name="jdbc.resultsettable" level="OFF"/>
