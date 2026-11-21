@@ -196,6 +196,12 @@ spring:
           - ENC(KlP9EMjAyojpAbcResRqstrd2zC/TH6ZtQmxmWt5CN6BrBPS9d9LzlpUZfebIfRF/ObgrONj2oxRshMgF5pBlA==)
         password: ENC(WgbvI/qi/oZ1XVPT7s4/qPRCLd3mwMYAqBX4/yuNDBB23k5RPudGEEkI8lA6BxEB)
 
+hermes:
+  groupKey: 38aca4a7-b8c4-4cb4-90d2-176d94fc1089
+  baseUrl: http://hermes:8080
+  sendTemplateUrl: ${hermes.baseUrl}/mail/send/template
+  familyGroupJoinUrl: https://geulium-ieum-api.seoeungi.com/family-groups/join?id=
+
 cloud:
   aws:
     s3:
